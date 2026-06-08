@@ -7,15 +7,15 @@ import { BrandPoc, PocStatus } from "@/lib/supabase/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { 
-  Users, 
-  Plus, 
-  X, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Clock, 
-  Building2, 
-  UserCheck, 
+import {
+  Users,
+  Plus,
+  X,
+  CheckCircle2,
+  AlertTriangle,
+  Clock,
+  Building2,
+  UserCheck,
   ShieldAlert,
   Sparkles,
   ArrowRight,
@@ -190,7 +190,7 @@ export default function PocPage() {
 
   return (
     <div className="space-y-8 relative">
-      
+
       {/* Header with Tier Toggle */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -203,27 +203,25 @@ export default function PocPage() {
           <div className="bg-slate-100 p-1 rounded-xl flex items-center gap-1 text-[11px] font-bold border border-slate-200">
             <button
               onClick={() => setSubscriptionStatus("free")}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                subscriptionStatus === "free" 
-                  ? "bg-white text-slate-800 shadow-sm" 
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${subscriptionStatus === "free"
+                  ? "bg-white text-slate-800 shadow-sm"
                   : "text-slate-400 hover:text-slate-600"
-              }`}
+                }`}
             >
               Free Tier (Max 3)
             </button>
             <button
               onClick={() => setSubscriptionStatus("premium")}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                subscriptionStatus !== "free" 
-                  ? "bg-gradient-to-r from-brand-red-600 to-rose-600 text-white shadow-sm" 
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${subscriptionStatus !== "free"
+                  ? "bg-gradient-to-r from-brand-red-600 to-rose-600 text-white shadow-sm"
                   : "text-slate-400 hover:text-slate-600"
-              }`}
+                }`}
             >
-              Enterprise
+              Go Plus
             </button>
           </div>
 
-          <button 
+          <button
             onClick={() => {
               if (subscriptionStatus === "free" && pocs.length >= 3) {
                 window.dispatchEvent(new CustomEvent("open-subscription-paywall"));
@@ -297,8 +295,8 @@ export default function PocPage() {
                   <tr key={poc.id} className="hover:bg-slate-50/40 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
-                        <img 
-                          src={poc.photo_url || ""} 
+                        <img
+                          src={poc.photo_url || ""}
                           alt={poc.name}
                           className="h-9 w-9 rounded-full object-cover border border-slate-100 bg-slate-50 shrink-0"
                           onError={(e) => {
@@ -315,13 +313,12 @@ export default function PocPage() {
                       {poc.role}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                        poc.status === "Active"
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${poc.status === "Active"
                           ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
                           : poc.status === "Rejected"
                             ? "bg-red-50 text-brand-red-700 border border-brand-red-100"
                             : "bg-amber-50 text-amber-700 border border-amber-100"
-                      }`}>
+                        }`}>
                         {poc.status === "Active" && <CheckCircle2 className="h-3 w-3 shrink-0" />}
                         {poc.status === "Pending Admin Approval" && <Clock className="h-3 w-3 shrink-0" />}
                         {poc.status === "Rejected" && <AlertTriangle className="h-3 w-3 shrink-0" />}
@@ -371,7 +368,7 @@ export default function PocPage() {
                     Add Representative
                     <Sparkles className="h-4 w-4 text-brand-red-500" />
                   </h3>
-                  <button 
+                  <button
                     onClick={() => setIsAddOpen(false)}
                     className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 cursor-pointer"
                   >

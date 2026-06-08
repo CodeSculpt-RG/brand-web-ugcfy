@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     // Sanitize message history to satisfy Gemini API constraints (must start with user message)
     let cleanMessages = Array.isArray(messages) ? messages : [];
-    cleanMessages = cleanMessages.filter((m: any) => m.role === 'user' || m.role === 'assistant');
+    cleanMessages = cleanMessages.filter((m: { role?: string }) => m.role === 'user' || m.role === 'assistant');
     if (cleanMessages[0]?.role === 'assistant') {
       cleanMessages.shift();
     }
@@ -28,21 +28,22 @@ export async function POST(req: Request) {
     });
 
     return result.toUIMessageStreamResponse();
-  } catch (error: any) {
-    console.error("Chat API Route Error:", error);
+  } catch (error: unknown) {
+    const err = error as Record<string, unknown> & Error;
+    console.error("Chat API Route Error:", err);
     
     // Aggressive checking for 429 / Too Many Requests status or messages
     const isRateLimit = 
-      error?.status === 429 || 
-      error?.statusCode === 429 || 
-      String(error?.message || "").includes("429") || 
-      String(error?.message || "").toLowerCase().includes("too many requests") ||
-      String(error || "").includes("429");
+      err?.status === 429 || 
+      err?.statusCode === 429 || 
+      String(err?.message || "").includes("429") || 
+      String(err?.message || "").toLowerCase().includes("too many requests") ||
+      String(err || "").includes("429");
 
     if (isRateLimit) {
       return new Response("Siya is currently assisting a massive volume of brands. Please wait 10 seconds and try again.", { status: 429 });
     }
 
-    return Response.json({ error: error.message || "An error occurred during generation." }, { status: 500 });
+    return Response.json({ error: err.message || "An error occurred during generation." }, { status: 500 });
   }
 }

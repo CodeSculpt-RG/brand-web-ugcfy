@@ -24,7 +24,7 @@ export default function ContactUs() {
 
   return (
     <main className="min-h-screen bg-[#0A0A0F] text-zinc-100 flex flex-col justify-between selection:bg-brand-red-100 select-none">
-      
+
       {/* Top Navbar */}
       <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between border-b border-zinc-900">
         <Link href="/" className="flex items-center gap-2">
@@ -33,7 +33,7 @@ export default function ContactUs() {
           </div>
           <span className="font-extrabold text-xl tracking-tight text-white">UGC<span className="text-brand-red-600">FY</span></span>
         </Link>
-        <Link 
+        <Link
           href="/"
           className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-white transition"
         >
@@ -44,14 +44,14 @@ export default function ContactUs() {
 
       {/* Main Content Area */}
       <section className="flex-1 w-full max-w-7xl mx-auto py-16 px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        
+
         {/* Left Side: Contact Info */}
         <div className="space-y-8 text-left">
           <div className="space-y-4">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-red-500">Get in Touch</span>
             <h1 className="text-4xl font-extrabold text-white tracking-tight leading-none">Contact Us</h1>
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-semibold max-w-md">
-              Have questions about Siya's onboarding, brand access approvals, or creator escrow integrations? Drop us a message and our support team will respond shortly.
+              Have questions about Siya&apos;s onboarding, brand access approvals, or creator escrow integrations? Drop us a message and our support team will respond shortly.
             </p>
           </div>
 
@@ -74,7 +74,7 @@ export default function ContactUs() {
               </div>
               <div>
                 <p className="font-bold text-white">Office Line</p>
-                <p className="text-zinc-400 font-semibold">+1 (800) 555-UGCFY</p>
+                <p className="text-zinc-400 font-semibold">+91 90001 90001</p>
               </div>
             </div>
 
@@ -84,7 +84,8 @@ export default function ContactUs() {
               </div>
               <div>
                 <p className="font-bold text-white">Headquarters</p>
-                <p className="text-zinc-400 font-semibold">New York, NY 10001</p>
+                <p className="text-zinc-400 font-semibold">Bhilai, CG 490001</p>
+
               </div>
             </div>
           </div>
@@ -94,7 +95,7 @@ export default function ContactUs() {
         <div className="bg-[#0D0D12] border border-zinc-850 p-6 sm:p-8 rounded-3xl shadow-xl relative overflow-hidden text-left">
           {/* Accent red glow */}
           <div className="absolute -top-16 -right-16 w-32 h-32 bg-brand-red-600/5 blur-3xl pointer-events-none rounded-full" />
-          
+
           <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
             <div>
               <label htmlFor="name" className="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">

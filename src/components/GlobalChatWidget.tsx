@@ -83,13 +83,13 @@ export default function GlobalChatWidget() {
   const isLoading = status === "submitted" || status === "streaming";
 
   // Helper to extract text from message parts or content
-  const getMessageText = (message: any) => {
+  const getMessageText = (message: { content?: string; parts?: { type: string; text?: string }[] }) => {
     if (!message) return "";
     if (message.content) return message.content;
     if (!message.parts) return "";
     return message.parts
-      .filter((part: any) => part.type === "text")
-      .map((part: any) => part.text)
+      .filter((part: { type: string; text?: string }) => part.type === "text")
+      .map((part: { type: string; text?: string }) => part.text)
       .join("\n");
   };
 

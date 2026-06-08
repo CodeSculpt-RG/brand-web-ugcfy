@@ -6,15 +6,15 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import SubscriptionPaywallModal from "@/components/SubscriptionPaywallModal";
-import { 
-  LayoutDashboard, 
-  Video, 
-  Search, 
-  CheckSquare, 
-  LogOut, 
-  Menu, 
-  ChevronLeft, 
-  Bell, 
+import {
+  LayoutDashboard,
+  Video,
+  Search,
+  CheckSquare,
+  LogOut,
+  Menu,
+  ChevronLeft,
+  Bell,
   Building,
   ChevronDown,
   User,
@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const pathname = usePathname();
   const supabase = createClient();
-  
+
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isNavbarShrunk, setIsNavbarShrunk] = useState(false);
@@ -65,10 +65,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     const handleOpenPaywall = () => setIsPaywallOpen(true);
     const handleIncrementPoc = () => setPocCount(prev => prev + 1);
-    
+
     window.addEventListener("open-subscription-paywall", handleOpenPaywall);
     window.addEventListener("increment-poc-count", handleIncrementPoc);
-    
+
     return () => {
       window.removeEventListener("open-subscription-paywall", handleOpenPaywall);
       window.removeEventListener("increment-poc-count", handleIncrementPoc);
@@ -130,7 +130,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           });
           setPocCount(2); // Simulated starting count
           setSubscriptionStatus("free");
-          
+
           // Add some fake notification for the demo
           setNotifications([
             { id: "1", title: "New UGC Submission Draft", content: "Rahul Sharma has uploaded a video for Air Max Fit Test Campaign.", is_read: false },
@@ -225,12 +225,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-slate-50/50">
-      
+
       {/* DESKTOP SIDEBAR */}
-      <aside 
-        className={`hidden md:flex flex-col bg-white border-r border-slate-200/80 transition-all duration-300 shrink-0 ${
-          isSidebarCollapsed ? "w-20" : "w-64"
-        }`}
+      <aside
+        className={`hidden md:flex flex-col bg-white border-r border-slate-200/80 transition-all duration-300 shrink-0 ${isSidebarCollapsed ? "w-20" : "w-64"
+          }`}
       >
         {/* Sidebar Header */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200/80">
@@ -244,7 +243,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </span>
             )}
           </Link>
-          <button 
+          <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             className="p-1 hover:bg-slate-50 border border-slate-100 rounded-lg text-slate-500 cursor-pointer"
           >
@@ -258,19 +257,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/dashboard");
             return (
               <Link key={item.name} href={item.href} className="block relative">
-                <div 
-                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                    isActive 
-                      ? "text-brand-red-600 bg-brand-red-50/80" 
+                <div
+                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isActive
+                      ? "text-brand-red-600 bg-brand-red-50/80"
                       : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
-                  }`}
+                    }`}
                 >
                   <item.icon className={`h-5 w-5 shrink-0 ${isActive ? "text-brand-red-600" : "text-slate-400"}`} />
                   {!isSidebarCollapsed && <span>{item.name}</span>}
-                  
+
                   {/* Elegant active state red accent line */}
                   {isActive && !isSidebarCollapsed && (
-                    <motion.div 
+                    <motion.div
                       layoutId="activeIndicator"
                       className="absolute right-2 top-3 bottom-3 w-1 bg-brand-red-600 rounded-full"
                     />
@@ -290,12 +288,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {pocCount} / 3 Free
               </span>
             </div>
-            
+
             <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-              <div 
-                className={`h-full rounded-full transition-all duration-500 ${
-                  pocCount >= 3 && subscriptionStatus === "free" ? "bg-brand-red-600" : "bg-slate-800"
-                }`}
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${pocCount >= 3 && subscriptionStatus === "free" ? "bg-brand-red-600" : "bg-slate-800"
+                  }`}
                 style={{ width: `${Math.min((pocCount / 3) * 100, 100)}%` }}
               />
             </div>
@@ -313,7 +310,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Sidebar Footer */}
         <div className="p-3 border-t border-slate-200/80">
-          <button 
+          <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-red-600 hover:bg-red-50/50 transition cursor-pointer"
           >
@@ -328,7 +325,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {isMobileOpen && (
           <>
             {/* Backdrop */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.4 }}
               exit={{ opacity: 0 }}
@@ -336,7 +333,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               className="fixed inset-0 z-40 bg-black md:hidden"
             />
             {/* Sidebar content */}
-            <motion.aside 
+            <motion.aside
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
@@ -350,7 +347,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   </div>
                   <span className="font-extrabold text-lg tracking-tight text-slate-900">UGC<span className="text-brand-red-600">FY</span></span>
                 </Link>
-                <button 
+                <button
                   onClick={() => setIsMobileOpen(false)}
                   className="p-1.5 hover:bg-slate-50 border border-slate-100 rounded-lg text-slate-500"
                 >
@@ -362,15 +359,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {sidebarItems.map((item) => {
                   const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/dashboard");
                   return (
-                    <Link 
-                      key={item.name} 
+                    <Link
+                      key={item.name}
                       href={item.href}
                       onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all ${
-                        isActive 
-                          ? "text-brand-red-600 bg-brand-red-50/80 border-r-4 border-brand-red-600" 
+                      className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all ${isActive
+                          ? "text-brand-red-600 bg-brand-red-50/80 border-r-4 border-brand-red-600"
                           : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
-                      }`}
+                        }`}
                     >
                       <item.icon className={`h-5 w-5 shrink-0 ${isActive ? "text-brand-red-600" : "text-slate-400"}`} />
                       <span>{item.name}</span>
@@ -387,12 +383,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     {pocCount} / 3 Free
                   </span>
                 </div>
-                
+
                 <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      pocCount >= 3 && subscriptionStatus === "free" ? "bg-brand-red-600" : "bg-slate-800"
-                    }`}
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${pocCount >= 3 && subscriptionStatus === "free" ? "bg-brand-red-600" : "bg-slate-800"
+                      }`}
                     style={{ width: `${Math.min((pocCount / 3) * 100, 100)}%` }}
                   />
                 </div>
@@ -410,7 +405,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 )}
               </div>
 
-              <button 
+              <button
                 onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-red-600 hover:bg-red-50/50 transition cursor-pointer border-t border-slate-100 pt-4"
               >
@@ -423,23 +418,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </AnimatePresence>
 
       {/* MAIN CONTENT WRAPPER */}
-      <div 
-        className={`flex-1 flex flex-col h-screen relative transition-all duration-300 ${
-          pathname === "/dashboard/messages" ? "overflow-hidden" : "overflow-y-auto"
-        }`}
+      <div
+        className={`flex-1 flex flex-col h-screen relative transition-all duration-300 ${pathname === "/dashboard/messages" ? "overflow-hidden" : "overflow-y-auto"
+          }`}
       >
         {/* PREMIUM STICKY NAVBAR */}
         <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shrink-0">
           <div className="px-6 py-4 flex items-center justify-between">
             {/* Left: Mobile toggle & Breadcrumb */}
             <div className="flex items-center gap-3">
-              <button 
+              <button
                 onClick={() => setIsMobileOpen(true)}
                 className="md:hidden p-2 hover:bg-slate-100/50 border border-slate-200/50 rounded-xl text-slate-600 transition"
               >
                 <Menu className="h-5 w-5" />
               </button>
-              
+
               <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
                 <span>UGCFY</span>
                 <span>/</span>
@@ -451,7 +445,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* Right: Notifications & User profile dropdown */}
             <div className="flex items-center gap-3 relative">
-              
+
               {/* POC Usage header badge */}
               <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200/60 text-slate-700 rounded-xl text-[10px] font-bold">
                 <span>POC Usage:</span>
@@ -471,12 +465,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {/* Premium Badge / Plan indicator */}
               <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-brand-red-500 to-rose-600 text-white rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm shadow-brand-red-500/20">
                 <Sparkles className="h-3 w-3" />
-                Enterprise
+                Go Plus
               </div>
 
               {/* Notification Button */}
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setShowNotifications(!showNotifications)}
                   className="p-2.5 hover:bg-white border border-slate-200/60 bg-white/40 backdrop-blur-sm rounded-xl text-slate-600 hover:text-slate-800 transition relative cursor-pointer"
                 >
@@ -491,7 +485,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   {showNotifications && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, y: 15, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 15, scale: 0.95 }}
@@ -521,7 +515,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
               {/* Profile Dropdown */}
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                   className="flex items-center gap-2 p-1.5 border border-slate-200/60 bg-white/40 backdrop-blur-sm rounded-xl text-slate-600 hover:text-slate-800 transition cursor-pointer"
                 >
@@ -538,7 +532,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   {isProfileDropdownOpen && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setIsProfileDropdownOpen(false)} />
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, y: 15, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 15, scale: 0.95 }}
@@ -549,15 +543,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                           <p className="text-[10px] text-slate-500 truncate mt-0.5">{profile?.email}</p>
                         </div>
                         <div className="py-1">
-                          <Link 
-                            href="/settings" 
+                          <Link
+                            href="/settings"
                             onClick={() => setIsProfileDropdownOpen(false)}
                             className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition"
                           >
                             <Settings className="h-3.5 w-3.5" />
                             Settings
                           </Link>
-                          <button 
+                          <button
                             onClick={() => {
                               setIsProfileDropdownOpen(false);
                               handleLogout();
@@ -579,18 +573,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* PAGE BODY */}
-        <main className={`flex-1 w-full ${
-          pathname === "/dashboard/messages"
+        <main className={`flex-1 w-full ${pathname === "/dashboard/messages"
             ? "h-[calc(100vh-4rem)] p-0 overflow-hidden"
             : "p-4 md:p-6 lg:p-8 max-w-7xl mx-auto"
-        }`}>
+          }`}>
           {children}
         </main>
       </div>
-      
+
       <AnimatePresence>
         {isPaywallOpen && (
-          <SubscriptionPaywallModal 
+          <SubscriptionPaywallModal
             isOpen={isPaywallOpen}
             onClose={() => setIsPaywallOpen(false)}
             onUpgrade={() => {
