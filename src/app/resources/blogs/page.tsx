@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PremiumCtaSection from "@/components/ui/PremiumCtaSection";
-import { ArrowRight, Clock, User, Calendar } from "lucide-react";
+import { Clock, User, Calendar } from "lucide-react";
 import Link from "next/link";
 
 const BLOG_POSTS = [
@@ -106,6 +106,7 @@ export default function BlogPage() {
             <div className="max-w-[1280px] mx-auto px-6">
               <article className="group relative bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden flex flex-col lg:flex-row hover:shadow-2xl transition-all duration-300">
                 <div className="lg:w-1/2 relative aspect-video lg:aspect-auto overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src={featuredPost.imageUrl} 
                     alt={featuredPost.title} 
@@ -151,6 +152,7 @@ export default function BlogPage() {
               {regularPosts.map((post) => (
                 <article key={post.id} className="group flex flex-col bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
                   <div className="relative aspect-[16/10] overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img 
                       src={post.imageUrl} 
                       alt={post.title} 

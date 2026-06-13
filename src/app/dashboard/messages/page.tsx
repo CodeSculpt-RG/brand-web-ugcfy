@@ -159,33 +159,35 @@ export default function MessagesPage() {
 
   // Load simulated messages
   useEffect(() => {
-
-    setMessages([
-      {
-        id: "m1",
-        group_id: "GRP-CMP-101",
-        sender_id: "poc-1",
-        sender_name: "Anjali Sen (Director)",
-        content: "Hi team! Welcome to the Air Max Fit Test Campaign channel. Looking forward to some high quality Reels.",
-        created_at: new Date(Date.now() - 3600000 * 2).toISOString()
-      },
-      {
-        id: "m2",
-        group_id: "GRP-CMP-101",
-        sender_id: "creator-sharma",
-        sender_name: "Rahul Sharma (Creator)",
-        content: "Hey Anjali! Super excited to be shortlisted. I've drafted some transition concepts that focus on outdoor pavement sprints.",
-        created_at: new Date(Date.now() - 3600000).toISOString()
-      },
-      {
-        id: "m3",
-        group_id: "GRP-CMP-101",
-        sender_id: "poc-1",
-        sender_name: "Anjali Sen (Director)",
-        content: "Please review the lighting in segment 2. It felt a bit dark compared to our standard athletic aesthetic. Let's aim for golden hour outdoor lighting.",
-        created_at: new Date(Date.now() - 600000).toISOString()
-      }
-    ]);
+    const timer = setTimeout(() => {
+      setMessages([
+        {
+          id: "m1",
+          group_id: "GRP-CMP-101",
+          sender_id: "poc-1",
+          sender_name: "Anjali Sen (Director)",
+          content: "Hi team! Welcome to the Air Max Fit Test Campaign channel. Looking forward to some high quality Reels.",
+          created_at: new Date(Date.now() - 3600000 * 2).toISOString()
+        },
+        {
+          id: "m2",
+          group_id: "GRP-CMP-101",
+          sender_id: "creator-sharma",
+          sender_name: "Rahul Sharma (Creator)",
+          content: "Hey Anjali! Super excited to be shortlisted. I've drafted some transition concepts that focus on outdoor pavement sprints.",
+          created_at: new Date(Date.now() - 3600000).toISOString()
+        },
+        {
+          id: "m3",
+          group_id: "GRP-CMP-101",
+          sender_id: "poc-1",
+          sender_name: "Anjali Sen (Director)",
+          content: "Please review the lighting in segment 2. It felt a bit dark compared to our standard athletic aesthetic. Let's aim for golden hour outdoor lighting.",
+          created_at: new Date(Date.now() - 600000).toISOString()
+        }
+      ]);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   // Scroll to bottom

@@ -51,6 +51,7 @@ export default function SafeImage({
 
   // Fallback to standard <img> if Next Image is explicitly bypassed
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={safeSrc}
       alt={alt || "Image"}
