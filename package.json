@@ -23,6 +23,7 @@
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.108.1",
     "ai": "^6.0.197",
+    "dotenv": "^17.4.2",
     "framer-motion": "^12.40.0",
     "langchain": "^1.4.4",
     "lucide-react": "^0.468.0",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/dotenv": "^6.1.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
