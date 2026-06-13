@@ -51,7 +51,7 @@ export default function ContactUs() {
             <span className="text-xs font-bold uppercase tracking-wider text-brand-red-500">Get in Touch</span>
             <h1 className="text-4xl font-extrabold text-white tracking-tight leading-none">Contact Us</h1>
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-semibold max-w-md">
-              Have questions about Siya&apos;s onboarding, brand access approvals, or creator escrow integrations? Drop us a message and our support team will respond shortly.
+              Have questions about SIYAA&apos;s onboarding, brand access approvals, or creator escrow integrations? Drop us a message and our support team will respond shortly.
             </p>
           </div>
 

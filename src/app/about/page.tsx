@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Linkedin, Star, Award, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Linkedin, Star, Award } from "lucide-react";
 
 export default function AboutUs() {
   return (
     <main className="min-h-screen bg-[#0A0A0F] text-zinc-100 flex flex-col justify-between selection:bg-brand-red-100 select-none">
-      
+
       {/* Top Navbar */}
       <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between border-b border-zinc-900">
         <Link href="/" className="flex items-center gap-2">
@@ -15,7 +15,7 @@ export default function AboutUs() {
           </div>
           <span className="font-extrabold text-xl tracking-tight text-white">UGC<span className="text-brand-red-600">FY</span></span>
         </Link>
-        <Link 
+        <Link
           href="/"
           className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-white transition"
         >
@@ -27,7 +27,7 @@ export default function AboutUs() {
       {/* Main Content Area */}
       <section className="flex-1 max-w-3xl mx-auto py-20 px-6 text-left">
         <div className="space-y-10">
-          
+
           <div className="space-y-3">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-red-500">About the Company</span>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-none">
@@ -44,7 +44,7 @@ export default function AboutUs() {
               Traditional influencer marketing is plagued by manual negotiations, high agency overheads, and payment insecurity. UGCFY resolves these paint points by introducing an escrow-protected collaboration hub. Brands fund campaigns securely, and creators receive payouts instantly upon brief fulfillment.
             </p>
             <p>
-              To push the boundaries of productivity, we have built <strong>Siya</strong>—our proprietary AI onboarding and matchmaking agent. Siya acts as an automated concierge that completes partner KYC verifications, compiles creative brand profiles, and expedites platform access.
+              To push the boundaries of productivity, we have built <strong>SIYAA</strong>—our proprietary AI onboarding and matchmaking agent. SIYAA acts as an automated concierge that completes partner KYC verifications, compiles creative brand profiles, and expedites platform access.
             </p>
           </div>
 
@@ -52,9 +52,9 @@ export default function AboutUs() {
           <div className="relative rounded-3xl bg-[#0D0D12] border border-zinc-850 p-6 sm:p-8 overflow-hidden shadow-2xl">
             {/* Ambient Red Glow */}
             <div className="absolute -bottom-16 -left-16 w-32 h-32 bg-brand-red-600/5 blur-3xl pointer-events-none rounded-full" />
-            
+
             <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10">
-              
+
               {/* Profile Avatar Placeholder (or initials) */}
               <div className="h-20 w-20 bg-gradient-to-tr from-brand-red-600 to-rose-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl shadow-xl shrink-0">
                 SM
@@ -68,9 +68,9 @@ export default function AboutUs() {
                     Founder & CEO
                   </span>
                 </div>
-                
+
                 <p className="text-xs text-zinc-400 leading-relaxed font-semibold">
-                  Shubham's vision is to bridge the gap between elite brands and vetted creators through AI-driven workflows, eliminating inefficiencies and establishing payment trust.
+                  Shubham&apos;s vision is to bridge the gap between elite brands and vetted creators through AI-driven workflows, eliminating inefficiencies and establishing payment trust.
                 </p>
 
                 <div className="pt-2">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -48,7 +48,6 @@ const requestAccessSchema = z.object({
 type RequestAccessFormValues = z.infer<typeof requestAccessSchema>;
 
 export default function RequestAccessPage() {
-  const router = useRouter();
   const supabase = createClient();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -77,7 +76,7 @@ export default function RequestAccessPage() {
     try {
       // 1. Sign up the user in Supabase
       // We generate a secure random password for their account record since they are pending approval
-      const generatedPassword = Math.random().toString(36).slice(-10) + 'A1!' + Math.random().toString(36).slice(-10);
+      const generatedPassword = crypto.randomUUID() + 'A1!';
       
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
@@ -138,7 +137,7 @@ export default function RequestAccessPage() {
 
       setIsSubmitted(true);
       reset();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       setErrorMsg("An unexpected connection error occurred. Please check your credentials and try again.");
     } finally {
@@ -208,7 +207,7 @@ export default function RequestAccessPage() {
                 Vetted Members
               </div>
               <p className="text-sm italic text-white/95 mt-1 leading-relaxed">
-                "UGCFY enforces absolute quality. Every creator is verified via video KYC and manual performance screens, cutting ad iteration costs by 60%."
+                &quot;UGCFY enforces absolute quality. Every creator is verified via video KYC and manual performance screens, cutting ad iteration costs by 60%.&quot;
               </p>
               <div className="mt-4 flex items-center gap-3">
                 <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
@@ -251,7 +250,7 @@ export default function RequestAccessPage() {
             Back to Home
           </Link>
 
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             {!isSubmitted ? (
               <motion.div
                 key="form"
@@ -443,7 +442,7 @@ export default function RequestAccessPage() {
                   </div>
                   <div className="flex gap-2.5 items-start">
                     <CheckCircle2 className="h-4 w-4 text-brand-red-500 shrink-0 mt-0.5" />
-                    <span>You'll get an email notification to setup your billing and launch your first UGC campaign.</span>
+                    <span>You&apos;ll get an email notification to setup your billing and launch your first UGC campaign.</span>
                   </div>
                 </div>
 

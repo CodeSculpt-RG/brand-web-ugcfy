@@ -5,18 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import {
-  Settings,
   Users,
   Lock,
   CreditCard,
   ArrowLeft,
   Plus,
   ShieldCheck,
-  Check,
   Building,
-  Globe,
-  Mail,
-  Phone,
   Sparkles,
   Key,
   ShieldAlert,
@@ -53,7 +48,7 @@ export default function SettingsPage() {
   const [enable2FA, setEnable2FA] = useState(false);
 
   // Team tab managers mock (expandable/live)
-  const [teamMembers, setTeamMembers] = useState([
+  const [teamMembers] = useState([
     { id: "poc-1", name: "Anjali Sen", email: "anjali@nike.in", role: "UGC Campaign Director", status: "Active" },
     { id: "poc-2", name: "Vikram Malhotra", email: "vikram@nike.in", role: "Sports Marketing Lead", status: "Active" },
     { id: "poc-3", name: "Rohan Das", email: "rohan@nike.in", role: "Digital Producer Assistant", status: "Pending Admin Approval" }
@@ -133,6 +128,7 @@ export default function SettingsPage() {
 
       if (error) throw error;
       showToast("General settings saved successfully!");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       // Suppress supabase schema errors for demo, show success anyway as fallback
@@ -241,7 +237,7 @@ export default function SettingsPage() {
 
             {/* Right Column (Content - 75%) */}
             <main className="w-full md:w-3/4">
-              <AnimatePresence mode="wait">
+              <AnimatePresence>
                 <motion.div
                   key={activeTab}
                   initial={{ opacity: 0, y: 5 }}

@@ -27,8 +27,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col overflow-x-hidden">
+      <body className="min-h-full flex flex-col overflow-x-hidden bg-white text-gray-900" suppressHydrationWarning>
         {children}
         <ClientChatWrapper />
       </body>

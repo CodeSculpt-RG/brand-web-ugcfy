@@ -24,7 +24,7 @@ export interface CreatorProfile {
     video_15s?: number;
     video_30s?: number;
     photoshoot?: number;
-    [key: string]: any;
+    [key: string]: unknown;
   } | null;
   created_at?: string;
   updated_at?: string;

@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import SubscriptionPaywallModal from "@/components/SubscriptionPaywallModal";
 import {
   LayoutDashboard,
@@ -17,7 +18,6 @@ import {
   Bell,
   Building,
   ChevronDown,
-  User,
   Sparkles,
   Settings,
   Compass,
@@ -29,6 +29,7 @@ import {
 interface SidebarItem {
   name: string;
   href: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
 }
 
@@ -50,9 +51,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isNavbarShrunk, setIsNavbarShrunk] = useState(false);
   const [profile, setProfile] = useState<{ company_name?: string; email?: string } | null>(null);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isPendingVerification, setIsPendingVerification] = useState(false);
@@ -75,14 +76,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     };
   }, []);
 
-  // Monitor Scroll for Navbar Shrink
+  // Monitor Scroll
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsNavbarShrunk(true);
-      } else {
-        setIsNavbarShrunk(false);
-      }
+      // Intentionally left blank for future expansion
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -577,7 +574,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ? "h-[calc(100vh-4rem)] p-0 overflow-hidden"
             : "p-4 md:p-6 lg:p-8 max-w-7xl mx-auto"
           }`}>
-          {children}
+          <div className="p-6 md:p-8 lg:p-10 max-w-[1600px] mx-auto w-full">
+            <ErrorBoundary name="DashboardLayout">
+              {children}
+            </ErrorBoundary>
+          </div>
         </main>
       </div>
 

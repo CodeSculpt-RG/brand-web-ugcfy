@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
-import { Campaign, CampaignApplication, UgcSubmission } from "@/lib/supabase/types";
+import { Campaign } from "@/lib/supabase/types";
 import { 
   Video, 
   Users, 
@@ -15,8 +14,6 @@ import {
   Clock, 
   Check, 
   X,
-  FileText,
-  DollarSign,
   ChevronRight,
   ExternalLink
 } from "lucide-react";
@@ -31,23 +28,21 @@ export default function DashboardOverview() {
     pendingApprovals: 0,
   });
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [pitches, setPitches] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [submissions, setSubmissions] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [brandId, setBrandId] = useState<string | null>(null);
 
   // Fetch dashboard data
   useEffect(() => {
     async function loadData() {
       try {
-        setIsLoading(true);
         // Get user session
         const { data: { user } } = await supabase.auth.getUser();
         const activeBrandId = user?.id || "11111111-1111-1111-1111-111111111111"; // Fallback to Nike in demo
-        setBrandId(activeBrandId);
 
         // 1. Fetch campaigns
-        const { data: campaignData, error: campaignError } = await supabase
+        const { data: campaignData } = await supabase
           .from("campaigns")
           .select("*")
           .eq("brand_id", activeBrandId);
@@ -176,8 +171,6 @@ export default function DashboardOverview() {
 
       } catch (err) {
         console.error(err);
-      } finally {
-        setIsLoading(false);
       }
     }
 
@@ -356,11 +349,14 @@ export default function DashboardOverview() {
                     {/* Video mockup player */}
                     <div className="relative w-full md:w-36 h-48 md:h-24 rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-200">
                       {sub.thumbnail_url ? (
-                        <img 
-                          src={sub.thumbnail_url} 
-                          alt="Video thumbnail"
-                          className="absolute inset-0 w-full h-full object-cover opacity-80"
-                        />
+                        <div className="relative w-full h-full">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img 
+                            src={sub.thumbnail_url} 
+                            alt="Video thumbnail"
+                            className="absolute inset-0 w-full h-full object-cover opacity-80"
+                          />
+                        </div>
                       ) : null}
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                         <button 
@@ -486,7 +482,7 @@ export default function DashboardOverview() {
                     </div>
 
                     <p className="text-[11px] text-slate-500 italic mt-2 line-clamp-2 leading-relaxed bg-white p-2 rounded-lg border border-slate-100">
-                      "{pitch.cover_letter || "No pitch details submitted."}"
+                      &quot;{pitch.cover_letter || "No pitch details submitted."}&quot;
                     </p>
                   </div>
                 ))}

@@ -9,11 +9,11 @@ interface RequestAccessModalProps {
 }
 
 export default function RequestAccessModal({ isOpen, onClose }: RequestAccessModalProps) {
-  
+
   const handleStartOnboarding = () => {
     onClose();
-    // Dispatch custom event to trigger Siya AI onboarding in GlobalChatWidget
-    window.dispatchEvent(new CustomEvent("open-siya-onboarding"));
+    // Dispatch custom event to trigger SIYAA AI onboarding in GlobalChatWidget
+    window.dispatchEvent(new CustomEvent("open-SIYAA-onboarding"));
   };
 
   return (
@@ -60,15 +60,15 @@ export default function RequestAccessModal({ isOpen, onClose }: RequestAccessMod
             {/* Content */}
             <div className="text-center px-2">
               <h3 className="text-xl font-extrabold text-white tracking-tight mb-2">
-                Meet <span className="text-brand-red-500">Siya</span>
+                Meet <span className="text-brand-red-500">SIYAA</span>
               </h3>
               <p className="text-xs text-brand-red-400 font-bold uppercase tracking-widest mb-4 flex items-center justify-center gap-1.5">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 AI Onboarding Concierge
               </p>
-              
+
               <p className="text-xs text-zinc-400 leading-relaxed mb-6 font-semibold">
-                Siya will handle your verification process securely. She will gather your brand profile details, walk you through the onboarding questions, and expedite your access request.
+                SIYAA will handle your verification process securely. She will gather your brand profile details, walk you through the onboarding questions, and expedite your access request.
               </p>
             </div>
 
@@ -77,7 +77,7 @@ export default function RequestAccessModal({ isOpen, onClose }: RequestAccessMod
               onClick={handleStartOnboarding}
               className="w-full py-3.5 px-6 bg-gradient-to-tr from-brand-red-600 to-rose-600 hover:from-brand-red-700 hover:to-rose-700 text-white font-bold rounded-2xl text-xs transition shadow-lg shadow-brand-red-600/20 hover:shadow-brand-red-600/30 cursor-pointer active:scale-[0.98]"
             >
-              Start Onboarding with Siya ✨
+              Start Onboarding with SIYAA ✨
             </button>
           </motion.div>
         </div>

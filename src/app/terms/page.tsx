@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 export default function TermsOfService() {
   return (
     <main className="min-h-screen bg-[#0A0A0F] text-zinc-100 flex flex-col justify-between selection:bg-brand-red-100 select-none">
-      
+
       {/* Top Navbar */}
       <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between border-b border-zinc-900">
         <Link href="/" className="flex items-center gap-2">
@@ -15,7 +15,7 @@ export default function TermsOfService() {
           </div>
           <span className="font-extrabold text-xl tracking-tight text-white">UGC<span className="text-brand-red-600">FY</span></span>
         </Link>
-        <Link 
+        <Link
           href="/"
           className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-white transition"
         >
@@ -29,7 +29,7 @@ export default function TermsOfService() {
         <div className="prose prose-invert prose-red">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-red-500">Terms and Conditions</span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white mt-2 mb-8 tracking-tight">Terms of Service</h1>
-          
+
           <p className="text-sm text-zinc-400 leading-relaxed font-semibold mb-6">
             Last Updated: June 7, 2026
           </p>
@@ -38,14 +38,14 @@ export default function TermsOfService() {
             <div className="space-y-3">
               <h2 className="text-lg font-bold text-white">1. Agreement to Terms</h2>
               <p>
-                By accessing or using the UGCFY platform ("Service"), you agree to be bound by these Terms of Service. If you do not agree to all of these terms, you are prohibited from using the platform.
+                By accessing or using the UGCFY platform (&quot;Service&quot;), you agree to be bound by these Terms of Service. If you do not agree to all of these terms, you are prohibited from using the platform.
               </p>
             </div>
 
             <div className="space-y-3">
               <h2 className="text-lg font-bold text-white">2. Access and Account Verification</h2>
               <p>
-                UGCFY reserves the right to approve or deny brand access requests at our sole discretion. Brands must complete onboarding questions administered by our AI concierge, Siya, and submit verified credentials. You agree to provide accurate, current, and complete information.
+                UGCFY reserves the right to approve or deny brand access requests at our sole discretion. Brands must complete onboarding questions administered by our AI concierge, SIYAA, and submit verified credentials. You agree to provide accurate, current, and complete information.
               </p>
             </div>
 
@@ -59,7 +59,7 @@ export default function TermsOfService() {
             <div className="space-y-3">
               <h2 className="text-lg font-bold text-white">4. Creator Relationships & Content Licences</h2>
               <p>
-                UGCFY is a platform facilitating collaboration between brands and independent creators. Once a creator's deliverable is approved and paid for via escrow release, the brand receives licensing rights as agreed upon in the project brief.
+                UGCFY is a platform facilitating collaboration between brands and independent creators. Once a creator&apos;s deliverable is approved and paid for via escrow release, the brand receives licensing rights as agreed upon in the project brief.
               </p>
             </div>
 

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { BrandProfile, BrandPoc, Campaign } from "@/lib/supabase/types";
 import {
-  Building,
+
   Globe,
   Phone,
   MapPin,
@@ -15,7 +15,6 @@ import {
   Wallet,
   FileText,
   ArrowUpRight,
-  Briefcase,
   Mail,
   ShieldCheck,
   Download,
@@ -47,13 +46,11 @@ export default function ProfilePage() {
 
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [pocs, setPocs] = useState<BrandPoc[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   // Load profile, campaigns, and POCs
   useEffect(() => {
     async function loadData() {
       try {
-        setIsLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
         const activeBrandId = user?.id || "11111111-1111-1111-1111-111111111111"; // Fallback to Nike in demo
 
@@ -139,8 +136,6 @@ export default function ProfilePage() {
 
       } catch (err) {
         console.error(err);
-      } finally {
-        setIsLoading(false);
       }
     }
     loadData();
@@ -165,6 +160,7 @@ export default function ProfilePage() {
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px]" />
 
           {/* Cover photo image overlay mock */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://images.unsplash.com/photo-1507398909848-53ab29396772"
             alt="Brand Cover"
@@ -331,7 +327,7 @@ export default function ProfilePage() {
 
         {/* Dynamic Tab Panels */}
         <div className="min-h-[250px]">
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             <motion.div
               key={activeTab}
               initial={{ opacity: 0, y: 12 }}
@@ -412,6 +408,7 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
                   {pocs.map((poc) => (
                     <div key={poc.id} className="glass-card p-5 rounded-3xl bg-white flex items-center gap-3 border border-slate-200/60 shadow-sm">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={poc.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(poc.name)}`}
                         alt={poc.name}

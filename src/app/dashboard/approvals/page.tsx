@@ -3,30 +3,56 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
-import { UgcSubmission } from "@/lib/supabase/types";
 import { 
   CheckSquare, 
-  Play, 
   Check, 
   X, 
-  AlertCircle, 
   CheckCircle2, 
-  MessageSquare,
   Lock,
   Sparkles,
-  ExternalLink,
   RotateCcw,
   ShieldCheck,
   Heart,
   MessageCircle,
   Share2
 } from "lucide-react";
+import { z } from "zod";
+
+const CreatorSchema = z.object({
+  full_name: z.string().nullish().transform(v => v || "Creator"),
+  avatar_url: z.string().nullish().transform(v => v || ""),
+  location: z.string().nullish().transform(v => v || ""),
+  instagram_url: z.string().nullish().transform(v => v || "")
+}).nullish().transform(v => v || { full_name: "Creator", avatar_url: "", location: "", instagram_url: "" });
+
+const CampaignSchema = z.object({
+  title: z.string().nullish().transform(v => v || "Campaign"),
+  budget: z.number().nullish().transform(v => v || 20000)
+}).nullish().transform(v => v || { title: "Campaign", budget: 20000 });
+
+const SubmissionSchema = z.object({
+  id: z.string(),
+  application_id: z.string().nullish().transform(v => v || ""),
+  campaign_id: z.string().nullish().transform(v => v || ""),
+  creator_id: z.string().nullish().transform(v => v || ""),
+  video_url: z.string().nullish().transform(v => v || ""),
+  thumbnail_url: z.string().nullish().transform(v => v || ""),
+  caption: z.string().nullish().transform(v => v || "UGC video submission"),
+  notes: z.string().nullish().transform(v => v || "No submission notes provided."),
+  status: z.string().nullish().transform(v => v || "Pending"),
+  feedback: z.string().nullable(),
+  created_at: z.string().nullish().transform(v => v || new Date().toISOString()),
+  campaign: CampaignSchema,
+  creator: CreatorSchema
+});
+
+type UGCSubmission = z.infer<typeof SubmissionSchema>;
 
 export default function ApprovalsPage() {
   const supabase = createClient();
-  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [submissions, setSubmissions] = useState<UGCSubmission[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedSub, setSelectedSub] = useState<any | null>(null);
+  const [selectedSub, setSelectedSub] = useState<UGCSubmission | null>(null);
   const [revisionFeedback, setRevisionFeedback] = useState("");
   const [showRevisionModal, setShowRevisionModal] = useState(false);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
@@ -35,7 +61,7 @@ export default function ApprovalsPage() {
   const loadSubmissions = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("ugc_submissions")
         .select(`
           *,
@@ -91,8 +117,11 @@ export default function ApprovalsPage() {
         ];
       }
 
-      setSubmissions(fetchedSubmissions);
-      setSelectedSub(fetchedSubmissions[0]);
+      // ROOT CAUSE FIX: Strict Data Validation at the boundary instead of optional chaining in UI
+      const parsedSubmissions = z.array(SubmissionSchema).parse(fetchedSubmissions);
+
+      setSubmissions(parsedSubmissions);
+      setSelectedSub(parsedSubmissions[0] || null);
 
     } catch (err) {
       console.error(err);
@@ -102,7 +131,9 @@ export default function ApprovalsPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadSubmissions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase]);
 
   // Approve content release
@@ -121,7 +152,7 @@ export default function ApprovalsPage() {
       setSubmissions(prev => 
         prev.map(s => s.id === selectedSub.id ? { ...s, status: "Approved" } : s)
       );
-      setSelectedSub((prev: any) => prev ? { ...prev, status: "Approved" } : null);
+      setSelectedSub(prev => prev ? { ...prev, status: "Approved" } : null);
 
       setActionSuccess("Escrow funds released! Creator notified.");
       setTimeout(() => setActionSuccess(null), 3000);
@@ -147,7 +178,7 @@ export default function ApprovalsPage() {
       setSubmissions(prev => 
         prev.map(s => s.id === selectedSub.id ? { ...s, status: "Rejected", feedback: revisionFeedback } : s)
       );
-      setSelectedSub((prev: any) => prev ? { ...prev, status: "Rejected", feedback: revisionFeedback } : null);
+      setSelectedSub(prev => prev ? { ...prev, status: "Rejected", feedback: revisionFeedback } : null);
 
       setShowRevisionModal(false);
       setRevisionFeedback("");
@@ -214,11 +245,11 @@ export default function ApprovalsPage() {
                     
                     <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100/50">
                       <div className="h-6 w-6 rounded-full bg-brand-red-100 flex items-center justify-center text-[10px] font-bold text-brand-red-700 shrink-0">
-                        {sub.creator?.full_name?.slice(0, 2).toUpperCase() || "CR"}
+                        {sub.creator.full_name.slice(0, 2).toUpperCase()}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[10px] font-bold text-slate-700 truncate">{sub.creator?.full_name}</p>
-                        <p className="text-[9px] text-slate-400 truncate">{sub.campaign?.title}</p>
+                        <p className="text-[10px] font-bold text-slate-700 truncate">{sub.creator.full_name}</p>
+                        <p className="text-[9px] text-slate-400 truncate">{sub.campaign.title}</p>
                       </div>
                     </div>
                   </button>
@@ -244,13 +275,13 @@ export default function ApprovalsPage() {
                 <div className="flex flex-col sm:flex-row justify-between gap-4 border-b border-slate-100 pb-5">
                   <div>
                     <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-brand-red-50 text-brand-red-600 rounded">
-                      {selectedSub.campaign?.title || "Campaign"}
+                      {selectedSub.campaign.title}
                     </span>
                     <h2 className="text-xl font-bold text-slate-900 mt-2">
-                      {selectedSub.caption || "UGC video submission"}
+                      {selectedSub.caption}
                     </h2>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      Submitted by <span className="font-semibold text-slate-600">{selectedSub.creator?.full_name}</span> • {selectedSub.creator?.location}
+                      Submitted by <span className="font-semibold text-slate-600">{selectedSub.creator.full_name}</span> • {selectedSub.creator.location}
                     </p>
                   </div>
 
@@ -262,7 +293,7 @@ export default function ApprovalsPage() {
                     <div>
                       <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Escrow Balance</p>
                       <p className="text-sm font-extrabold text-slate-800 mt-0.5">
-                        ₹{(selectedSub.campaign?.budget || 20000).toLocaleString()} INR
+                        ₹{selectedSub.campaign.budget.toLocaleString()} INR
                       </p>
                     </div>
                   </div>
@@ -290,7 +321,7 @@ export default function ApprovalsPage() {
                       {/* Mock Social Overlay */}
                       <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none text-white z-10 flex flex-col justify-end">
                         <p className="text-xs font-bold flex items-center gap-1">
-                          @{selectedSub.creator?.full_name?.toLowerCase().replace(/\s/g, "")}
+                          @{selectedSub.creator.full_name.toLowerCase().replace(/\s/g, "")}
                           <Sparkles className="h-3 w-3 text-brand-red-400 fill-brand-red-400" />
                         </p>
                         <p className="text-[9px] text-white/80 mt-1 line-clamp-2 leading-relaxed">
@@ -325,9 +356,9 @@ export default function ApprovalsPage() {
                   {/* Creator Notes & Actions (Col span 7) */}
                   <div className="md:col-span-7 space-y-6">
                     <div>
-                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Creator's Cover Note</h4>
+                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Creator&apos;s Cover Note</h4>
                       <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl italic text-xs text-slate-600 leading-relaxed">
-                        "{selectedSub.notes || "No submission notes provided."}"
+                        &quot;{selectedSub.notes || "No submission notes provided."}&quot;
                       </div>
                     </div>
 
@@ -335,7 +366,7 @@ export default function ApprovalsPage() {
                       <div>
                         <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Previous Revision Feedback</h4>
                         <div className="p-4 bg-red-50/50 border border-red-100/50 rounded-2xl text-xs text-brand-red-700 font-semibold leading-relaxed">
-                          "{selectedSub.feedback}"
+                          &quot;{selectedSub.feedback}&quot;
                         </div>
                       </div>
                     )}

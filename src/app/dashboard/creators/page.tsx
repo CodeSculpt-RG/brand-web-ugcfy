@@ -96,6 +96,7 @@ export default function CreatorsPage() {
   const [selectedPlatform, setSelectedPlatform] = useState<string>("All");
   const [isLoading, setIsLoading] = useState(true);
   const [inviteModalCreator, setInviteModalCreator] = useState<VettedCreator | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<string>("");
   const [inviteSuccess, setInviteSuccess] = useState(false);
@@ -121,7 +122,7 @@ export default function CreatorsPage() {
           dbQuery = dbQuery.or(`full_name.ilike.%${debouncedSearch}%,bio.ilike.%${debouncedSearch}%,location.ilike.%${debouncedSearch}%`);
         }
 
-        const { data: profiles, error } = await dbQuery;
+        const { data: profiles } = await dbQuery;
 
         let fetchedCreators: VettedCreator[] = [];
 
@@ -184,7 +185,7 @@ export default function CreatorsPage() {
 
         if (campaignData && campaignData.length > 0) {
           setCampaigns(campaignData);
-          setSelectedCampaign(campaignData[0].id);
+          setSelectedCampaign(campaignData[0]?.id || "");
         } else {
           setCampaigns([
             { id: "44444444-4444-4444-4444-444444444444", title: "Air Max Flyknit 2026 - Fit Test Campaign" }
@@ -209,7 +210,7 @@ export default function CreatorsPage() {
 
     try {
       // Create invitation entry in database
-      const { error } = await supabase
+      await supabase
         .from("notifications")
         .insert({
           user_id: inviteModalCreator.id,
@@ -340,11 +341,14 @@ export default function CreatorsPage() {
                   <div className="flex items-start gap-4">
                     <div className="h-14 w-14 rounded-2xl overflow-hidden bg-brand-red-100 shrink-0 border border-brand-red-200 group-hover:shadow-md transition">
                       {creator.avatar_url ? (
-                        <img 
-                          src={creator.avatar_url} 
-                          alt={creator.full_name} 
-                          className="h-full w-full object-cover"
-                        />
+                        <div className="h-full w-full">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img 
+                            src={creator.avatar_url} 
+                            alt={creator.full_name} 
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
                       ) : (
                         <div className="h-full w-full flex items-center justify-center text-brand-red-700 font-extrabold text-lg">
                           {creator.full_name.slice(0, 2).toUpperCase()}

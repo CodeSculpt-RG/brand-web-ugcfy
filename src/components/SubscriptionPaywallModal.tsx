@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, CheckCircle2, Zap, Lock, X } from "lucide-react";
+import { Sparkles, CheckCircle2, Zap, X } from "lucide-react";
 
 interface SubscriptionPaywallModalProps {
   isOpen: boolean;
@@ -67,14 +67,14 @@ export default function SubscriptionPaywallModal({
           </h2>
 
           <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
-            You've successfully created 3 Proof of Concepts! Upgrade to our Premium Subscription tier to launch unlimited campaigns, unlock direct creator contact, and access advanced analytics.
+            You&apos;ve successfully created 3 Proof of Concepts! Upgrade to our Premium Subscription tier to launch unlimited campaigns, unlock direct creator contact, and access advanced analytics.
           </p>
         </div>
 
         {/* Benefits List */}
         <div className="my-6 p-4.5 bg-zinc-900/40 border border-zinc-850 rounded-2xl space-y-3">
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block border-b border-zinc-800 pb-1.5">
-            What's included in Premium:
+            What&apos;s included in Premium:
           </span>
           <div className="space-y-2">
             {features.map((feature, i) => (
