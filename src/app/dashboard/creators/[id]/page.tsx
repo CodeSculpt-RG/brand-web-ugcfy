@@ -24,16 +24,7 @@ export default async function CreatorProfilePage({ params }: PageProps) {
   let creator = profile;
   
   if (!creator) {
-    const MOCK_CREATORS = [
-      {
-        id: "22222222-2222-2222-2222-222222222222",
-        full_name: "Priya Desai",
-        avatar_url: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6",
-        location: "New Delhi, Delhi",
-        bio: "Active UGC creator specializing in high-energy fitness tutorials, commercial athletic reviews, and organic lifestyle shorts. Focuses on high conversion rates.",
-      }
-    ];
-    creator = MOCK_CREATORS.find((c) => c.id === resolvedParams.id) || MOCK_CREATORS[0];
+    notFound();
   }
 
   if (!creator) {
@@ -45,12 +36,8 @@ export default async function CreatorProfilePage({ params }: PageProps) {
   const location = creator.location || "India";
   const bio = creator.bio || "Creating high quality UGC content for premium brands.";
 
-  const MOCK_PORTFOLIO = [
-    { id: 1, src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', views: '124K' },
-    { id: 2, src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', views: '89.2K' },
-    { id: 3, src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4', views: '450K' },
-    { id: 4, src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4', views: '1.2M' },
-  ];
+  // TODO: Fetch from portfolio_media table
+  const MOCK_PORTFOLIO: any[] = [];
 
   return (
     <div className="w-full max-w-6xl mx-auto pb-20 bg-transparent">

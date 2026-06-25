@@ -3,8 +3,16 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push("/dashboard");
+  };
+
   return (
     <div className="min-h-screen bg-white flex">
       {/* Left Form Side */}
@@ -33,26 +41,26 @@ export default function RegisterPage() {
             <div className="h-px bg-slate-200 flex-1"></div>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleRegister}>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-700">First Name</label>
-                <input type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="John" />
+                <input type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="John" />
               </div>
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-700">Last Name</label>
-                <input type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="Doe" />
+                <input type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="Doe" />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-slate-700">Work Email</label>
-              <input type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="john@company.com" />
+              <input type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="john@company.com" />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-slate-700">Password</label>
-              <input type="password" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="••••••••" />
+              <input type="password" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="••••••••" />
             </div>
 
             <button type="submit" className="w-full btn-primary flex items-center justify-center gap-2 group text-lg px-8 py-4 mt-8 shadow-xl shadow-red-500/20">

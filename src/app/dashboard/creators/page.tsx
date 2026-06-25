@@ -23,68 +23,7 @@ interface VettedCreator extends CreatorProfile {
   followers: string;
 }
 
-const MOCK_CREATORS = [
-  {
-    id: "22222222-2222-2222-2222-222222222222",
-    full_name: "Rahul Sharma",
-    avatar_url: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6",
-    phone: "+91 99999 88888",
-    location: "New Delhi, Delhi",
-    bio: "Active UGC creator specializing in high-energy fitness tutorials, commercial athletic reviews, and organic lifestyle shorts. Focuses on high conversion rates.",
-    niche: ["Fitness", "Lifestyle", "Athletic Footwear"],
-    instagram_url: "https://instagram.com/rahul_ugc_fit",
-    youtube_url: "https://youtube.com/c/RahulFitnessUGC",
-    tiktok_url: "https://tiktok.com/@rahul_ugc_shorts",
-    portfolio_links: [{ name: "Fitness Portfolio", url: "https://ugcfy.com/portfolios/rahul" }],
-    rate_card: { video_15s: 5000, video_30s: 8000, photoshoot: 3000 },
-    followers: "42.8K"
-  },
-  {
-    id: "c2-uuid-mock",
-    full_name: "Pooja Mehta",
-    avatar_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-    phone: "+91 98888 77777",
-    location: "Mumbai, Maharashtra",
-    bio: "Fashion and beauty creator capturing aesthetic lifestyle routines. Expert in product placements, unboxings, and high-fashion transitions.",
-    niche: ["Fashion", "Beauty", "Lifestyle"],
-    instagram_url: "https://instagram.com/pooja_style_ugc",
-    youtube_url: null,
-    tiktok_url: null,
-    portfolio_links: [],
-    rate_card: { video_15s: 4000, video_30s: 6500, photoshoot: 2500 },
-    followers: "85.2K"
-  },
-  {
-    id: "c3-uuid-mock",
-    full_name: "Aman Sen",
-    avatar_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
-    phone: "+91 97777 66666",
-    location: "Bengaluru, Karnataka",
-    bio: "Tech gear and desk setup reviewer. Creates cinematic tech aesthetic content for brands looking to showcase gadgets, electronics, and accessories.",
-    niche: ["Tech", "Productivity"],
-    instagram_url: "https://instagram.com/aman_tech_desk",
-    youtube_url: "https://youtube.com/c/AmanTechUGC",
-    tiktok_url: null,
-    portfolio_links: [],
-    rate_card: { video_15s: 7000, video_30s: 11000 },
-    followers: "120K"
-  },
-  {
-    id: "c4-uuid-mock",
-    full_name: "Sneha Rao",
-    avatar_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
-    phone: "+91 96666 55555",
-    location: "Hyderabad, Telangana",
-    bio: "Food blogger and culinary aesthetic designer. Crafting gourmet kitchen reviews, recipe shorts, and clean organic product testing.",
-    niche: ["Food", "Lifestyle", "Beauty"],
-    instagram_url: "https://instagram.com/sneha_cooks_ugc",
-    youtube_url: null,
-    tiktok_url: null,
-    portfolio_links: [],
-    rate_card: { video_15s: 3000, video_30s: 5000 },
-    followers: "18.3K"
-  }
-];
+const MOCK_CREATORS: any[] = [];
 
 export default function CreatorsPage() {
   const supabase = createClient();
@@ -135,24 +74,8 @@ export default function CreatorsPage() {
           }));
         }
 
-        // Fallback to high quality mock vetted creators if DB is empty
-        if (fetchedCreators.length === 0) {
-          fetchedCreators = MOCK_CREATORS as unknown as VettedCreator[];
-        }
-
         // Apply remaining filters locally (Niche, Price, Platform)
-        // This is done locally to easily support filtering the fallback mock data too
         const fullyFiltered = fetchedCreators.filter((creator) => {
-          // If we are using mock data, apply the debouncedSearch locally too
-          if (profiles?.length === 0 && debouncedSearch) {
-             const query = debouncedSearch.toLowerCase();
-             const matchesLocalSearch = 
-               creator.full_name?.toLowerCase().includes(query) ||
-               creator.location?.toLowerCase().includes(query) ||
-               creator.bio?.toLowerCase().includes(query) ||
-               creator.niche?.some(n => n.toLowerCase().includes(query));
-             if (!matchesLocalSearch) return false;
-          }
 
           // Niche filter
           if (selectedNiche !== "All" && !creator.niche?.includes(selectedNiche)) return false;
@@ -187,10 +110,8 @@ export default function CreatorsPage() {
           setCampaigns(campaignData);
           setSelectedCampaign(campaignData[0]?.id || "");
         } else {
-          setCampaigns([
-            { id: "44444444-4444-4444-4444-444444444444", title: "Air Max Flyknit 2026 - Fit Test Campaign" }
-          ]);
-          setSelectedCampaign("44444444-4444-4444-4444-444444444444");
+          setCampaigns([]);
+          setSelectedCampaign("");
         }
 
       } catch (err) {

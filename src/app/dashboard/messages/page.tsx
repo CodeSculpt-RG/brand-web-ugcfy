@@ -62,71 +62,7 @@ interface AttachmentFile {
   size?: string;
 }
 
-const initialMockGroupsRaw = [
-  {
-    id: "GRP-CMP-101",
-    campaign_id: "44444444-4444-4444-4444-444444444444",
-    title: "Air Max Fit Test - Reel Content",
-    is_archived: false,
-    last_message: "Anjali Sen: Please review the lighting in segment 2.",
-    unread: true,
-    avatar_letters: "AM",
-    budget: 25000,
-    escrow_deployed: 25000,
-    escrow_released: 12500,
-    creators_count: 2,
-    poc_name: "Anjali Sen",
-    poc_id: "BN01-01",
-    deadline: "July 6, 2026",
-    status: "Active",
-    creators: [
-      { name: "Rahul Sharma", tag: "CR02-12", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb" },
-      { name: "Pooja Sen", tag: "CR02-15", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9" }
-    ]
-  },
-  {
-    id: "GRP-CMP-102",
-    campaign_id: "55555555-5555-5555-5555-555555555555",
-    title: "Dri-FIT Launch Promo",
-    is_archived: false,
-    last_message: "Rahul Sharma: Shortlist accepted, ready for brief details.",
-    unread: false,
-    avatar_letters: "DF",
-    budget: 12000,
-    escrow_deployed: 12000,
-    escrow_released: 0,
-    creators_count: 1,
-    poc_name: "Vikram Malhotra",
-    poc_id: "BN01-02",
-    deadline: "June 21, 2026",
-    status: "Active",
-    creators: [
-      { name: "Rahul Sharma", tag: "CR02-12", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb" }
-    ]
-  },
-  {
-    id: "GRP-CMP-099",
-    campaign_id: "66666666-6666-6666-6666-666666666666",
-    title: "React Pegasus Cushion Review",
-    is_archived: true,
-    last_message: "System: Campaign completed. Group archived.",
-    unread: false,
-    avatar_letters: "RP",
-    budget: 30000,
-    escrow_deployed: 30000,
-    escrow_released: 30000,
-    creators_count: 3,
-    poc_name: "Anjali Sen",
-    poc_id: "BN01-01",
-    deadline: "May 15, 2026",
-    status: "Completed",
-    creators: [
-      { name: "Rahul Sharma", tag: "CR02-12", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb" },
-      { name: "Pooja Sen", tag: "CR02-15", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9" },
-      { name: "Vikram Malhotra", tag: "CR02-09", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" }
-    ]
-  }
-];
+const initialMockGroupsRaw: any[] = [];
 
 // Enforce strict Zod parsing to guarantee properties exist without optional chaining
 const initialMockGroups = z.array(MockGroupSchema).parse(initialMockGroupsRaw);
@@ -135,7 +71,7 @@ export default function MessagesPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const [groups, setGroups] = useState<MockGroup[]>(initialMockGroups);
-  const [selectedGroup, setSelectedGroup] = useState<MockGroup | null>(initialMockGroups[0] || null);
+  const [selectedGroup, setSelectedGroup] = useState<MockGroup | null>(null);
   const [messages, setMessages] = useState<GroupMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [showArchived, setShowArchived] = useState(false);

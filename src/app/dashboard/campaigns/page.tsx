@@ -35,50 +35,7 @@ interface Campaign {
   pendingApprovals: number // Critical for the UI badge
 }
 
-const MOCK_CAMPAIGNS: Campaign[] = [
-  {
-    id: '1',
-    title: 'Summer Collection Launch',
-    status: 'Active',
-    budget: 15000,
-    platform: 'Instagram',
-    deliverables: '3 Reels, 5 Stories',
-    startDate: '2026-06-15',
-    endDate: '2026-07-15',
-    targetAudience: 'Gen Z, Millennials',
-    brandBrief: 'Highlight our new summer styles in everyday urban settings.',
-    moodboardUrl: 'https://example.com/moodboard1',
-    pendingApprovals: 2
-  },
-  {
-    id: '2',
-    title: 'Back to School Promo',
-    status: 'Draft',
-    budget: 8000,
-    platform: 'TikTok',
-    deliverables: '2 Dedicated Videos',
-    startDate: '2026-08-01',
-    endDate: '2026-08-31',
-    targetAudience: 'Students, High Schoolers',
-    brandBrief: 'Creative, energetic transitions using backpacks and notebooks.',
-    moodboardUrl: '',
-    pendingApprovals: 0
-  },
-  {
-    id: '3',
-    title: 'Q1 Brand Awareness',
-    status: 'Completed',
-    budget: 25000,
-    platform: 'YouTube',
-    deliverables: '1 Long-form Integration',
-    startDate: '2026-01-01',
-    endDate: '2026-03-31',
-    targetAudience: 'Broad Consumer Base',
-    brandBrief: 'A deep dive into our sustainability mission and product quality.',
-    moodboardUrl: 'https://example.com/moodboard3',
-    pendingApprovals: 0
-  }
-]
+const MOCK_CAMPAIGNS: Campaign[] = []
 
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>(MOCK_CAMPAIGNS)
