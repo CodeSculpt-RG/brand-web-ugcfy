@@ -1,19 +1,40 @@
-'use client';
+import type { Metadata } from 'next';
 
-import dynamic from 'next/dynamic';
+export const metadata: Metadata = {
+  title: "UGC FY — AI-Powered Influencer Marketing Platform",
+  description:
+    "UGC FY helps brands discover creators, manage UGC campaigns, review content, track performance, and scale influencer marketing with AI-powered workflows.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
-// Dynamically import the landing page and permanently disable SSR
-// This completely isolates the app from browser extension DOM mutations
-const ClientLandingPage = dynamic(() => import('@/components/landing/LandingPage'), {
-  ssr: false,
-  loading: () => (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#FCF6F6]">
-      {/* Responsive, centered loading spinner matching the premium brand colors */}
-      <div className="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  ),
-});
+import ClientPage from './ClientPage';
+import { JsonLd } from '@/components/seo/JsonLd';
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "UGC FY",
+  url: "https://www.ugcfy.com",
+  logo: "https://www.ugcfy.com/android-chrome-512x512.png",
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "UGC FY",
+  url: "https://www.ugcfy.com",
+  description:
+    "UGC FY helps brands discover creators, manage UGC campaigns, review content, track performance, and scale influencer marketing with AI-powered workflows.",
+};
 
 export default function Page() {
-  return <ClientLandingPage />;
+  return (
+    <>
+      <JsonLd data={organizationJsonLd} />
+      <JsonLd data={websiteJsonLd} />
+      <ClientPage />
+    </>
+  );
 }

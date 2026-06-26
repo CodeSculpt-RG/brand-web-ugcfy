@@ -1,4 +1,9 @@
+import type { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+  title: "AI Integration — UGC FY Creator Marketing Intelligence",
+};
 import Link from 'next/link';
 import { Check, Sparkles, Target, Zap, Bot, ShieldCheck, LineChart } from 'lucide-react';
 import Navbar from '@/components/Navbar';
