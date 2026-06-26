@@ -1,43 +1,66 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { verifyBrand } from "@/lib/auth/verifyBrand";
 import { createClient } from "@/lib/supabase/server";
+import { brandProfileSchema } from "@/lib/validation/brandProfile";
+import { ZodError } from "zod";
+import { jsonError, jsonSuccess } from "@/lib/api-response";
 
 export async function PATCH(req: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const brandSession = await verifyBrand();
+    if (!brandSession.ok) {
+      return jsonError("UNAUTHENTICATED", brandSession.message || "Please login to continue.", 401);
+    }
+    if (!brandSession.brand) {
+      return jsonError("BRAND_PROFILE_NOT_FOUND", "Brand profile not found.", 404);
     }
 
     const body = await req.json();
+    const validatedData = brandProfileSchema.parse(body);
 
-    const { companyName, businessType, websiteUrl, contactName, contactPhone } = body;
-
-    if (!companyName || !businessType) {
-      return NextResponse.json({ error: "Company name and business type are required" }, { status: 400 });
-    }
+    const supabase = await createClient();
 
     const { error } = await supabase
       .from("brand_profiles")
       .update({
-        company_name: companyName,
-        business_type: businessType,
-        website: websiteUrl || null,
-        contact_name: contactName || null,
-        contact_phone: contactPhone || null,
+        brand_name: validatedData.brand_name,
+        company_name: validatedData.company_name || null,
+        business_type: validatedData.business_type || null,
+        website: validatedData.website || null,
+        industry: validatedData.industry || null,
+        contact_phone: validatedData.contact_phone || null,
+        business_description: validatedData.business_description || null,
+        gst_number: validatedData.gst_number || null,
+        logo_url: validatedData.logo_url || null,
         onboarding_completed_at: new Date().toISOString()
       })
-      .eq("id", user.id);
+      .eq("id", brandSession.brand.id);
 
     if (error) {
-      console.error("Update profile error:", error);
-      return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
+      console.error("[supabase-form-error]", {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      });
+      return jsonError(
+        "SUPABASE_UPDATE_FAILED",
+        error.message || "Failed to update profile",
+        500,
+        {
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        }
+      );
     }
 
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error("Profile PATCH error:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return jsonSuccess({ updated: true });
+  } catch (err: unknown) {
+    console.error("[form-api] unexpected error", err);
+    if (err instanceof ZodError) {
+      return jsonError("VALIDATION_ERROR", err.issues[0]?.message || "Validation failed", 400);
+    }
+    return jsonError("INTERNAL_ERROR", "Internal Server Error", 500);
   }
 }

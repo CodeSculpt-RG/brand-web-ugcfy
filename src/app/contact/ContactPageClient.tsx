@@ -12,14 +12,36 @@ export default function ContactUs() {
     message: ""
   });
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
-    setTimeout(() => {
+    setErrorMessage(null);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, form_type: "contact" }),
+      });
+
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await response.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
+
+      const result = await response.json();
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error?.message || result.error || "Unable to submit this form.");
+      }
       setStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
-    }, 1000);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(error instanceof Error ? error.message : "Unable to submit this form.");
+      setStatus("error");
+    }
   };
 
   return (
@@ -156,6 +178,13 @@ export default function ContactUs() {
                 className="w-full bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs text-white focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-500/10 outline-none transition font-semibold resize-none"
               />
             </div>
+
+            {errorMessage && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-xs font-semibold flex items-start gap-2">
+                <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></div>
+                <p>{errorMessage}</p>
+              </div>
+            )}
 
             <button
               type="submit"

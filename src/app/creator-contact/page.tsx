@@ -8,10 +8,54 @@ import Footer from "@/components/Footer";
 
 export default function CreatorContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    subject: "",
+    email: "",
+    name: "",
+    phone: "",
+    profileLink: "",
+    message: ""
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setTimeout(() => setIsSubmitted(true), 1000);
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    try {
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: `Profile: ${formData.profileLink}\nMessage: ${formData.message}`,
+        form_type: "creator_contact"
+      };
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await response.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
+
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error?.message || result.error || "Unable to submit this form.");
+      }
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(error instanceof Error ? error.message : "Unable to submit this form.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -106,7 +150,7 @@ export default function CreatorContactPage() {
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">Select Category*</label>
-                    <select required defaultValue="" className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3.5 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium appearance-none">
+                    <select required value={formData.subject} onChange={(e) => setFormData({...formData, subject: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3.5 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium appearance-none">
                       <option value="" disabled>Choose a category...</option>
                       <option value="technical">Technical Issue</option>
                       <option value="billing">Payment & Billing</option>
@@ -117,17 +161,17 @@ export default function CreatorContactPage() {
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">Email Id*</label>
-                    <input required type="email" className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="creator@example.com" />
+                    <input required type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="creator@example.com" />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">Your Name*</label>
-                      <input required type="text" className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="Alex Johnson" />
+                      <input required type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="Alex Johnson" />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">Mobile No*</label>
-                      <input required type="tel" className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="+1 (555) 000-0000" />
+                      <input required type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="+1 (555) 000-0000" />
                     </div>
                   </div>
 
@@ -137,20 +181,28 @@ export default function CreatorContactPage() {
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <Instagram className="h-4 w-4 text-gray-400" />
                       </div>
-                      <input required type="url" className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="instagram.com/username" />
+                      <input required type="url" value={formData.profileLink} onChange={(e) => setFormData({...formData, profileLink: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="instagram.com/username" />
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">Message*</label>
-                    <textarea required rows={4} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all resize-none font-medium" placeholder="Enter your message here or in case you are facing any issue, please elaborate..."></textarea>
+                    <textarea required rows={4} value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all resize-none font-medium" placeholder="Enter your message here or in case you are facing any issue, please elaborate..."></textarea>
                   </div>
+
+                  {errorMessage && (
+                    <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-[14px] font-medium flex items-start gap-2">
+                      <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-red-600 shrink-0"></div>
+                      <p>{errorMessage}</p>
+                    </div>
+                  )}
 
                   <button 
                     type="submit" 
-                    className="w-full bg-[#E11D48] hover:bg-[#BE123C] text-white font-bold text-[15px] py-4 rounded-xl mt-2 flex items-center justify-center gap-2 transition-all shadow-[0_10px_20px_-10px_rgba(225,29,72,0.5)] transform hover:-translate-y-0.5"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#E11D48] hover:bg-[#BE123C] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold text-[15px] py-4 rounded-xl mt-2 flex items-center justify-center gap-2 transition-all shadow-[0_10px_20px_-10px_rgba(225,29,72,0.5)] transform hover:-translate-y-0.5"
                   >
-                    Submit your Query
+                    {isSubmitting ? "Submitting..." : "Submit your Query"}
                   </button>
                 </form>
               )}

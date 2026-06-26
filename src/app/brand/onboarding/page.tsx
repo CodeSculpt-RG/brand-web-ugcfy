@@ -82,15 +82,31 @@ export default function BrandOnboardingPage() {
     setErrorMsg(null);
     
     try {
+      const payload = {
+        brand_name: data.companyName, // using companyName as brand_name temporarily or required field
+        company_name: data.companyName,
+        business_type: data.businessType,
+        website: data.websiteUrl,
+        contact_name: data.contactName,
+        contact_phone: data.contactPhone
+      };
+      
       const res = await fetch("/api/brand/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        credentials: "include",
+        body: JSON.stringify(payload)
       });
       
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to update profile");
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
+
+      const result = await res.json();
+      if (!res.ok || !result.ok) {
+        throw new Error(result.error?.message || "Failed to update profile");
       }
       
       router.push("/brand/kyc");

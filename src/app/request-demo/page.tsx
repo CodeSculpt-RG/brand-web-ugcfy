@@ -9,12 +9,53 @@ import Footer from "@/components/Footer";
 
 export default function RequestDemoPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    companyName: "",
+    phone: ""
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setTimeout(() => {
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    try {
+      const payload = {
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        phone: formData.phone,
+        company_name: formData.companyName,
+        subject: "Demo Request",
+        message: "User requested a demo.",
+        form_type: "request_demo"
+      };
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await response.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
+
+      const result = await response.json();
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error?.message || result.error || "Unable to submit this form.");
+      }
       setIsSubmitted(true);
-    }, 1000);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(error instanceof Error ? error.message : "Unable to submit this form.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -127,34 +168,42 @@ export default function RequestDemoPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5 group">
                       <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">First Name</label>
-                      <input required type="text" className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="John" />
+                      <input required type="text" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="John" />
                     </div>
                     <div className="flex flex-col gap-1.5 group">
                       <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Last Name</label>
-                      <input required type="text" className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="Doe" />
+                      <input required type="text" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="Doe" />
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-1.5 group">
                     <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Work Email</label>
-                    <input required type="email" className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="john@acmecorp.com" />
+                    <input required type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="john@acmecorp.com" />
                   </div>
 
                   <div className="flex flex-col gap-1.5 group">
                     <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Company Name</label>
-                    <input required type="text" className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="Acme Corp" />
+                    <input required type="text" value={formData.companyName} onChange={(e) => setFormData({...formData, companyName: e.target.value})} className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="Acme Corp" />
                   </div>
 
                   <div className="flex flex-col gap-1.5 group">
                     <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Phone Number</label>
-                    <input required type="tel" className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="+1 (555) 000-0000" />
+                    <input required type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:bg-white/10 focus:outline-none focus:border-[#E11D48]/50 focus:ring-1 focus:ring-[#E11D48]/50 transition-all text-[15px]" placeholder="+1 (555) 000-0000" />
                   </div>
+
+                  {errorMessage && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-[14px] font-medium flex items-start gap-2">
+                      <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></div>
+                      <p>{errorMessage}</p>
+                    </div>
+                  )}
 
                   <button 
                     type="submit" 
-                    className="w-full bg-white hover:bg-gray-100 text-black font-bold text-[15px] py-4 rounded-xl mt-4 flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                    disabled={isSubmitting}
+                    className="w-full bg-white hover:bg-gray-100 disabled:bg-gray-400 disabled:cursor-not-allowed text-black font-bold text-[15px] py-4 rounded-xl mt-4 flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                   >
-                    Schedule Demo <Send className="w-4 h-4" />
+                    {isSubmitting ? "Submitting..." : "Schedule Demo"} <Send className="w-4 h-4" />
                   </button>
                   <p className="text-[11px] text-center text-gray-500 mt-2 font-medium">
                     By submitting, you agree to our <a href="#" className="underline hover:text-white transition-colors">Privacy Policy</a>.

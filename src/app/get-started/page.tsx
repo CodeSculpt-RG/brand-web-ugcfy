@@ -9,10 +9,52 @@ import Footer from "@/components/Footer";
 
 export default function GetStartedPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    userType: "Agency",
+    firstName: "",
+    lastName: "",
+    email: "",
+    spend: "",
+    message: ""
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setTimeout(() => setIsSubmitted(true), 1000);
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    try {
+      const payload = {
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        subject: "Get Started",
+        message: `Type: ${formData.userType}\nSpend: ${formData.spend}\nMessage: ${formData.message}`,
+        form_type: "get_started"
+      };
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await response.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
+
+      const result = await response.json();
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error?.message || result.error || "Unable to submit this form.");
+      }
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(error instanceof Error ? error.message : "Unable to submit this form.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -130,7 +172,7 @@ export default function GetStartedPage() {
                     <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">What best describes you?*</label>
                     <div className="grid grid-cols-2 gap-3">
                       <label className="relative flex flex-col gap-2 p-3.5 rounded-xl border border-gray-200 cursor-pointer transition-all hover:border-[#E11D48]/40 hover:bg-red-50/20 group has-[:checked]:border-[#E11D48] has-[:checked]:bg-red-50/10">
-                        <input type="radio" name="userType" defaultChecked className="sr-only" />
+                        <input type="radio" name="userType" value="Agency" checked={formData.userType === "Agency"} onChange={(e) => setFormData({...formData, userType: e.target.value})} className="sr-only" />
                         <div className="flex items-center justify-between w-full">
                           <span className="text-[14px] font-bold text-gray-700 group-has-[:checked]:text-[#E11D48] transition-colors">Agency</span>
                           <div className="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center group-has-[:checked]:border-[#E11D48] transition-colors">
@@ -139,7 +181,7 @@ export default function GetStartedPage() {
                         </div>
                       </label>
                       <label className="relative flex flex-col gap-2 p-3.5 rounded-xl border border-gray-200 cursor-pointer transition-all hover:border-[#E11D48]/40 hover:bg-red-50/20 group has-[:checked]:border-[#E11D48] has-[:checked]:bg-red-50/10">
-                        <input type="radio" name="userType" className="sr-only" />
+                        <input type="radio" name="userType" value="Brand" checked={formData.userType === "Brand"} onChange={(e) => setFormData({...formData, userType: e.target.value})} className="sr-only" />
                         <div className="flex items-center justify-between w-full">
                           <span className="text-[14px] font-bold text-gray-700 group-has-[:checked]:text-[#E11D48] transition-colors">Brand</span>
                           <div className="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center group-has-[:checked]:border-[#E11D48] transition-colors">
@@ -153,17 +195,17 @@ export default function GetStartedPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">First name*</label>
-                      <input required type="text" className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="John" />
+                      <input required type="text" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="John" />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">Last name*</label>
-                      <input required type="text" className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="Doe" />
+                      <input required type="text" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="Doe" />
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">Work email*</label>
-                    <input required type="email" className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="john@company.com" />
+                    <input required type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all font-medium" placeholder="john@company.com" />
                   </div>
 
                   <div className="flex flex-col gap-1.5">
@@ -171,7 +213,7 @@ export default function GetStartedPage() {
                     <div className="grid grid-cols-2 gap-2">
                       {["< INR 50K", "50K - 2 Lacs", "2L - 5 Lacs", "> 5 Lacs"].map((opt) => (
                         <label key={opt} className="relative flex items-center gap-2 p-2.5 rounded-lg border border-gray-200 cursor-pointer transition-all hover:border-[#E11D48]/40 hover:bg-red-50/20 group has-[:checked]:border-[#E11D48] has-[:checked]:bg-red-50/10">
-                          <input type="radio" name="spend" value={opt} className="sr-only" />
+                          <input type="radio" name="spend" value={opt} checked={formData.spend === opt} onChange={(e) => setFormData({...formData, spend: e.target.value})} className="sr-only" />
                           <div className="w-3.5 h-3.5 shrink-0 rounded-full border-2 border-gray-300 flex items-center justify-center group-has-[:checked]:border-[#E11D48] transition-colors">
                             <div className="w-1.5 h-1.5 rounded-full bg-[#E11D48] scale-0 group-has-[:checked]:scale-100 transition-transform duration-200"></div>
                           </div>
@@ -183,14 +225,22 @@ export default function GetStartedPage() {
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">Message*</label>
-                    <textarea required rows={3} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all resize-none font-medium" placeholder="Tell us about your campaign goals..."></textarea>
+                    <textarea required rows={3} value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all resize-none font-medium" placeholder="Tell us about your campaign goals..."></textarea>
                   </div>
+
+                  {errorMessage && (
+                    <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-[14px] font-medium flex items-start gap-2">
+                      <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-red-600 shrink-0"></div>
+                      <p>{errorMessage}</p>
+                    </div>
+                  )}
 
                   <button
                     type="submit"
-                    className="w-full bg-[#E11D48] hover:bg-[#BE123C] text-white font-bold text-[15px] py-4 rounded-xl mt-2 flex items-center justify-center gap-2 transition-all shadow-[0_10px_20px_-10px_rgba(225,29,72,0.5)] transform hover:-translate-y-0.5"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#E11D48] hover:bg-[#BE123C] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold text-[15px] py-4 rounded-xl mt-2 flex items-center justify-center gap-2 transition-all shadow-[0_10px_20px_-10px_rgba(225,29,72,0.5)] transform hover:-translate-y-0.5"
                   >
-                    Submit Request
+                    {isSubmitting ? "Submitting..." : "Submit Request"}
                   </button>
                 </form>
               )}

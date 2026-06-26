@@ -11,6 +11,7 @@ interface FreeTrialModalProps {
 export default function FreeTrialModal({ isOpen, onClose }: FreeTrialModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -23,19 +24,54 @@ export default function FreeTrialModal({ isOpen, onClose }: FreeTrialModalProps)
     return () => { document.body.style.overflow = "unset"; };
   }, [isOpen]);
 
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    website: ""
+  });
+
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMessage(null);
+    try {
+      const payload = {
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        company_name: formData.website,
+        subject: "Free Trial Request",
+        message: `Requested Free Trial for: ${formData.website}`,
+        form_type: "free_trial"
+      };
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await response.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
+
+      const result = await response.json();
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error?.message || result.error || "Unable to submit this form.");
+      }
       setIsSuccess(true);
       setTimeout(() => {
         onClose();
       }, 2500);
-    }, 1500);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(error instanceof Error ? error.message : "Unable to submit this form.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -77,23 +113,30 @@ export default function FreeTrialModal({ isOpen, onClose }: FreeTrialModalProps)
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-sm font-semibold text-slate-700">First Name</label>
-                  <input required type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="John" />
+                  <input required type="text" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="John" />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-sm font-semibold text-slate-700">Last Name</label>
-                  <input required type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="Doe" />
+                  <input required type="text" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="Doe" />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-700">Work Email</label>
-                <input required type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="john@company.com" />
+                <input required type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="john@company.com" />
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-700">Company Website</label>
-                <input required type="url" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="https://company.com" />
+                <input required type="url" value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="https://company.com" />
               </div>
+
+              {errorMessage && (
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm font-medium flex items-start gap-2">
+                  <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-red-600 shrink-0"></div>
+                  <p>{errorMessage}</p>
+                </div>
+              )}
 
               <div className="pt-4">
                 <button 

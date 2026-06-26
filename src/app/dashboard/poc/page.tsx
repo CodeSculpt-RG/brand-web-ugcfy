@@ -39,7 +39,7 @@ export default function PocPage() {
   const [subscriptionStatus, setSubscriptionStatus] = useState("free");
   const [isLoading, setIsLoading] = useState(true);
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [brandId, setBrandId] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Load POCs
   const loadPocs = async () => {
@@ -47,7 +47,6 @@ export default function PocPage() {
       setIsLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       const activeBrandId = user?.id || "11111111-1111-1111-1111-111111111111"; // Fallback to Nike in demo
-      setBrandId(activeBrandId);
       // Fetch current subscription status
       const { data: brandProfile } = await supabase
         .from("brand_profiles")
@@ -131,61 +130,76 @@ export default function PocPage() {
     }
   });
 
-  // Create POC Submission with Tier limits
   const onSubmit = async (data: PocFormValues) => {
-    // BUSINESS LOGIC: Free Tier Limit of 3 POCs
     if (subscriptionStatus === "free" && pocs.length >= 3) {
       window.dispatchEvent(new CustomEvent("open-subscription-paywall"));
       return;
     }
 
-    const newPoc: Omit<BrandPoc, "id" | "created_at" | "updated_at"> = {
-      brand_id: brandId || "11111111-1111-1111-1111-111111111111",
-      name: data.name,
-      email: data.email,
-      role: data.role,
-      photo_url: data.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=F3F4F6&color=EF4444`,
-      status: "Pending Admin Approval",
-    };
-
     try {
-      const { data: insertedData, error } = await supabase
-        .from("brand_poc")
-        .insert([newPoc])
-        .select();
+      const payload = {
+        full_name: data.name,
+        email: data.email,
+        designation: data.role,
+        is_primary: false,
+        phone: ""
+      };
 
-      if (error) {
-        // Fallback to local simulation
-        console.warn("DB Insert Failed, falling back to local simulation:", error.message);
-        const simulated: BrandPoc = {
-          ...newPoc,
-          // eslint-disable-next-line react-hooks/purity
-          id: "temp-" + Date.now().toString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
-        setPocs(prev => [simulated, ...prev]);
-        window.dispatchEvent(new CustomEvent("increment-poc-count"));
-      } else if (insertedData && insertedData[0]) {
-        setPocs(prev => [insertedData[0], ...prev]);
-        window.dispatchEvent(new CustomEvent("increment-poc-count"));
+      const res = await fetch("/api/brand/poc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      });
+      
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
       }
 
+      const result = await res.json();
+
+      if (!res.ok || !result.ok) {
+        throw new Error(result.error?.message || "Failed to add POC");
+      }
+
+      // We added successfully, reload POCs
+      await loadPocs();
       setIsAddOpen(false);
       reset();
-
+      setErrorMsg(null);
+      window.dispatchEvent(new CustomEvent("increment-poc-count"));
     } catch (err) {
-      console.error("Failed to add POC:", getErrorMessage(err));
+      console.error("Failed to add POC:", err);
+      setErrorMsg(err instanceof Error ? err.message : "Failed to add POC");
     }
   };
 
   // Delete POC handler
   const handleDelete = async (id: string) => {
     try {
+      const res = await fetch(`/api/brand/poc?id=${id}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+      
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
+
+      const result = await res.json();
+      if (!res.ok || !result.ok) {
+        throw new Error(result.error?.message || "Failed to delete POC");
+      }
       setPocs(prev => prev.filter(p => p.id !== id));
-      await supabase.from("brand_poc").delete().eq("id", id);
+      setErrorMsg(null);
+      window.dispatchEvent(new CustomEvent("decrement-poc-count"));
     } catch (err) {
-      console.error(getErrorMessage(err));
+      console.error(err);
+      setErrorMsg(err instanceof Error ? err.message : "Failed to delete POC");
     }
   };
 
@@ -237,6 +251,13 @@ export default function PocPage() {
           </button>
         </div>
       </div>
+
+      {errorMsg && (
+        <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3 text-red-700 text-xs font-semibold">
+          <AlertTriangle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
+          <span>{errorMsg}</span>
+        </div>
+      )}
 
       {/* Overview stats cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">

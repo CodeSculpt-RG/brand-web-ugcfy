@@ -41,6 +41,7 @@ export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>(MOCK_CAMPAIGNS)
   const [isSlideOverOpen, setIsSlideOverOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState<'All' | 'Active' | 'Draft' | 'Completed'>('All')
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
   
   // Form State
   const [formData, setFormData] = useState({
@@ -60,39 +61,84 @@ export default function CampaignsPage() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleCreateCampaign = (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    const newCampaign: Campaign = {
-      id: Math.random().toString(36).substring(7),
-      title: formData.title || 'Untitled Campaign',
-      status: 'Draft',
-      budget: parseFloat(formData.budget) || 0,
-      platform: formData.platform,
-      deliverables: formData.deliverables || 'TBD',
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      targetAudience: formData.targetAudience,
-      brandBrief: formData.brandBrief,
-      moodboardUrl: formData.moodboardUrl,
-      pendingApprovals: 0
-    }
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-    setCampaigns([newCampaign, ...campaigns])
-    setIsSlideOverOpen(false)
-    
-    // Reset Form
-    setFormData({
-      title: '',
-      platform: 'Instagram',
-      budget: '',
-      deliverables: '',
-      startDate: '',
-      endDate: '',
-      targetAudience: '',
-      brandBrief: '',
-      moodboardUrl: ''
-    })
+  const handleCreateCampaign = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setErrorMsg(null)
+    try {
+      const payload = {
+        title: formData.title,
+        platform: formData.platform,
+        platforms: [formData.platform],
+        budget: parseFloat(formData.budget) || 0,
+        currency: 'USD',
+        deliverables: formData.deliverables,
+        start_date: formData.startDate || undefined,
+        end_date: formData.endDate || undefined,
+        target_audience: formData.targetAudience,
+        description: formData.brandBrief,
+        requirements: { 
+          moodboard_url: formData.moodboardUrl, 
+          target_audience: formData.targetAudience 
+        }
+      }
+
+      const res = await fetch("/api/brand/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      })
+
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
+
+      const result = await res.json()
+      if (!res.ok || !result.ok) {
+        throw new Error(result.error?.message || "Failed to create campaign")
+      }
+
+      const newCampaign: Campaign = {
+        id: result.data.id,
+        title: result.data.title,
+        status: 'Draft',
+        budget: result.data.budget,
+        platform: formData.platform,
+        deliverables: result.data.deliverables,
+        startDate: result.data.start_date || '',
+        endDate: result.data.end_date || '',
+        targetAudience: formData.targetAudience,
+        brandBrief: formData.brandBrief,
+        moodboardUrl: formData.moodboardUrl,
+        pendingApprovals: 0
+      }
+
+      setCampaigns([newCampaign, ...campaigns])
+      setIsSlideOverOpen(false)
+      
+      // Reset Form
+      setFormData({
+        title: '',
+        platform: 'Instagram',
+        budget: '',
+        deliverables: '',
+        startDate: '',
+        endDate: '',
+        targetAudience: '',
+        brandBrief: '',
+        moodboardUrl: ''
+      })
+    } catch (err) {
+      console.error(err)
+      setErrorMsg(err instanceof Error ? err.message : "Failed to create campaign")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const activeCount = campaigns.filter(c => c.status === 'Active').length
@@ -301,6 +347,12 @@ export default function CampaignsPage() {
 
                 {/* Form Content */}
                 <div className="flex-1 overflow-y-auto px-8 py-6">
+                  {errorMsg && (
+                    <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3 text-red-700 text-xs font-semibold">
+                      <span className="mt-0.5">⚠️</span>
+                      <span>{errorMsg}</span>
+                    </div>
+                  )}
                   <form id="create-campaign-form" onSubmit={handleCreateCampaign} className="space-y-8">
                     
                     {/* Basic Info Section */}
@@ -451,10 +503,11 @@ export default function CampaignsPage() {
                   <button 
                     type="submit"
                     form="create-campaign-form"
-                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transition-all flex items-center gap-2"
+                    disabled={isSubmitting}
+                    className="bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transition-all flex items-center gap-2"
                   >
                     <Megaphone className="w-5 h-5" />
-                    Launch Campaign
+                    {isSubmitting ? "Launching..." : "Launch Campaign"}
                   </button>
                 </div>
 

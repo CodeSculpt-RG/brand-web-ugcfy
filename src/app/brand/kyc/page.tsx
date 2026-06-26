@@ -61,19 +61,26 @@ export default function BrandKYCPage() {
       const res = await fetch("/api/brand/kyc", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
-          documentType: "business_registration",
+          document_type: "business_registration",
           bucket: "brand-kyc-documents",
           path,
-          originalFilename: file.name,
-          mimeType: file.type,
-          sizeBytes: file.size
+          original_filename: file.name,
+          mime_type: file.type,
+          size_bytes: file.size
         })
       });
 
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Failed to submit KYC");
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
+
+      const result = await res.json();
+      if (!res.ok || !result.ok) {
+        throw new Error(result.error?.message || "Failed to submit KYC");
       }
 
       // 3. Redirect to Dashboard

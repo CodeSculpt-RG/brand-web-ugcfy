@@ -113,26 +113,35 @@ export default function SettingsPage() {
     e.preventDefault();
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from("brand_profiles")
-        .upsert({
-          id: profile.id,
-          company_name: profile.company_name,
-          website_url: profile.website_url,
-          industry: profile.industry,
-          phone: profile.phone,
-          location: profile.location,
-          business_description: profile.business_description,
-          updated_at: new Date().toISOString()
-        });
+      const payload = {
+        brand_name: profile.company_name || "Unknown Brand",
+        company_name: profile.company_name,
+        website: profile.website_url,
+        industry: profile.industry,
+        contact_phone: profile.phone,
+        business_description: profile.business_description
+      };
+      const res = await fetch("/api/brand/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      });
+      
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
+      }
 
-      if (error) throw error;
+      const result = await res.json();
+      if (!res.ok || !result.ok) {
+        throw new Error(result.error?.message || "Failed to update profile");
+      }
       showToast("General settings saved successfully!");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      // Suppress supabase schema errors for demo, show success anyway as fallback
-      showToast("Settings updated successfully! (Demo Mode Saved)", "success");
+      showToast(err instanceof Error ? err.message : "Failed to save settings.", "error");
     } finally {
       setIsSaving(false);
     }

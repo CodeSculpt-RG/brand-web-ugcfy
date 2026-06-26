@@ -1,39 +1,51 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { verifyBrand } from "@/lib/auth/verifyBrand";
 import { createClient } from "@/lib/supabase/server";
+import { kycSchema } from "@/lib/validation/kyc";
+import { ZodError } from "zod";
+import { jsonError, jsonSuccess } from "@/lib/api-response";
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const brandSession = await verifyBrand();
+    if (!brandSession.ok) {
+      return jsonError("UNAUTHENTICATED", brandSession.message || "Please login to continue.", 401);
+    }
+    if (!brandSession.brand) {
+      return jsonError("BRAND_PROFILE_NOT_FOUND", "Brand profile not found.", 404);
     }
 
     const body = await req.json();
-    const { documentType, bucket, path, originalFilename, mimeType, sizeBytes } = body;
+    const validatedData = kycSchema.parse(body);
 
-    if (!documentType || !bucket || !path) {
-      return NextResponse.json({ error: "Missing required document metadata" }, { status: 400 });
-    }
+    const supabase = await createClient();
 
     // 1. Insert into brand_kyc_documents
     const { error: insertError } = await supabase
       .from("brand_kyc_documents")
       .insert({
-        brand_id: user.id,
-        document_type: documentType,
-        bucket,
-        path,
-        original_filename: originalFilename || null,
-        mime_type: mimeType || null,
-        size_bytes: sizeBytes || null,
+        brand_id: brandSession.brand.id,
+        document_type: validatedData.document_type,
+        bucket: validatedData.bucket,
+        path: validatedData.path,
+        original_filename: validatedData.original_filename || null,
+        mime_type: validatedData.mime_type || null,
+        size_bytes: validatedData.size_bytes || null,
         status: "submitted"
       });
 
     if (insertError) {
-      console.error("KYC insert error:", insertError);
-      return NextResponse.json({ error: "Failed to save document metadata" }, { status: 500 });
+      console.error("[supabase-form-error]", {
+        message: insertError.message,
+        code: insertError.code,
+        details: insertError.details,
+        hint: insertError.hint,
+      });
+      return jsonError("SUPABASE_INSERT_FAILED", insertError.message || "Failed to save document metadata", 500, {
+        code: insertError.code,
+        details: insertError.details,
+        hint: insertError.hint,
+      });
     }
 
     // 2. Update brand_profiles approval_status
@@ -43,16 +55,28 @@ export async function POST(req: NextRequest) {
         approval_status: "pending_verification",
         verification_submitted_at: new Date().toISOString()
       })
-      .eq("id", user.id);
+      .eq("id", brandSession.brand.id);
 
     if (updateError) {
-      console.error("Profile update error:", updateError);
-      return NextResponse.json({ error: "Failed to update profile status" }, { status: 500 });
+      console.error("[supabase-form-error]", {
+        message: updateError.message,
+        code: updateError.code,
+        details: updateError.details,
+        hint: updateError.hint,
+      });
+      return jsonError("SUPABASE_UPDATE_FAILED", updateError.message || "Failed to update profile status", 500, {
+        code: updateError.code,
+        details: updateError.details,
+        hint: updateError.hint,
+      });
     }
 
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error("KYC POST error:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return jsonSuccess({ success: true });
+  } catch (err: unknown) {
+    console.error("[form-api] unexpected error", err);
+    if (err instanceof ZodError) {
+      return jsonError("VALIDATION_ERROR", err.issues[0]?.message || "Validation failed", 400);
+    }
+    return jsonError("INTERNAL_ERROR", "Internal Server Error", 500);
   }
 }

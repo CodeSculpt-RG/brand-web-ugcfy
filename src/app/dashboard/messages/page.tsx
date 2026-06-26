@@ -77,6 +77,7 @@ export default function MessagesPage() {
   const [showArchived, setShowArchived] = useState(false);
   const [showDetails, setShowDetails] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   
   // Attachments State
   const [attachments, setAttachments] = useState<AttachmentFile[]>([]);
@@ -210,9 +211,10 @@ export default function MessagesPage() {
     }
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() && attachments.length === 0) return;
+    setErrorMsg(null);
 
     let textContent = inputValue;
     if (attachments.length > 0) {
@@ -220,28 +222,57 @@ export default function MessagesPage() {
       textContent = textContent ? `${textContent}\n${attachInfo}` : attachInfo;
     }
 
-    const newMessage: GroupMessage = {
-      id: Math.random().toString(),
-      group_id: selectedGroup!.id,
-      sender_id: "brand-poc-active",
-      sender_name: `${selectedGroup!.poc_name} (Brand)`,
-      content: textContent,
-      created_at: new Date().toISOString()
-    };
+    try {
+      const payload = {
+        group_id: selectedGroup!.id,
+        content: textContent,
+      };
 
-    setMessages(prev => [...prev, newMessage]);
-    setInputValue("");
-    setAttachments([]);
+      const res = await fetch("/api/brand/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      });
 
-    setGroups(prev => prev.map(g => {
-      if (g.id === selectedGroup!.id) {
-        return {
-          ...g,
-          last_message: `${newMessage.sender_name.split(" ")[0]}: ${newMessage.content.slice(0, 30)}...`
-        };
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error(`Server returned non-JSON response: ${text.slice(0, 160)}`);
       }
-      return g;
-    }));
+
+      const result = await res.json();
+      
+      if (!res.ok || !result.ok) {
+        throw new Error(result.error?.message || "Failed to send message");
+      }
+
+      const newMessage: GroupMessage = {
+        id: result.data.id || Math.random().toString(),
+        group_id: selectedGroup!.id,
+        sender_id: "brand-poc-active",
+        sender_name: `${selectedGroup!.poc_name} (Brand)`,
+        content: textContent,
+        created_at: new Date().toISOString()
+      };
+
+      setMessages(prev => [...prev, newMessage]);
+      setInputValue("");
+      setAttachments([]);
+
+      setGroups(prev => prev.map(g => {
+        if (g.id === selectedGroup!.id) {
+          return {
+            ...g,
+            last_message: `${newMessage.sender_name.split(" ")[0]}: ${newMessage.content.slice(0, 30)}...`
+          };
+        }
+        return g;
+      }));
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(err instanceof Error ? err.message : "Failed to send message");
+    }
   };
 
   // Mock upload actions
@@ -507,6 +538,12 @@ export default function MessagesPage() {
                 </div>
               ) : (
                 <div className="space-y-3.5">
+                  {errorMsg && (
+                    <div className="p-3 mb-2 rounded-xl bg-red-50 border border-red-100 flex items-start gap-2 text-red-700 text-xs font-semibold">
+                      <span>⚠️</span>
+                      <span>{errorMsg}</span>
+                    </div>
+                  )}
                   {/* Attachment Previews */}
                   {attachments.length > 0 && (
                     <motion.div 
