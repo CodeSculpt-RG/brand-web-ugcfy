@@ -14,7 +14,7 @@ const BLOG_POSTS = [
     author: "Sarah Jenkins",
     date: "Oct 12, 2026",
     readTime: "8 min read",
-    imageUrl: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     featured: true
   },
   {
@@ -25,7 +25,7 @@ const BLOG_POSTS = [
     author: "Marcus Chen",
     date: "Oct 08, 2026",
     readTime: "5 min read",
-    imageUrl: "https://images.unsplash.com/photo-1588702545922-e64e568af7bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1616469829941-c7200edec809?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     featured: false
   },
   {
@@ -36,7 +36,7 @@ const BLOG_POSTS = [
     author: "Elena Rodriguez",
     date: "Oct 01, 2026",
     readTime: "12 min read",
-    imageUrl: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     featured: false
   },
   {
@@ -47,7 +47,7 @@ const BLOG_POSTS = [
     author: "David Kim",
     date: "Sep 28, 2026",
     readTime: "6 min read",
-    imageUrl: "https://images.unsplash.com/photo-1450101499163-c8848c66cb85?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     featured: false
   },
   {
@@ -58,7 +58,7 @@ const BLOG_POSTS = [
     author: "Sarah Jenkins",
     date: "Sep 22, 2026",
     readTime: "9 min read",
-    imageUrl: "https://images.unsplash.com/photo-1616469829581-73993eb86b02?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     featured: false
   },
   {
@@ -69,7 +69,7 @@ const BLOG_POSTS = [
     author: "Krishna Asthawani",
     date: "Sep 15, 2026",
     readTime: "7 min read",
-    imageUrl: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     featured: false
   }
 ];

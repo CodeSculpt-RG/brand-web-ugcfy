@@ -2,6 +2,8 @@
 
 import React from "react";
 import { CheckCircle2 } from "lucide-react";
+import AnalyticsMockup from "../landing/visuals/AnalyticsMockup";
+import BrandCreatorChatMockup from "../landing/visuals/BrandCreatorChatMockup";
 
 export interface AlternatingFeature {
   title: string;
@@ -49,15 +51,9 @@ export default function PremiumAlternatingFeatures({ features }: PremiumAlternat
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[var(--color-primary)]/10 blur-[80px] group-hover:scale-110 transition-transform duration-700 pointer-events-none"></div>
                   
                   {/* The High-Fidelity Image */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img 
-                    src={isEven 
-                      ? "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" // Dashboard analytics
-                      : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" // Modern desk / tech layout
-                    }
-                    alt={feature.title}
-                    className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700"
-                  />
+                  <div className="absolute inset-0 w-full h-full opacity-90 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700">
+                    {isEven ? <AnalyticsMockup /> : <BrandCreatorChatMockup />}
+                  </div>
                   
                   {/* Glassmorphic Overlay Gradient for Premium Polish */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/10 via-transparent to-white/20 pointer-events-none mix-blend-overlay"></div>
