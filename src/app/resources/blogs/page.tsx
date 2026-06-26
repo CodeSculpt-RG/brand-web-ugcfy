@@ -66,7 +66,7 @@ const BLOG_POSTS = [
     title: "Creator Payouts: The 1099 Nightmare",
     excerpt: "Paying 500 creators globally doesn't have to break your accounting team. How to completely automate tax compliance and escrow.",
     category: "Finance",
-    author: "Michael Chang",
+    author: "Krishna Asthawani",
     date: "Sep 15, 2026",
     readTime: "7 min read",
     imageUrl: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -86,7 +86,7 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar theme="dark" />
-      
+
       <main className="flex-1 pt-[76px]">
         {/* Blog Header */}
         <section className="py-20 bg-slate-50 border-b border-slate-100">
@@ -107,9 +107,9 @@ export default function BlogPage() {
               <article className="group relative bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden flex flex-col lg:flex-row hover:shadow-2xl transition-all duration-300">
                 <div className="lg:w-1/2 relative aspect-video lg:aspect-auto overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img 
-                    src={featuredPost.imageUrl} 
-                    alt={featuredPost.title} 
+                  <img
+                    src={featuredPost.imageUrl}
+                    alt={featuredPost.title}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-slate-900">
@@ -120,7 +120,7 @@ export default function BlogPage() {
                   <div className="flex items-center gap-2 mb-6">
                     <span className="text-sm font-semibold text-[var(--color-primary)]">{featuredPost.category}</span>
                     <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
-                    <time className="text-sm font-medium text-slate-500 flex items-center gap-1"><Calendar className="w-4 h-4"/>{featuredPost.date}</time>
+                    <time className="text-sm font-medium text-slate-500 flex items-center gap-1"><Calendar className="w-4 h-4" />{featuredPost.date}</time>
                   </div>
                   <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-6 leading-tight group-hover:text-[var(--color-primary)] transition-colors">
                     <Link href={`/resources/blogs/${featuredPost.id}`} className="before:absolute before:inset-0">
@@ -135,7 +135,7 @@ export default function BlogPage() {
                       <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center"><User className="w-5 h-5 text-slate-500" /></div>
                       <span className="font-semibold text-slate-900">{featuredPost.author}</span>
                     </div>
-                    <span className="text-sm font-medium text-slate-500 flex items-center gap-1"><Clock className="w-4 h-4"/>{featuredPost.readTime}</span>
+                    <span className="text-sm font-medium text-slate-500 flex items-center gap-1"><Clock className="w-4 h-4" />{featuredPost.readTime}</span>
                   </div>
                 </div>
               </article>
@@ -147,22 +147,22 @@ export default function BlogPage() {
         <section className="py-16 bg-white">
           <div className="max-w-[1280px] mx-auto px-6">
             <h3 className="text-2xl font-bold text-slate-900 mb-10">Latest Articles</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {regularPosts.map((post) => (
                 <article key={post.id} className="group flex flex-col bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={post.imageUrl} 
-                      alt={post.title} 
+                    <img
+                      src={post.imageUrl}
+                      alt={post.title}
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-slate-900 shadow-sm">
                       {post.category}
                     </div>
                   </div>
-                  
+
                   <div className="p-8 flex flex-col flex-1">
                     <h2 className="text-xl font-bold text-slate-900 mb-4 leading-snug group-hover:text-[var(--color-primary)] transition-colors">
                       <Link href={`/resources/blogs/${post.id}`} className="before:absolute before:inset-0">
@@ -172,21 +172,21 @@ export default function BlogPage() {
                     <p className="text-slate-600 mb-6 line-clamp-3 leading-relaxed">
                       {post.excerpt}
                     </p>
-                    
+
                     <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4 text-slate-400" />
                         <span className="text-sm font-medium text-slate-700">{post.author}</span>
                       </div>
                       <div className="flex items-center gap-3 text-sm font-medium text-slate-500">
-                        <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5"/>{post.date}</span>
+                        <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{post.date}</span>
                       </div>
                     </div>
                   </div>
                 </article>
               ))}
             </div>
-            
+
             <div className="mt-16 text-center">
               <button className="px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold rounded-xl transition-colors">
                 Load More Articles
@@ -195,7 +195,7 @@ export default function BlogPage() {
           </div>
         </section>
 
-        <PremiumCtaSection 
+        <PremiumCtaSection
           title="Stay ahead of the curve."
           description="Subscribe to our newsletter for weekly insights or start your free trial today."
         />

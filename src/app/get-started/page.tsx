@@ -17,12 +17,12 @@ export default function GetStartedPage() {
 
   return (
     <main className="min-h-screen bg-white text-gray-900 flex flex-col font-sans selection:bg-[#E11D48]/20 selection:text-[#E11D48] relative">
-      
+
       {/* Light Theme Premium Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none" 
-           style={{ backgroundImage: 'linear-gradient(to right, #f0f0f0 1px, transparent 1px), linear-gradient(to bottom, #f0f0f0 1px, transparent 1px)', backgroundSize: '4rem 4rem', maskImage: 'radial-gradient(circle at top center, black, transparent 80%)', WebkitMaskImage: 'radial-gradient(circle at top center, black, transparent 80%)' }}>
+      <div className="absolute inset-0 z-0 pointer-events-none"
+        style={{ backgroundImage: 'linear-gradient(to right, #f0f0f0 1px, transparent 1px), linear-gradient(to bottom, #f0f0f0 1px, transparent 1px)', backgroundSize: '4rem 4rem', maskImage: 'radial-gradient(circle at top center, black, transparent 80%)', WebkitMaskImage: 'radial-gradient(circle at top center, black, transparent 80%)' }}>
       </div>
-      
+
       {/* Subtle Glowing Orbs */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#E11D48]/5 blur-[150px] rounded-full pointer-events-none z-0"></div>
       <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-500/5 blur-[150px] rounded-full pointer-events-none z-0"></div>
@@ -33,9 +33,9 @@ export default function GetStartedPage() {
       {/* CONTENT */}
       <div className="flex-1 w-full relative flex justify-center pt-32 pb-12 md:pt-40 md:pb-16 z-10">
         <div className="max-w-[1300px] w-full px-6 grid lg:grid-cols-12 gap-16 lg:gap-8 items-center">
-          
+
           {/* Left Column: Copy & Social Proof (7 columns) */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -49,7 +49,7 @@ export default function GetStartedPage() {
             <h1 className="text-[56px] md:text-[72px] font-extrabold leading-[1.05] tracking-tighter text-black mb-6">
               Scale Your <br /> Influence <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E11D48] to-red-400">Faster.</span>
             </h1>
-            
+
             <p className="text-xl text-gray-600 leading-relaxed max-w-lg mb-10 font-medium">
               Join top-tier brands utilizing AI to discover perfect creators, automate outreach, and track ROI with pinpoint accuracy.
             </p>
@@ -57,7 +57,7 @@ export default function GetStartedPage() {
             {/* Premium Light Theme Social Proof */}
             <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden group">
               <Quote className="w-12 h-12 text-gray-50 absolute -top-2 -left-2 rotate-180 transform" />
-              
+
               <div className="flex gap-1 mb-4 relative z-10">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star key={star} className="w-4 h-4 fill-[#E11D48] text-[#E11D48]" />
@@ -71,7 +71,7 @@ export default function GetStartedPage() {
                   M
                 </div>
                 <div>
-                  <h4 className="font-bold text-black tracking-tight">Michael Chang</h4>
+                  <h4 className="font-bold text-black tracking-tight">Krishna Asthawani</h4>
                   <p className="text-sm text-gray-500 font-medium">Director of Marketing, TechStyle</p>
                 </div>
               </div>
@@ -94,7 +94,7 @@ export default function GetStartedPage() {
           </motion.div>
 
           {/* Right Column: Form (5 columns) */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -112,7 +112,7 @@ export default function GetStartedPage() {
                   <p className="text-gray-600 text-lg leading-relaxed max-w-[280px]">
                     Thank you! A member of our team will reach out to you shortly.
                   </p>
-                  <button 
+                  <button
                     onClick={() => setIsSubmitted(false)}
                     className="mt-6 flex items-center gap-2 text-[#E11D48] hover:text-[#BE123C] font-bold text-[15px] transition-colors"
                   >
@@ -186,8 +186,8 @@ export default function GetStartedPage() {
                     <textarea required rows={3} className="w-full bg-[#F9FAFB] hover:bg-white border border-gray-200 rounded-xl py-3 px-4 text-[15px] text-black focus:bg-white focus:outline-none focus:border-[#E11D48] focus:ring-[3px] focus:ring-[#E11D48]/10 transition-all resize-none font-medium" placeholder="Tell us about your campaign goals..."></textarea>
                   </div>
 
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="w-full bg-[#E11D48] hover:bg-[#BE123C] text-white font-bold text-[15px] py-4 rounded-xl mt-2 flex items-center justify-center gap-2 transition-all shadow-[0_10px_20px_-10px_rgba(225,29,72,0.5)] transform hover:-translate-y-0.5"
                   >
                     Submit Request
