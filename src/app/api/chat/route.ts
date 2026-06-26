@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { getVectorStoreClient } from "@/lib/supabase-server";
+import { getVectorStoreClient } from "@/lib/supabase/admin";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { z } from "zod";
 import { AI_MODELS } from "@/lib/ai/models";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const TEMPLATE = `You are UGCFY's expert AI assistant. Use the following pieces of retrieved context to answer the user's question. 
 If the answer is not in the context, say 'I cannot find the answer in the provided documentation.' Do not hallucinate.

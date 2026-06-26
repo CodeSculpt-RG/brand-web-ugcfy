@@ -1,7 +1,7 @@
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { getVectorStoreClient } from "../src/lib/supabase-server";
+import { getVectorStoreClient } from '../src/lib/supabase/admin';
 import dotenv from "dotenv";
 import path from "path";
 import fs from "fs";

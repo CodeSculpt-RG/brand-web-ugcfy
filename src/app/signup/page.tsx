@@ -26,6 +26,7 @@ import {
 const requestAccessSchema = z.object({
   companyName: z.string().min(2, "Company name must be at least 2 characters"),
   email: z.string().email("Please enter a valid work email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
   websiteUrl: z.string()
     .transform(val => {
       if (!val) return "";
@@ -46,8 +47,10 @@ const requestAccessSchema = z.object({
 });
 
 type RequestAccessFormValues = z.infer<typeof requestAccessSchema>;
+import { useRouter } from "next/navigation";
 
 export default function RequestAccessPage() {
+  const router = useRouter();
   const supabase = createClient();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -64,6 +67,7 @@ export default function RequestAccessPage() {
     defaultValues: {
       companyName: "",
       email: "",
+      password: "",
       websiteUrl: ""
     }
   });
@@ -75,12 +79,9 @@ export default function RequestAccessPage() {
 
     try {
       // 1. Sign up the user in Supabase
-      // We generate a secure random password for their account record since they are pending approval
-      const generatedPassword = crypto.randomUUID() + 'A1!';
-      
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
-        password: generatedPassword,
+        password: data.password,
         options: {
           data: {
             role: "brand",
@@ -101,14 +102,13 @@ export default function RequestAccessPage() {
       }
 
       if (signUpData?.user) {
-        // 2. Proactively update their brand profile with pending verification details
+        // 2. Proactively update their brand profile with incomplete profile status
         const { error: updateError } = await supabase
           .from("brand_profiles")
           .update({
             company_name: data.companyName,
-            website_url: data.websiteUrl || null,
-            approval_status: "pending_verification",
-            submitted_at: new Date().toISOString()
+            website: data.websiteUrl || null,
+            approval_status: "profile_incomplete",
           })
           .eq("id", signUpData.user.id);
 
@@ -120,23 +120,26 @@ export default function RequestAccessPage() {
             .from("brand_profiles")
             .upsert({
               id: signUpData.user.id,
+              user_id: signUpData.user.id,
+              contact_email: signUpData.user.email,
               company_name: data.companyName,
-              website_url: data.websiteUrl || null,
-              approval_status: "pending_verification",
-              submitted_at: new Date().toISOString()
+              website: data.websiteUrl || null,
+              approval_status: "profile_incomplete",
             });
 
           if (upsertError) {
             console.error("Error upserting brand profile:", upsertError);
           }
         }
-
-        // Clean up session since they need to wait for curation team approval
-        await supabase.auth.signOut();
       }
 
       setIsSubmitted(true);
       reset();
+      
+      // Attempt to redirect if there's a session (auto-login enabled in Supabase by default unless email verification is strictly required)
+      if (signUpData?.session) {
+        router.push('/dashboard');
+      }
     } catch (err: unknown) {
       console.error(err);
       setErrorMsg("An unexpected connection error occurred. Please check your credentials and try again.");
@@ -328,6 +331,30 @@ export default function RequestAccessPage() {
                       <p className="text-red-500 text-[10px] font-bold mt-1 flex items-center gap-1">
                         <AlertCircle className="h-3.5 w-3.5" />
                         {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Sparkles className="h-4.5 w-4.5" />
+                      </span>
+                      <input
+                        type="password"
+                        {...register("password")}
+                        disabled={isLoading}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200/80 text-xs sm:text-sm focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-100 outline-none transition bg-slate-50/50 focus:bg-white font-medium"
+                        placeholder="••••••••"
+                      />
+                    </div>
+                    {errors.password && (
+                      <p className="text-red-500 text-[10px] font-bold mt-1 flex items-center gap-1">
+                        <AlertCircle className="h-3.5 w-3.5" />
+                        {errors.password.message}
                       </p>
                     )}
                   </div>

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 // Dynamically import the landing page and permanently disable SSR
 // This completely isolates the app from browser extension DOM mutations
-const ClientLandingPage = dynamic(() => import('./LandingPage'), {
+const ClientLandingPage = dynamic(() => import('@/components/landing/LandingPage'), {
   ssr: false,
   loading: () => (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#FCF6F6]">

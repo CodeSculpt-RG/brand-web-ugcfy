@@ -23,8 +23,6 @@ interface VettedCreator extends CreatorProfile {
   followers: string;
 }
 
-const MOCK_CREATORS: any[] = [];
-
 export default function CreatorsPage() {
   const supabase = createClient();
   const [creators, setCreators] = useState<VettedCreator[]>([]);
@@ -35,8 +33,7 @@ export default function CreatorsPage() {
   const [selectedPlatform, setSelectedPlatform] = useState<string>("All");
   const [isLoading, setIsLoading] = useState(true);
   const [inviteModalCreator, setInviteModalCreator] = useState<VettedCreator | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [campaigns, setCampaigns] = useState<{ id: string; title: string }[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<string>("");
   const [inviteSuccess, setInviteSuccess] = useState(false);
 

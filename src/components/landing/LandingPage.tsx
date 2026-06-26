@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import {
   Sparkles, ArrowRight, CheckCircle2, MessageCircle, Users,
   Brain, LayoutDashboard, TrendingUp, Check,
-  Headset, BadgeDollarSign, Bot, Quote, ChevronLeft, ChevronRight, ChevronDown
+  Headset, BadgeDollarSign, Bot, Quote, ChevronLeft, ChevronRight, ChevronDown, X
 } from "lucide-react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -21,19 +21,216 @@ const whyChooseData = [
   { title: "Expert Support at Every Step", desc: "Our dedicated team is always available to guide you through setup, troubleshooting, and scaling.", icon: Headset },
 ];
 
-const aiFeatures = [
+interface AiFeature {
+  title: string;
+  theme: "light" | "dark";
+  eyebrow: string;
+  points: string[];
+  description: string;
+  details: string[];
+  longDescription: string;
+  useCases: string[];
+  benefits: string[];
+  workflow: string[];
+}
+
+const aiFeatures: AiFeature[] = [
+  {
+    title: "Discover AI",
+    theme: "light",
+    eyebrow: "Creator Intelligence",
+    points: [
+      "Automated Discovery",
+      "Seamless Connection",
+      "Efficient Invitation",
+      "Intelligent Matching",
+    ],
+    description:
+      "Discover AI helps brands identify the right creators faster by analyzing audience fit, niche relevance, campaign objectives, and creator performance signals.",
+    details: [
+      "Find creators aligned with your campaign goal.",
+      "Reduce manual searching and shortlisting time.",
+      "Improve creator-brand matching accuracy.",
+      "Support data-backed creator discovery decisions.",
+    ],
+    longDescription:
+      "Discover AI is built to remove guesswork from creator selection. Instead of manually browsing profiles, brands can use AI-assisted signals to identify creators who match campaign goals, audience demographics, niche relevance, content style, and performance potential.",
+    useCases: [
+      "Finding creators for a new product launch",
+      "Shortlisting niche creators for targeted campaigns",
+      "Matching creators based on audience and content fit",
+      "Reducing manual research time for brand teams",
+    ],
+    benefits: [
+      "Faster creator discovery",
+      "Better audience-brand alignment",
+      "Reduced manual shortlisting effort",
+      "More confident campaign planning",
+    ],
+    workflow: [
+      "Brand defines campaign objective",
+      "AI analyzes creator fit and relevance",
+      "Best-matched creators are surfaced",
+      "Brand reviews and shortlists creators",
+    ],
+  },
+  {
+    title: "Scripting AI",
+    theme: "dark",
+    eyebrow: "Content Direction",
+    points: [
+      "NLG Integration",
+      "Style Analysis",
+      "Content Alignment",
+      "Dynamic Adaptation",
+    ],
+    description:
+      "Scripting AI supports creator briefs and content direction by generating campaign-aligned script structures, tone guidance, and platform-specific content angles.",
+    details: [
+      "Generate structured script ideas for creators.",
+      "Match brand tone and content style.",
+      "Adapt scripts for reels, shorts, stories, and posts.",
+      "Keep messaging aligned with campaign objectives.",
+    ],
+    longDescription:
+      "Scripting AI helps brands convert campaign goals into creator-ready content direction. It assists with script structures, hooks, tone, product mentions, platform-specific formats, and brand-safe messaging so creators can produce content that stays aligned with the brief.",
+    useCases: [
+      "Creating creator briefs for reels and shorts",
+      "Maintaining brand tone across multiple creators",
+      "Generating hooks and content angles",
+      "Adapting messaging for different platforms",
+    ],
+    benefits: [
+      "Stronger content consistency",
+      "Faster brief preparation",
+      "Better creator execution",
+      "Reduced revision cycles",
+    ],
+    workflow: [
+      "Brand enters campaign objective and key message",
+      "AI suggests content angles and script structure",
+      "Brand reviews and finalizes guidelines",
+      "Creators receive clearer execution direction",
+    ],
+  },
   {
     title: "Negotiation AI",
     theme: "light",
-    points: ["Data-Driven Negotiations", "Performance Metrics", "Efficient Collaboration", "Predictive Analytics"]
+    eyebrow: "Deal Intelligence",
+    points: [
+      "Data-Driven Negotiations",
+      "Performance Metrics",
+      "Efficient Collaboration",
+      "Predictive Analytics",
+    ],
+    description:
+      "Negotiation AI helps brands make smarter collaboration decisions by evaluating creator value, expected output, performance history, and campaign budget fit.",
+    details: [
+      "Compare creator pricing with campaign value.",
+      "Support fair collaboration decisions.",
+      "Use performance indicators in negotiation.",
+      "Improve brand-creator collaboration efficiency.",
+    ],
+    longDescription:
+      "Negotiation AI supports smarter creator collaboration decisions by comparing expected creator value with campaign budget, historical performance, deliverable scope, audience quality, and estimated campaign impact.",
+    useCases: [
+      "Evaluating creator pricing before approval",
+      "Comparing creators for the same campaign",
+      "Planning budget allocation across creators",
+      "Supporting fair and transparent negotiations",
+    ],
+    benefits: [
+      "More informed negotiation decisions",
+      "Better budget control",
+      "Reduced overpaying risk",
+      "Improved creator collaboration quality",
+    ],
+    workflow: [
+      "Brand reviews creator proposal",
+      "AI evaluates pricing and performance signals",
+      "Brand receives decision support",
+      "Final collaboration terms are confirmed",
+    ],
   },
   {
     title: "Content Audit AI",
     theme: "dark",
-    points: ["Thorough Audit", "Script Alignment", "Guideline Adherence", "Real-Time Reporting"]
-  }
+    eyebrow: "Quality Control",
+    points: [
+      "Thorough Audit",
+      "Script Alignment",
+      "Guideline Adherence",
+      "Real-Time Reporting",
+    ],
+    description:
+      "Content Audit AI checks submitted content against campaign guidelines, brand safety requirements, scripts, and deliverable expectations before approval.",
+    details: [
+      "Review content against campaign guidelines.",
+      "Detect missing script or brand-message alignment.",
+      "Support faster approval workflows.",
+      "Improve reporting and content quality control.",
+    ],
+    longDescription:
+      "Content Audit AI helps brands review creator submissions before approval. It checks whether the content follows the campaign brief, includes required talking points, avoids restricted claims, and aligns with the approved script and brand guidelines.",
+    useCases: [
+      "Checking creator submissions before posting",
+      "Reviewing script and guideline compliance",
+      "Reducing manual content approval workload",
+      "Maintaining brand safety across campaigns",
+    ],
+    benefits: [
+      "Faster content review",
+      "Better brand guideline compliance",
+      "Reduced approval errors",
+      "Stronger content quality control",
+    ],
+    workflow: [
+      "Creator submits content",
+      "AI checks content against the brief",
+      "Brand receives audit signals",
+      "Brand approves, rejects, or requests changes",
+    ],
+  },
+  {
+    title: "Performance AI",
+    theme: "light",
+    eyebrow: "Campaign Optimization",
+    points: [
+      "Optimize Campaigns",
+      "Data-Driven Decisions",
+      "Automated Partnerships",
+      "Predictive Insights",
+    ],
+    description:
+      "Performance AI helps brands understand campaign progress, creator performance, engagement quality, and optimization opportunities across active campaigns.",
+    details: [
+      "Track campaign performance indicators.",
+      "Identify high-performing creator partnerships.",
+      "Support data-backed campaign optimization.",
+      "Improve future campaign planning.",
+    ],
+    longDescription:
+      "Performance AI helps brands monitor and improve campaign outcomes by analyzing performance signals, engagement quality, creator contribution, deliverable progress, and optimization opportunities across active and completed campaigns.",
+    useCases: [
+      "Tracking live campaign performance",
+      "Comparing creator output quality",
+      "Identifying campaign optimization opportunities",
+      "Planning future campaigns using past performance",
+    ],
+    benefits: [
+      "Clearer campaign visibility",
+      "Better optimization decisions",
+      "Improved creator partnership planning",
+      "More data-backed reporting",
+    ],
+    workflow: [
+      "Campaign performance data is collected",
+      "AI identifies trends and weak points",
+      "Brand receives optimization insights",
+      "Future campaigns improve based on learnings",
+    ],
+  },
 ];
-
 const platformFeatures = [
   {
     id: 1,
@@ -104,6 +301,7 @@ const cardVariants: Variants = {
 export default function LandingPage() {
   const [activeLogoPage, setActiveLogoPage] = useState(0);
   const [activeAiIndex, setActiveAiIndex] = useState(0);
+  const [selectedAiFeature, setSelectedAiFeature] = useState<AiFeature | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showCookieBanner, setShowCookieBanner] = useState(true);
 
@@ -477,76 +675,182 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 9: AI INTEGRATION CAROUSEL */}
-      <section className="py-24 bg-[#FDFBFB] overflow-hidden">
-        <div className="max-w-[1280px] mx-auto px-6">
-          <div className="flex flex-col lg:flex-row gap-16 items-start">
+      <section className="relative overflow-hidden bg-[#FDFBFB] py-16 sm:py-20 lg:py-24">
+        <div className="max-w-[1240px] mx-auto px-6">
+          <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-20 items-center">
             
-            <div className="lg:w-1/3 flex flex-col gap-6">
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#0A0A0A] tracking-tight leading-tight">
-                AI Integration By UGCFY
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed">
-                When AI is all the rage in the digital sphere, let us bring you on the same page with our bespoke AI integrations.
-              </p>
-              <p className="text-gray-500 text-base leading-relaxed">
-                UGCFY integrates AI to bring precision to your influencer marketing campaigns by delivering data-backed strategies, superior targeting, and real-time adjustments.
-              </p>
-              <button className="bg-[#E11D48] hover:bg-[#BE123C] text-white font-bold py-4 px-8 rounded-lg w-fit transition-all shadow-lg shadow-[#E11D48]/20">
-                Explore more
-              </button>
-            </div>
-
-            <div className="lg:w-2/3 w-full relative">
-              
-              <div className="absolute -top-20 right-0 flex gap-4">
-                <button 
-                  onClick={() => setActiveAiIndex(prev => prev === 0 ? aiFeatures.length - 1 : prev - 1)}
-                  className="p-3 border border-gray-300 rounded-full hover:border-black transition-colors"
-                ><ChevronLeft className="w-6 h-6"/></button>
-                <button 
-                  onClick={() => setActiveAiIndex(prev => (prev + 1) % aiFeatures.length)}
-                  className="p-3 border border-gray-300 rounded-full hover:border-black transition-colors"
-                ><ChevronRight className="w-6 h-6"/></button>
+            {/* Left Editorial Content */}
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-6">
+                <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#E11D48]/15 bg-white px-4 py-2 shadow-sm">
+                  <span className="h-2 w-2 rounded-full bg-[#E11D48] animate-pulse" />
+                  <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#E11D48]">
+                    AI Powered
+                  </span>
+                </div>
+                
+                <h2 className="max-w-[520px] text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[0.98] text-[#0A0A0A]">
+                  AI Integration By UGCFY
+                </h2>
+                
+                <div className="flex flex-col gap-4">
+                  <p className="text-gray-600 text-lg leading-relaxed max-w-[480px]">
+                    When AI is all the rage in the digital sphere, let us bring you on the same page with our bespoke AI integrations.
+                  </p>
+                  <p className="text-gray-500 text-base leading-relaxed max-w-[480px]">
+                    UGCFY integrates AI to bring precision to your influencer marketing campaigns by delivering data-backed strategies, superior targeting, and real-time adjustments.
+                  </p>
+                </div>
               </div>
 
-              <div className="flex gap-8 overflow-hidden">
-                <AnimatePresence>
-                  {aiFeatures.map((feat, idx) => (
-                    <motion.div 
-                      key={idx}
+              <Link href="/ai-integration" className="group relative inline-flex w-fit items-center justify-center rounded-2xl bg-[#E11D48] px-8 py-4 text-base font-extrabold text-white shadow-xl shadow-[#E11D48]/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#BE123C] hover:shadow-2xl hover:shadow-[#E11D48]/25 active:translate-y-0">
+                <span>Explore more</span>
+                <ChevronRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+
+              {/* Small understated feature row */}
+              <div className="flex flex-wrap items-center gap-4 mt-2">
+                <span className="text-sm font-bold text-gray-800">5 AI modules</span>
+                <span className="text-sm font-bold text-gray-300">•</span>
+                <span className="text-sm font-bold text-gray-800">Campaign precision</span>
+                <span className="text-sm font-bold text-gray-300">•</span>
+                <span className="text-sm font-bold text-gray-800">Real-time optimization</span>
+              </div>
+            </div>
+
+            {/* Right AI Showcase Card (Single Panel) */}
+            <div className="relative w-full flex items-center justify-center lg:justify-end">
+              <AnimatePresence mode="wait">
+                {(() => {
+                  const currentAi = (aiFeatures[activeAiIndex] || aiFeatures[0]) as AiFeature;
+                  return (
+                    <motion.div
+                      key={activeAiIndex}
                       initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: activeAiIndex === idx ? 1 : 0.5, x: 0 }}
-                      className={`w-full md:w-[450px] p-10 rounded-[32px] border transition-all duration-500 ${feat.theme === 'dark' ? 'bg-[#0A0A0A] text-white border-transparent' : 'bg-white text-gray-900 border-gray-100 shadow-xl'}`}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className={`relative w-full flex flex-col justify-between p-7 sm:p-10 lg:p-12 rounded-[36px] border transition-all duration-500 min-h-[430px] ${
+                        currentAi.theme === 'dark' 
+                          ? 'bg-[#0A0A0A] text-white border-white/10 shadow-2xl shadow-black/20' 
+                          : 'bg-white text-[#0A0A0A] border-black/5 shadow-2xl shadow-black/5'
+                      }`}
                     >
-                      <h3 className="text-2xl font-bold mb-8">{feat.title}</h3>
-                      <ul className="space-y-5 mb-10">
-                        {feat.points.map((point, i) => (
-                          <li key={i} className="flex items-center gap-3 font-medium">
-                            <div className="bg-[#E11D48] rounded-full p-1"><Check className="w-3 h-3 text-white"/></div>
-                            {point}
-                          </li>
-                        ))}
-                      </ul>
-                      <button className={`w-full py-4 rounded-xl font-bold border transition-colors ${feat.theme === 'dark' ? 'border-gray-800 hover:bg-gray-900' : 'border-gray-200 hover:bg-gray-50'}`}>
-                        Read More
-                      </button>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
+                      <div className="flex flex-col gap-6">
+                        
+                        {/* Top row */}
+                        <div className="flex flex-wrap items-center gap-3 mb-2">
+                          <div className={`inline-flex px-3.5 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-[0.15em] ${
+                            currentAi.theme === 'dark' ? 'bg-white/10 text-white' : 'bg-[#E11D48]/10 text-[#E11D48]'
+                          }`}>
+                            {currentAi.eyebrow}
+                          </div>
+                          <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider ${
+                            currentAi.theme === 'dark' ? 'border-white/10 text-gray-300 bg-white/5' : 'border-gray-100 text-gray-500 bg-gray-50'
+                          }`}>
+                            <Sparkles className="w-3 h-3" />
+                            AI Module
+                          </div>
+                        </div>
 
-              <div className="flex justify-end gap-2 mt-8">
-                {aiFeatures.map((_, i) => (
-                  <div key={i} className={`w-2.5 h-2.5 rounded-full transition-colors cursor-pointer ${activeAiIndex === i ? 'bg-black' : 'bg-gray-300'}`} onClick={() => setActiveAiIndex(i)} />
-                ))}
-              </div>
+                        {/* Main Title & Desc */}
+                        <div>
+                          <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
+                            {currentAi.title}
+                          </h3>
+                          <p className={`text-base leading-relaxed ${currentAi.theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                            {currentAi.description}
+                          </p>
+                        </div>
+
+                        {/* Points grid */}
+                        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 my-2">
+                          {currentAi.points.map((point, i) => (
+                            <div key={i} className="flex items-center gap-3">
+                              <div className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#E11D48]">
+                                <Check className="w-3 h-3 text-white stroke-[3]" />
+                              </div>
+                              <span className={`text-[15px] font-bold leading-tight ${currentAi.theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
+                                {point}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Footer: Read More & Controls */}
+                      <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+                        <button 
+                          type="button"
+                          onClick={() => setSelectedAiFeature(currentAi)}
+                          aria-label={`Read more about ${currentAi.title}`}
+                          className={`group flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-4 rounded-xl font-extrabold text-sm border transition-all duration-300 ${
+                            currentAi.theme === 'dark' 
+                              ? 'border-white/15 text-white bg-white/5 hover:bg-white/10' 
+                              : 'border-gray-200 text-[#0A0A0A] bg-gray-50/50 hover:bg-gray-100'
+                          }`}
+                        >
+                          Read More
+                          <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                        </button>
+
+                        <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
+                          
+                          {/* Progress Dots */}
+                          <div className="flex items-center gap-2">
+                            {aiFeatures.map((feature, i) => (
+                              <button
+                                key={i}
+                                type="button"
+                                onClick={() => setActiveAiIndex(i)}
+                                aria-label={`Show ${feature.title}`}
+                                className={`h-2 rounded-full transition-all duration-300 ${
+                                  activeAiIndex === i 
+                                    ? 'w-6 bg-[#E11D48]' 
+                                    : `w-2 hover:w-3 ${currentAi.theme === 'dark' ? 'bg-white/20' : 'bg-gray-300'}`
+                                }`}
+                              />
+                            ))}
+                          </div>
+
+                          {/* Arrows */}
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              aria-label="Show previous AI service"
+                              onClick={() => setActiveAiIndex(prev => prev === 0 ? aiFeatures.length - 1 : prev - 1)}
+                              className={`p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${
+                                currentAi.theme === 'dark' 
+                                  ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white' 
+                                  : 'border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]'
+                              }`}
+                            ><ChevronLeft className="w-5 h-5" /></button>
+                            <button
+                              type="button"
+                              aria-label="Show next AI service"
+                              onClick={() => setActiveAiIndex(prev => (prev + 1) % aiFeatures.length)}
+                              className={`p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${
+                                currentAi.theme === 'dark' 
+                                  ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white' 
+                                  : 'border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]'
+                              }`}
+                            ><ChevronRight className="w-5 h-5" /></button>
+                          </div>
+                        </div>
+                      </div>
+
+                    </motion.div>
+                  );
+                })()}
+              </AnimatePresence>
             </div>
+            
           </div>
         </div>
       </section>      {/* 10. FAQ ACCORDION */}
       <section className="py-32 bg-white">
         <div className="max-w-[1000px] mx-auto px-6">
-          
+
           <div className="flex items-center gap-6 mb-16 justify-center">
             <div className="hidden md:block flex-1 h-[1px] bg-gray-300"></div>
             <h2 className="text-3xl md:text-4xl font-extrabold text-[#0A0A0A] leading-none px-4">
@@ -559,8 +863,8 @@ export default function LandingPage() {
             {faqData.map((faq, index) => {
               const isOpen = openFaq === index;
               return (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`border-b border-gray-200 last:border-none overflow-hidden transition-all duration-300`}
                 >
                   <button
@@ -604,7 +908,7 @@ export default function LandingPage() {
       {/* 11. CTA BANNER */}
       <section id="cta-section" className="bg-[#000000] overflow-hidden relative">
         <div className="max-w-[1280px] mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between">
-          
+
           <div className="py-12 lg:py-16 flex-1 z-20 w-full">
             <h3 className="text-white font-bold text-lg md:text-xl mb-3 tracking-wide">
               Let&apos;s make something cool
@@ -618,25 +922,25 @@ export default function LandingPage() {
           </div>
 
           <div className="absolute right-0 top-0 bottom-0 w-full lg:w-[60%] flex items-center justify-end opacity-30 lg:opacity-100 pointer-events-none z-0">
-             {/* Gradient fade on the left to blend into the black background */}
+            {/* Gradient fade on the left to blend into the black background */}
             <div className="absolute left-0 top-0 bottom-0 w-[60%] bg-gradient-to-r from-[#000000] via-[#000000]/80 to-transparent z-10 hidden lg:block"></div>
-            
+
             <div className="flex gap-3 md:gap-5 -rotate-12 translate-x-[20%] md:translate-x-[15%] scale-90 md:scale-100">
-               {/* Column 1 */}
-               <div className="flex flex-col gap-3 md:gap-5 -translate-y-16">
-                  <Image src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-                  <Image src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-               </div>
-               {/* Column 2 */}
-               <div className="flex flex-col gap-3 md:gap-5">
-                  <Image src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-                  <Image src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-               </div>
-               {/* Column 3 */}
-               <div className="flex flex-col gap-3 md:gap-5 translate-y-16">
-                  <Image src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-                  <Image src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-               </div>
+              {/* Column 1 */}
+              <div className="flex flex-col gap-3 md:gap-5 -translate-y-16">
+                <Image src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
+                <Image src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
+              </div>
+              {/* Column 2 */}
+              <div className="flex flex-col gap-3 md:gap-5">
+                <Image src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
+                <Image src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
+              </div>
+              {/* Column 3 */}
+              <div className="flex flex-col gap-3 md:gap-5 translate-y-16">
+                <Image src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
+                <Image src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80" alt="Creator" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
+              </div>
             </div>
           </div>
         </div>
@@ -667,6 +971,110 @@ export default function LandingPage() {
 
       {/* Request Access Intercept Modal */}
       <RequestAccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* AI Feature Modal */}
+      <AnimatePresence>
+        {selectedAiFeature && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setSelectedAiFeature(null)}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-[32px] w-full max-w-[720px] p-8 sm:p-10 relative shadow-2xl flex flex-col gap-6 max-h-[90vh] overflow-y-auto hide-scrollbar"
+            >
+              <button 
+                type="button"
+                aria-label="Close AI service details"
+                onClick={() => setSelectedAiFeature(null)}
+                className="absolute top-6 right-6 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="inline-flex w-fit items-center gap-2 rounded-full bg-[#E11D48]/10 px-3 py-1.5">
+                <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#E11D48]">
+                  {selectedAiFeature.eyebrow}
+                </span>
+              </div>
+
+              <div>
+                <h3 className="text-3xl sm:text-4xl font-extrabold text-[#0A0A0A] mb-4 tracking-tight">{selectedAiFeature.title}</h3>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  {selectedAiFeature.longDescription}
+                </p>
+              </div>
+
+              <div className="h-px w-full bg-gray-100 my-2" />
+
+              <div className="flex flex-col gap-6">
+                <div>
+                  <h4 className="text-lg font-bold text-[#0A0A0A] mb-3">Use Cases</h4>
+                  <ul className="grid sm:grid-cols-2 gap-3">
+                    {selectedAiFeature.useCases.map((uc, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <div className="mt-1 shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-gray-100">
+                          <Check className="w-3 h-3 text-gray-500 stroke-[3]" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 leading-relaxed">
+                          {uc}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-bold text-[#0A0A0A] mb-3">Benefits</h4>
+                  <ul className="grid sm:grid-cols-2 gap-3">
+                    {selectedAiFeature.benefits.map((benefit, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <div className="mt-1 shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#E11D48]/10">
+                          <Check className="w-3 h-3 text-[#E11D48] stroke-[3]" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 leading-relaxed">
+                          {benefit}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-bold text-[#0A0A0A] mb-3">Workflow</h4>
+                  <div className="flex flex-col gap-4 relative">
+                    <div className="absolute left-2.5 top-2 bottom-2 w-px bg-gray-200" />
+                    {selectedAiFeature.workflow.map((step, idx) => (
+                      <div key={idx} className="flex items-start gap-4 relative z-10">
+                        <div className="w-5 h-5 rounded-full bg-white border-2 border-[#E11D48] flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-[10px] font-bold text-[#E11D48]">{idx + 1}</span>
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 leading-relaxed">
+                          {step}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                type="button"
+                onClick={() => setSelectedAiFeature(null)}
+                className="mt-2 w-full sm:w-auto sm:self-end bg-[#0A0A0A] hover:bg-black text-white font-bold py-4 px-8 rounded-xl transition-all shadow-md active:scale-[0.98]"
+              >
+                Got it
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

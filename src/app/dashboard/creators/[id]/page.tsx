@@ -21,7 +21,7 @@ export default async function CreatorProfilePage({ params }: PageProps) {
     .eq("id", resolvedParams.id)
     .single();
 
-  let creator = profile;
+  const creator = profile;
   
   if (!creator) {
     notFound();
@@ -37,7 +37,7 @@ export default async function CreatorProfilePage({ params }: PageProps) {
   const bio = creator.bio || "Creating high quality UGC content for premium brands.";
 
   // TODO: Fetch from portfolio_media table
-  const MOCK_PORTFOLIO: any[] = [];
+  const MOCK_PORTFOLIO: { id: number; src: string; views: string }[] = [];
 
   return (
     <div className="w-full max-w-6xl mx-auto pb-20 bg-transparent">

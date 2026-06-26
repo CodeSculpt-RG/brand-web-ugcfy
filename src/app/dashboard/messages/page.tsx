@@ -62,7 +62,7 @@ interface AttachmentFile {
   size?: string;
 }
 
-const initialMockGroupsRaw: any[] = [];
+const initialMockGroupsRaw: Record<string, unknown>[] = [];
 
 // Enforce strict Zod parsing to guarantee properties exist without optional chaining
 const initialMockGroups = z.array(MockGroupSchema).parse(initialMockGroupsRaw);
