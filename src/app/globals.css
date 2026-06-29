@@ -8,9 +8,16 @@
   --color-bg-dark: #0A0A0A;
   --color-bg-light: #FFFFFF;
   --color-bg-section: #0A0A0A;
-  --color-primary: #ef4444;
-  --color-primary-hover: #dc2626;
-  --color-secondary: #ef4444;
+  --color-primary: #E11D48;
+  --color-primary-hover: #BE123C;
+  --color-secondary: #E11D48;
+  --color-brand-red-50: #FFF1F2;
+  --color-brand-red-100: #FFE4E6;
+  --color-brand-red-500: #E11D48;
+  --color-brand-red-600: #E11D48;
+  --color-brand-red-700: #BE123C;
+  --color-brand-black: #0A0A0A;
+  --color-brand-surface: #FDFBFB;
   --color-accent: #FFFFFF;
   --color-text-primary: #FFFFFF;
   --color-text-muted: #A1A1AA;
@@ -47,6 +54,22 @@ body {
   font-family: var(--font-inter);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+@layer base {
+  .dashboard-shell :is(input:not([type="file"]):not([type="checkbox"]):not([type="radio"]), textarea, select) {
+    color: #111827;
+  }
+
+  .dashboard-shell :is(input, textarea)::placeholder {
+    color: #6B7280;
+    opacity: 1;
+  }
+
+  .dashboard-shell select option {
+    color: #111827;
+    background-color: #FFFFFF;
+  }
 }
 
 /* Custom Components */

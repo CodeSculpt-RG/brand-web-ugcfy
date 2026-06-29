@@ -32,13 +32,20 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Protect /dashboard and /(brand) routes
+  // Protect /dashboard, /brand, and /settings routes
   const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') || 
-                           request.nextUrl.pathname.startsWith('/explore') || 
+                           request.nextUrl.pathname.startsWith('/brand') || 
                            request.nextUrl.pathname.startsWith('/settings');
+
+  const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
+                      request.nextUrl.pathname.startsWith('/signup');
 
   if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL('/login?next=' + request.nextUrl.pathname, request.url));
+  }
+
+  if (isAuthRoute && user) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return response;

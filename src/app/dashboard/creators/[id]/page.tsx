@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { 
   BadgeCheck, MapPin, Star
 } from "lucide-react";
-import Image from "next/image";
+import { SafeAvatar } from "@/components/dashboard/SafeAvatar";
 import PortfolioVideo from "./PortfolioVideo";
 
 type PageProps = {
@@ -53,12 +53,11 @@ export default async function CreatorProfilePage({ params }: PageProps) {
         
         {/* Avatar */}
         <div className="absolute -bottom-16 left-8 w-32 h-32 rounded-full border-4 border-white shadow-xl z-10 overflow-hidden bg-white">
-          <Image 
-            src={avatarUrl} 
+          <SafeAvatar
+            src={avatarUrl}
+            name={fullName}
             alt={fullName}
-            fill
-            unoptimized
-            className="object-cover"
+            className="h-full w-full border-0"
           />
         </div>
       </div>
