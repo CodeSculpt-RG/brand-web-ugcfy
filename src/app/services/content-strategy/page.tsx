@@ -26,7 +26,7 @@ export default function Page() {
           features={[
             {
               title: "Algorithmic Hook Engineering",
-              description: "We don't just guess. Our creative team analyzes what is currently trending on YouTube and Reels to reverse-engineer high-retention hooks specifically for your product.",
+              description: "We don't just guess. Our creative team analyzes what is currently trending on TikTok and Reels to reverse-engineer high-retention hooks specifically for your product.",
               bullets: ["Trend analysis","Retention optimization","Visual hook design"],
               imagePlaceholderText: "Hook Strategy Document"
             },

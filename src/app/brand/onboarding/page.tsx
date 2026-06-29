@@ -109,7 +109,7 @@ export default function BrandOnboardingPage() {
         throw new Error(result.error?.message || "Failed to update profile");
       }
       
-      router.push("/dashboard/verification");
+      router.push("/brand/kyc");
     } catch (err: unknown) {
       console.error(err);
       setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred");

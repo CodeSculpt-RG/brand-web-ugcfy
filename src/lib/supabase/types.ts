@@ -15,7 +15,7 @@ export interface CreatorProfile {
   phone: string | null;
   instagram_url: string | null;
   youtube_url: string | null;
-
+  tiktok_url: string | null;
   niche: string[] | null;
   location: string | null;
   bio: string | null;

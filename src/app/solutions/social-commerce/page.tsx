@@ -18,17 +18,17 @@ export default function Page() {
         <PremiumHero 
           title="Drive Sales with"
           highlight="Social Commerce"
-          description="Turn authentic UGC into your highest converting sales channel on Instagram and YouTube."
+          description="Turn authentic UGC into your highest converting sales channel on TikTok Shop and Instagram."
           icon={<Sparkles className="w-8 h-8 text-[var(--color-primary)]" />}
         />
         
         <PremiumAlternatingFeatures 
           features={[
             {
-              title: "Social Commerce Sync",
-              description: "Seamlessly integrate your creator campaigns with Social Commerce affiliate programs. Automatically track creator sales and manage commission payouts natively.",
+              title: "TikTok Shop Sync",
+              description: "Seamlessly integrate your creator campaigns with TikTok Shop affiliate programs. Automatically track creator sales and manage commission payouts natively.",
               bullets: ["Direct API sync","Commission tracking","Creator onboarding"],
-              imagePlaceholderText: "Social Commerce Integration"
+              imagePlaceholderText: "TikTok Shop Integration"
             },
             {
               title: "Shoppable Link Generation",
@@ -39,7 +39,7 @@ export default function Page() {
           ]}
         />
         
-        <PremiumStats stats={[{"value":"Social","label":"Integrated"},{"value":"Live","label":"Shopping"},{"value":"Auto","label":"Affiliate Links"},{"value":"Scale","label":"Revenue"}]} />
+        <PremiumStats stats={[{"value":"TikTok","label":"Integrated"},{"value":"Live","label":"Shopping"},{"value":"Auto","label":"Affiliate Links"},{"value":"Scale","label":"Revenue"}]} />
         
         <PremiumCtaSection 
           title="Turn views into revenue."

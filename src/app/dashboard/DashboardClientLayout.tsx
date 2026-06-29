@@ -1,47 +1,37 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  BadgeCheck,
-  Bell,
-  BookOpen,
-  BriefcaseBusiness,
-  Building2,
-  ChevronDown,
-  ChevronLeft,
-  CreditCard,
-  FolderOpen,
-  Gauge,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  MessageSquareText,
-  Search,
-  Settings,
-  ShieldCheck,
-  Sparkles,
-  UserRoundCheck,
-  UsersRound,
-  X,
-} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { PricingModal } from "@/components/dashboard/PricingModal";
+import SubscriptionPaywallModal from "@/components/SubscriptionPaywallModal";
+import {
+  LayoutDashboard,
+  Video,
+  Search,
+  CheckSquare,
+  LogOut,
+  Menu,
+  ChevronLeft,
+  Bell,
+  Building,
+  ChevronDown,
+  Sparkles,
+  Settings,
+  Compass,
+  MessageSquare,
+  Users,
+  Clock
+} from "lucide-react";
 
-type NavItem = {
+interface SidebarItem {
   name: string;
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  aliases?: string[];
-};
-
-type NavGroup = {
-  label: string;
-  items: NavItem[];
-};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icon: any;
+}
 
 interface BrandProp {
   id: string;
@@ -50,169 +40,18 @@ interface BrandProp {
   brand_name?: string | null;
   email?: string | null;
   approval_status?: string | null;
-  poc_count?: number;
-  subscription_status?: string | null;
 }
 
-const navGroups: NavGroup[] = [
-  {
-    label: "MAIN",
-    items: [{ name: "Dashboard", href: "/dashboard", icon: LayoutDashboard }],
-  },
-  {
-    label: "DISCOVER",
-    items: [
-      { name: "Inspiration Feed", href: "/dashboard/inspiration", icon: BookOpen, aliases: ["/dashboard/feed"] },
-      { name: "Creator Discovery", href: "/dashboard/creators", icon: Search },
-      { name: "Shortlist", href: "/dashboard/shortlist", icon: UserRoundCheck },
-    ],
-  },
-  {
-    label: "WORKFLOW",
-    items: [
-      { name: "Campaign Manager", href: "/dashboard/campaigns", icon: BriefcaseBusiness },
-      { name: "Content Approvals", href: "/dashboard/approvals", icon: BadgeCheck },
-      { name: "Collaboration Hub", href: "/dashboard/collaboration", icon: MessageSquareText, aliases: ["/dashboard/messages"] },
-      { name: "Content Library", href: "/dashboard/content-library", icon: FolderOpen },
-    ],
-  },
-  {
-    label: "BUSINESS",
-    items: [
-      { name: "Insights", href: "/dashboard/insights", icon: Gauge },
-      { name: "Billing & Payments", href: "/dashboard/billing", icon: CreditCard },
-    ],
-  },
-  {
-    label: "BRAND",
-    items: [
-      { name: "Team & POC", href: "/dashboard/team", icon: UsersRound, aliases: ["/dashboard/poc"] },
-      { name: "Brand Profile", href: "/dashboard/profile", icon: Building2 },
-      { name: "Verification", href: "/dashboard/verification", icon: ShieldCheck, aliases: ["/brand/kyc"] },
-      { name: "Settings", href: "/dashboard/settings", icon: Settings, aliases: ["/settings"] },
-    ],
-  },
+const sidebarItems: SidebarItem[] = [
+  { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Explore Feed", href: "/dashboard/feed", icon: Compass },
+  { name: "Campaigns", href: "/dashboard/campaigns", icon: Video },
+  { name: "Creators", href: "/dashboard/creators", icon: Search },
+  { name: "Approvals", href: "/dashboard/approvals", icon: CheckSquare },
+  { name: "Messages", href: "/dashboard/messages", icon: MessageSquare },
+  { name: "POC Management", href: "/dashboard/poc", icon: Users },
+  { name: "Brand Profile", href: "/dashboard/profile", icon: Building },
 ];
-
-const allNavItems = navGroups.flatMap((group) => group.items);
-
-function isItemActive(pathname: string, item: NavItem) {
-  const paths = [item.href, ...(item.aliases ?? [])];
-  return paths.some((path) => pathname === path || (path !== "/dashboard" && pathname.startsWith(`${path}/`)));
-}
-
-function getCurrentItem(pathname: string) {
-  return allNavItems.find((item) => isItemActive(pathname, item)) ?? allNavItems[0];
-}
-
-function SidebarNav({
-  collapsed,
-  pathname,
-  onNavigate,
-}: {
-  collapsed?: boolean;
-  pathname: string;
-  onNavigate?: () => void;
-}) {
-  return (
-    <nav aria-label="Dashboard navigation" className="flex-1 space-y-6 overflow-y-auto px-3 py-5">
-      {navGroups.map((group) => (
-        <div key={group.label} className="space-y-1.5">
-          {!collapsed && (
-            <p className="px-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-400">
-              {group.label}
-            </p>
-          )}
-          {group.items.map((item) => {
-            const active = isItemActive(pathname, item);
-            const Icon = item.icon;
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                {...(onNavigate ? { onClick: onNavigate } : {})}
-                className={`group relative flex min-h-11 items-center gap-3 rounded-2xl px-3 text-sm font-bold transition ${
-                  active
-                    ? "bg-brand-red-50 text-brand-red-600"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"
-                }`}
-                title={collapsed ? item.name : ""}
-              >
-                <Icon className={`h-4.5 w-4.5 shrink-0 ${active ? "text-brand-red-600" : "text-slate-400 group-hover:text-slate-700"}`} />
-                {!collapsed && <span className="truncate">{item.name}</span>}
-                {active && !collapsed && <span className="absolute right-2 h-6 w-1 rounded-full bg-brand-red-600" />}
-              </Link>
-            );
-          })}
-        </div>
-      ))}
-    </nav>
-  );
-}
-
-function GoPlusCard({
-  collapsed,
-  pocCount,
-  subscriptionStatus,
-  onUpgrade,
-}: {
-  collapsed?: boolean;
-  pocCount: number;
-  subscriptionStatus: string;
-  onUpgrade: () => void;
-}) {
-  const isFree = subscriptionStatus === "free";
-  const usageWidth = isFree ? Math.min((pocCount / 3) * 100, 100) : 100;
-
-  if (collapsed) {
-    return (
-      <button
-        type="button"
-        aria-label="Open Go Plus upgrade"
-        onClick={onUpgrade}
-        className="mx-3 mb-3 flex h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-brand-red-600 transition hover:border-brand-red-200 hover:bg-brand-red-50"
-      >
-        <Sparkles className="h-4.5 w-4.5" />
-      </button>
-    );
-  }
-
-  return (
-    <div className="mx-3 mb-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-400">Go Plus</p>
-          <p className="mt-1 text-sm font-extrabold text-slate-950">
-            {isFree ? "Free plan" : "Plus active"}
-          </p>
-        </div>
-        <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-red-50 text-brand-red-600">
-          <Sparkles className="h-4.5 w-4.5" />
-        </div>
-      </div>
-      <div className="mt-4">
-        <div className="mb-1.5 flex items-center justify-between text-[10px] font-bold text-slate-500">
-          <span>POC usage</span>
-          <span>{isFree ? `${pocCount} / 3` : `${pocCount} / unlimited`}</span>
-        </div>
-        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-          <div className="h-full rounded-full bg-brand-red-600 transition-all" style={{ width: `${usageWidth}%` }} />
-        </div>
-      </div>
-      {isFree && (
-        <button
-          type="button"
-          onClick={onUpgrade}
-          className="mt-4 w-full rounded-2xl bg-brand-black px-3 py-2.5 text-xs font-extrabold text-white transition hover:bg-brand-red-700"
-        >
-          Upgrade
-        </button>
-      )}
-    </div>
-  );
-}
 
 export default function DashboardClientLayout({
   children,
@@ -224,307 +63,406 @@ export default function DashboardClientLayout({
   const router = useRouter();
   const pathname = usePathname();
   const supabase = createClient();
+
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profile = {
+    company_name: brand.brand_name || "Brand Account",
+    email: brand.email || "",
+  };
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const notifications: any[] = [];
   const [showNotifications, setShowNotifications] = useState(false);
-  const [isPricingOpen, setIsPricingOpen] = useState(false);
-  const [pocCount, setPocCount] = useState(brand.poc_count ?? 0);
-  const subscriptionStatus = brand.subscription_status ?? "free";
+  const isLoading = false;
+  const [pocCount, setPocCount] = useState(0);
+  const [subscriptionStatus, setSubscriptionStatus] = useState("free");
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
 
-  const currentItem = useMemo(() => getCurrentItem(pathname), [pathname]);
-  const brandName = brand.brand_name || brand.company_name || "Brand Account";
-  const initials = brandName
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase() || "BR";
-  const isMessagingRoute = pathname === "/dashboard/collaboration" || pathname.startsWith("/dashboard/collaboration/");
-
+  // Listen for paywall and increment triggers
   useEffect(() => {
-    const handleOpenPricing = () => setIsPricingOpen(true);
-    const handleIncrementPoc = () => setPocCount((prev) => prev + 1);
-    const handleDecrementPoc = () => setPocCount((prev) => Math.max(prev - 1, 0));
+    const handleOpenPaywall = () => setIsPaywallOpen(true);
+    const handleIncrementPoc = () => setPocCount(prev => prev + 1);
 
-    window.addEventListener("open-subscription-paywall", handleOpenPricing);
-    window.addEventListener("open-pricing-modal", handleOpenPricing);
+    window.addEventListener("open-subscription-paywall", handleOpenPaywall);
     window.addEventListener("increment-poc-count", handleIncrementPoc);
-    window.addEventListener("decrement-poc-count", handleDecrementPoc);
 
     return () => {
-      window.removeEventListener("open-subscription-paywall", handleOpenPricing);
-      window.removeEventListener("open-pricing-modal", handleOpenPricing);
+      window.removeEventListener("open-subscription-paywall", handleOpenPaywall);
       window.removeEventListener("increment-poc-count", handleIncrementPoc);
-      window.removeEventListener("decrement-poc-count", handleDecrementPoc);
     };
   }, []);
 
+  // Monitor Scroll
   useEffect(() => {
-    let cancelled = false;
-
-    async function checkSession() {
-      const { data } = await supabase.auth.getSession();
-      if (!cancelled && !data.session) {
-        router.replace("/login");
-        router.refresh();
-      }
-    }
-
-    checkSession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if ((event === "SIGNED_OUT" || !session) && !cancelled) {
-        router.replace("/login");
-        router.refresh();
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      subscription.unsubscribe();
+    const handleScroll = () => {
+      // Intentionally left blank for future expansion
     };
-  }, [router, supabase.auth]);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
+  // Monitor Scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      // Intentionally left blank for future expansion
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Handle Logout
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.replace("/login");
-    router.refresh();
+    router.push("/login");
   };
 
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center gap-3 bg-slate-50">
+        <div className="h-10 w-10 border-4 border-brand-red-200 border-t-brand-red-600 rounded-full animate-spin" />
+        <span className="text-slate-500 text-xs font-bold uppercase tracking-widest">Verifying Access...</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="dashboard-shell flex h-screen w-full overflow-hidden bg-brand-surface text-slate-950">
+    <div className="h-screen w-full flex overflow-hidden bg-slate-50/50">
+
+      {/* DESKTOP SIDEBAR */}
       <aside
-        className={`hidden shrink-0 flex-col border-r border-slate-200 bg-white transition-all duration-300 md:flex ${
-          isSidebarCollapsed ? "w-20" : "w-72"
-        }`}
+        className={`hidden md:flex flex-col bg-white border-r border-slate-200/80 transition-all duration-300 shrink-0 ${isSidebarCollapsed ? "w-20" : "w-64"
+          }`}
       >
-        <div className="flex h-16 items-center justify-between border-b border-slate-200 px-4">
-          <Link href="/dashboard" className="flex min-w-0 items-center gap-2">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-brand-black text-white">
-              <span className="text-lg font-extrabold tracking-tight">U</span>
+        {/* Sidebar Header */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200/80">
+          <Link href="/dashboard" className="flex items-center gap-2 overflow-hidden">
+            <div className="h-9 w-9 bg-brand-red-600 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-white font-extrabold text-lg tracking-tighter">U</span>
             </div>
             {!isSidebarCollapsed && (
-              <span className="truncate text-lg font-extrabold tracking-tight text-slate-950">
+              <span className="font-extrabold text-lg tracking-tight text-slate-900 whitespace-nowrap">
                 UGC<span className="text-brand-red-600">FY</span>
               </span>
             )}
           </Link>
           <button
-            type="button"
-            aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            onClick={() => setIsSidebarCollapsed((value) => !value)}
-            className="rounded-xl border border-slate-200 p-1.5 text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="p-1 hover:bg-slate-50 border border-slate-100 rounded-lg text-slate-500 cursor-pointer"
           >
-            <ChevronLeft className={`h-4 w-4 transition-transform ${isSidebarCollapsed ? "rotate-180" : ""}`} />
+            <ChevronLeft className={`h-4 w-4 transition-transform duration-300 ${isSidebarCollapsed ? "rotate-180" : ""}`} />
           </button>
         </div>
 
-        <SidebarNav collapsed={isSidebarCollapsed} pathname={pathname} />
-        <GoPlusCard
-          collapsed={isSidebarCollapsed}
-          pocCount={pocCount}
-          subscriptionStatus={subscriptionStatus}
-          onUpgrade={() => setIsPricingOpen(true)}
-        />
-        <div className="border-t border-slate-200 p-3">
+        {/* Sidebar Links */}
+        <nav className="flex-1 py-6 px-3 space-y-1">
+          {sidebarItems.map((item) => {
+            const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/dashboard");
+            return (
+              <Link key={item.name} href={item.href} className="block relative">
+                <div
+                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isActive
+                      ? "text-brand-red-600 bg-brand-red-50/80"
+                      : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                    }`}
+                >
+                  <item.icon className={`h-5 w-5 shrink-0 ${isActive ? "text-brand-red-600" : "text-slate-400"}`} />
+                  {!isSidebarCollapsed && <span>{item.name}</span>}
+
+                  {/* Elegant active state red accent line */}
+                  {isActive && !isSidebarCollapsed && (
+                    <motion.div
+                      layoutId="activeIndicator"
+                      className="absolute right-2 top-3 bottom-3 w-1 bg-brand-red-600 rounded-full"
+                    />
+                  )}
+                </div>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Usage progress bar inside sidebar */}
+        {!isSidebarCollapsed && (
+          <div className="mx-4 mb-4 p-4 bg-slate-50 border border-slate-200/60 rounded-2xl space-y-2 select-none text-left shrink-0">
+            <div className="flex items-center justify-between text-[10px] font-bold">
+              <span className="text-slate-500 uppercase tracking-wider">POC Usage</span>
+              <span className={pocCount >= 3 && subscriptionStatus === "free" ? "text-brand-red-600" : "text-slate-700"}>
+                {pocCount} / 3 Free
+              </span>
+            </div>
+
+            <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${pocCount >= 3 && subscriptionStatus === "free" ? "bg-brand-red-600" : "bg-slate-800"
+                  }`}
+                style={{ width: `${Math.min((pocCount / 3) * 100, 100)}%` }}
+              />
+            </div>
+
+            {pocCount >= 3 && subscriptionStatus === "free" && (
+              <button
+                onClick={() => setIsPaywallOpen(true)}
+                className="w-full text-left text-[10px] font-extrabold text-brand-red-600 hover:text-brand-red-750 hover:underline block pt-1 cursor-pointer"
+              >
+                Upgrade to Premium
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Sidebar Footer */}
+        <div className="p-3 border-t border-slate-200/80">
           <button
-            type="button"
             onClick={handleLogout}
-            className="flex min-h-11 w-full items-center gap-3 rounded-2xl px-3 text-sm font-bold text-slate-600 transition hover:bg-brand-red-50 hover:text-brand-red-600"
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-red-600 hover:bg-red-50/50 transition cursor-pointer"
           >
-            <LogOut className="h-4.5 w-4.5 shrink-0 text-slate-400" />
-            {!isSidebarCollapsed && <span>Logout</span>}
+            <LogOut className="h-5 w-5 shrink-0 text-slate-400" />
+            {!isSidebarCollapsed && <span>Sign Out</span>}
           </button>
         </div>
       </aside>
 
+      {/* MOBILE DRAWER SIDEBAR */}
       <AnimatePresence>
         {isMobileOpen && (
           <>
-            <motion.button
-              type="button"
-              aria-label="Close dashboard navigation"
+            {/* Backdrop */}
+            <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={{ opacity: 0.4 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileOpen(false)}
-              className="fixed inset-0 z-40 bg-slate-950/50 md:hidden"
+              className="fixed inset-0 z-40 bg-black md:hidden"
             />
+            {/* Sidebar content */}
             <motion.aside
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 28, stiffness: 240 }}
-              className="fixed inset-y-0 left-0 z-50 flex w-[min(22rem,92vw)] flex-col bg-white shadow-2xl md:hidden"
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed inset-y-0 left-0 w-64 z-50 bg-white flex flex-col p-4 shadow-2xl md:hidden"
             >
-              <div className="flex h-16 items-center justify-between border-b border-slate-200 px-4">
-                <Link href="/dashboard" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-black text-white">
-                    <span className="text-lg font-extrabold tracking-tight">U</span>
+              <div className="flex items-center justify-between pb-6 border-b border-slate-100">
+                <Link href="/dashboard" className="flex items-center gap-2">
+                  <div className="h-9 w-9 bg-brand-red-600 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-extrabold text-lg tracking-tighter">U</span>
                   </div>
-                  <span className="text-lg font-extrabold tracking-tight text-slate-950">
-                    UGC<span className="text-brand-red-600">FY</span>
-                  </span>
+                  <span className="font-extrabold text-lg tracking-tight text-slate-900">UGC<span className="text-brand-red-600">FY</span></span>
                 </Link>
                 <button
-                  type="button"
-                  aria-label="Close dashboard navigation"
                   onClick={() => setIsMobileOpen(false)}
-                  className="rounded-xl border border-slate-200 p-1.5 text-slate-500 transition hover:bg-slate-50"
+                  className="p-1.5 hover:bg-slate-50 border border-slate-100 rounded-lg text-slate-500"
                 >
-                  <X className="h-4.5 w-4.5" />
+                  <ChevronLeft className="h-5 w-5" />
                 </button>
               </div>
-              <SidebarNav pathname={pathname} onNavigate={() => setIsMobileOpen(false)} />
-              <GoPlusCard
-                pocCount={pocCount}
-                subscriptionStatus={subscriptionStatus}
-                onUpgrade={() => {
-                  setIsMobileOpen(false);
-                  setIsPricingOpen(true);
-                }}
-              />
-              <div className="border-t border-slate-200 p-3">
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="flex min-h-11 w-full items-center gap-3 rounded-2xl px-3 text-sm font-bold text-slate-600 transition hover:bg-brand-red-50 hover:text-brand-red-600"
-                >
-                  <LogOut className="h-4.5 w-4.5 text-slate-400" />
-                  <span>Logout</span>
-                </button>
+
+              <nav className="flex-1 py-6 space-y-1">
+                {sidebarItems.map((item) => {
+                  const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/dashboard");
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsMobileOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all ${isActive
+                          ? "text-brand-red-600 bg-brand-red-50/80 border-r-4 border-brand-red-600"
+                          : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                        }`}
+                    >
+                      <item.icon className={`h-5 w-5 shrink-0 ${isActive ? "text-brand-red-600" : "text-slate-400"}`} />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Mobile Progress Bar */}
+              <div className="mb-4 p-4 bg-slate-50 border border-slate-200/60 rounded-2xl space-y-2 select-none text-left shrink-0">
+                <div className="flex items-center justify-between text-[10px] font-bold">
+                  <span className="text-slate-500 uppercase tracking-wider">POC Usage</span>
+                  <span className={pocCount >= 3 && subscriptionStatus === "free" ? "text-brand-red-600" : "text-slate-700"}>
+                    {pocCount} / 3 Free
+                  </span>
+                </div>
+
+                <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${pocCount >= 3 && subscriptionStatus === "free" ? "bg-brand-red-600" : "bg-slate-800"
+                      }`}
+                    style={{ width: `${Math.min((pocCount / 3) * 100, 100)}%` }}
+                  />
+                </div>
+
+                {pocCount >= 3 && subscriptionStatus === "free" && (
+                  <button
+                    onClick={() => {
+                      setIsMobileOpen(false);
+                      setIsPaywallOpen(true);
+                    }}
+                    className="w-full text-left text-[10px] font-extrabold text-brand-red-600 hover:text-brand-red-750 hover:underline block pt-1 cursor-pointer"
+                  >
+                    Upgrade to Premium
+                  </button>
+                )}
               </div>
+
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-red-600 hover:bg-red-50/50 transition cursor-pointer border-t border-slate-100 pt-4"
+              >
+                <LogOut className="h-5 w-5 shrink-0 text-slate-400" />
+                <span>Sign Out</span>
+              </button>
             </motion.aside>
           </>
         )}
       </AnimatePresence>
 
-      <div className={`flex min-w-0 flex-1 flex-col ${isMessagingRoute ? "overflow-hidden" : "overflow-y-auto"}`}>
-        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
-          <div className="flex min-h-16 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-            <div className="flex min-w-0 items-center gap-3">
+      {/* MAIN CONTENT WRAPPER */}
+      <div
+        className={`flex-1 flex flex-col h-screen relative transition-all duration-300 ${pathname === "/dashboard/messages" ? "overflow-hidden" : "overflow-y-auto"
+          }`}
+      >
+        {/* PREMIUM STICKY NAVBAR */}
+        <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shrink-0">
+          <div className="px-6 py-4 flex items-center justify-between">
+            {/* Left: Mobile toggle & Breadcrumb */}
+            <div className="flex items-center gap-3">
               <button
-                type="button"
-                aria-label="Open dashboard navigation"
-                aria-expanded={isMobileOpen}
                 onClick={() => setIsMobileOpen(true)}
-                className="rounded-2xl border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 md:hidden"
+                className="md:hidden p-2 hover:bg-slate-100/50 border border-slate-200/50 rounded-xl text-slate-600 transition"
               >
                 <Menu className="h-5 w-5" />
               </button>
-              <div className="min-w-0">
-                <div className="hidden items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400 sm:flex">
-                  <span>UGCFY</span>
-                  <span>/</span>
-                  <span className="truncate text-slate-700">{currentItem?.name ?? "Dashboard"}</span>
-                </div>
-                <h1 className="truncate text-base font-extrabold text-slate-950 sm:hidden">
-                  {currentItem?.name ?? "Dashboard"}
-                </h1>
+
+              <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <span>UGCFY</span>
+                <span>/</span>
+                <span className="text-slate-600 font-bold">
+                  {sidebarItems.find(item => item.href === pathname || (pathname.startsWith(item.href) && item.href !== "/dashboard"))?.name || "Overview"}
+                </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setIsPricingOpen(true)}
-                className="hidden min-h-10 items-center gap-2 rounded-2xl bg-brand-black px-4 text-xs font-extrabold text-white transition hover:bg-brand-red-700 sm:flex"
-              >
-                <Sparkles className="h-4 w-4" />
-                <span>Go Plus</span>
-              </button>
+            {/* Right: Notifications & User profile dropdown */}
+            <div className="flex items-center gap-3 relative">
 
+              {/* POC Usage header badge */}
+              <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200/60 text-slate-700 rounded-xl text-[10px] font-bold">
+                <span>POC Usage:</span>
+                <span className={pocCount >= 3 && subscriptionStatus === "free" ? "text-brand-red-600 font-extrabold" : "text-slate-800"}>
+                  {pocCount} / 3
+                </span>
+                {pocCount >= 3 && subscriptionStatus === "free" && (
+                  <button
+                    onClick={() => setIsPaywallOpen(true)}
+                    className="text-brand-red-600 hover:text-brand-red-750 underline ml-1 cursor-pointer font-extrabold"
+                  >
+                    Upgrade
+                  </button>
+                )}
+              </div>
+
+              {/* Premium Badge / Plan indicator */}
+              <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-brand-red-500 to-rose-600 text-white rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm shadow-brand-red-500/20">
+                <Sparkles className="h-3 w-3" />
+                Go Plus
+              </div>
+
+              {/* Notification Button */}
               <div className="relative">
                 <button
-                  type="button"
-                  aria-label="Open notifications"
-                  aria-expanded={showNotifications}
-                  onClick={() => setShowNotifications((value) => !value)}
-                  className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 hover:text-slate-950"
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="p-2.5 hover:bg-white border border-slate-200/60 bg-white/40 backdrop-blur-sm rounded-xl text-slate-600 hover:text-slate-800 transition relative cursor-pointer"
                 >
-                  <Bell className="h-4.5 w-4.5" />
+                  <Bell className="h-4 w-4" />
+                  {notifications.some(n => !n.is_read) && (
+                    <span className="absolute top-1 right-1 h-2 w-2 bg-brand-red-600 rounded-full" />
+                  )}
                 </button>
+
+                {/* Notifications Dropdown */}
                 <AnimatePresence>
                   {showNotifications && (
                     <>
-                      <button
-                        type="button"
-                        aria-label="Close notifications"
-                        className="fixed inset-0 z-40"
-                        onClick={() => setShowNotifications(false)}
-                      />
+                      <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
                       <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                        initial={{ opacity: 0, y: 15, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                        className="absolute right-0 z-50 mt-2 w-80 rounded-3xl border border-slate-200 bg-white p-4 shadow-xl"
+                        exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                        className="absolute right-0 mt-2 w-80 bg-white border border-slate-200/80 rounded-2xl shadow-xl z-50 p-4"
                       >
-                        <p className="text-sm font-extrabold text-slate-950">Notifications</p>
-                        <p className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-center text-xs font-semibold text-slate-500">
-                          No new notifications.
-                        </p>
+                        <h4 className="font-bold text-xs text-slate-800 border-b border-slate-100 pb-2 mb-2">Notifications</h4>
+                        <div className="space-y-2">
+                          {notifications.length === 0 ? (
+                            <p className="text-xs text-slate-400 text-center py-4">No new notifications</p>
+                          ) : (
+                            notifications.map((n) => (
+                              <div key={n.id} className="p-2 rounded-lg hover:bg-slate-50 transition text-left">
+                                <p className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                                  {n.title}
+                                  {!n.is_read && <span className="h-1.5 w-1.5 bg-brand-red-600 rounded-full" />}
+                                </p>
+                                <p className="text-[10px] text-slate-500 mt-0.5">{n.content}</p>
+                              </div>
+                            ))
+                          )}
+                        </div>
                       </motion.div>
                     </>
                   )}
                 </AnimatePresence>
               </div>
 
+              {/* Profile Dropdown */}
               <div className="relative">
                 <button
-                  type="button"
-                  aria-label="Open profile menu"
-                  aria-expanded={isProfileOpen}
-                  onClick={() => setIsProfileOpen((value) => !value)}
-                  className="flex h-10 items-center gap-2 rounded-2xl border border-slate-200 bg-white p-1.5 pr-2 text-slate-700 transition hover:bg-slate-50"
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  className="flex items-center gap-2 p-1.5 border border-slate-200/60 bg-white/40 backdrop-blur-sm rounded-xl text-slate-600 hover:text-slate-800 transition cursor-pointer"
                 >
-                  <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-brand-red-50 text-xs font-extrabold text-brand-red-600">
-                    {initials}
+                  <div className="h-7 w-7 rounded-lg bg-brand-red-100 flex items-center justify-center text-brand-red-700 font-extrabold text-xs">
+                    {profile?.company_name?.slice(0, 2).toUpperCase() || "BR"}
+                  </div>
+                  <span className="hidden sm:inline text-xs font-bold text-slate-700">
+                    {profile?.company_name || "Nike Sports India"}
                   </span>
-                  <span className="hidden max-w-36 truncate text-xs font-extrabold sm:inline">{brandName}</span>
-                  <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+                  <ChevronDown className="h-3 w-3 text-slate-400" />
                 </button>
+
                 <AnimatePresence>
-                  {isProfileOpen && (
+                  {isProfileDropdownOpen && (
                     <>
-                      <button
-                        type="button"
-                        aria-label="Close profile menu"
-                        className="fixed inset-0 z-40"
-                        onClick={() => setIsProfileOpen(false)}
-                      />
+                      <div className="fixed inset-0 z-40" onClick={() => setIsProfileDropdownOpen(false)} />
                       <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                        initial={{ opacity: 0, y: 15, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                        className="absolute right-0 z-50 mt-2 w-64 rounded-3xl border border-slate-200 bg-white p-2 shadow-xl"
+                        exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                        className="absolute right-0 mt-2 w-56 bg-white border border-slate-200/80 rounded-2xl shadow-xl z-50 p-2"
                       >
-                        <div className="border-b border-slate-100 p-3">
-                          <p className="truncate text-sm font-extrabold text-slate-950">{brandName}</p>
-                          <p className="mt-0.5 truncate text-xs font-medium text-slate-500">{brand.email || "No email on file"}</p>
+                        <div className="p-3 border-b border-slate-100">
+                          <p className="text-xs font-bold text-slate-800 truncate">{profile?.company_name}</p>
+                          <p className="text-[10px] text-slate-500 truncate mt-0.5">{profile?.email}</p>
                         </div>
                         <div className="py-1">
                           <Link
-                            href="/dashboard/settings"
-                            onClick={() => setIsProfileOpen(false)}
-                            className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50 hover:text-slate-950"
+                            href="/settings"
+                            onClick={() => setIsProfileDropdownOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition"
                           >
-                            <Settings className="h-4 w-4" />
+                            <Settings className="h-3.5 w-3.5" />
                             Settings
                           </Link>
                           <button
-                            type="button"
                             onClick={() => {
-                              setIsProfileOpen(false);
+                              setIsProfileDropdownOpen(false);
                               handleLogout();
                             }}
-                            className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-xs font-bold text-brand-red-600 transition hover:bg-brand-red-50"
+                            className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50/50 rounded-lg transition text-left cursor-pointer"
                           >
-                            <LogOut className="h-4 w-4" />
-                            Logout
+                            <LogOut className="h-3.5 w-3.5" />
+                            Sign Out
                           </button>
                         </div>
                       </motion.div>
@@ -532,31 +470,79 @@ export default function DashboardClientLayout({
                   )}
                 </AnimatePresence>
               </div>
+
             </div>
           </div>
         </header>
 
-        <main className={`flex-1 ${isMessagingRoute ? "min-h-0 p-0" : "px-4 py-6 sm:px-6 lg:px-8"}`}>
+        {/* PAGE BODY */}
+        <main className={`flex-1 w-full ${pathname === "/dashboard/messages"
+            ? "h-[calc(100vh-4rem)] p-0 overflow-hidden"
+            : "p-4 md:p-6 lg:p-8 max-w-7xl mx-auto"
+          }`}>
+          
+          {/* Status Banners */}
           {brand.approval_status === "profile_incomplete" && (
-            <div className="mx-auto mb-6 flex max-w-7xl flex-col gap-3 rounded-3xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-sm font-extrabold text-slate-950">Your profile is incomplete</h2>
-                <p className="mt-1 text-xs font-medium text-slate-600">Complete your brand profile and verification to unlock the full workflow.</p>
+                <h4 className="text-sm font-bold text-amber-900">Your profile is incomplete</h4>
+                <p className="text-xs text-amber-700 mt-1">Please complete your brand profile and KYC to unlock full access.</p>
               </div>
-              <Link href="/dashboard/profile" className="rounded-2xl bg-brand-black px-4 py-2 text-center text-xs font-extrabold text-white">
+              <Link href="/brand/onboarding" className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition">
                 Complete Profile
               </Link>
             </div>
           )}
 
-          <div className={isMessagingRoute ? "h-full min-h-0" : "mx-auto w-full max-w-7xl"}>
-            <ErrorBoundary name="DashboardLayout">{children}</ErrorBoundary>
+          {brand.approval_status === "pending_verification" && (
+            <div className="mb-6 p-4 rounded-2xl bg-blue-50 border border-blue-200 flex items-start gap-3">
+              <Clock className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-sm font-bold text-blue-900">Application Under Review</h4>
+                <p className="text-xs text-blue-700 mt-1">Our curation team is currently reviewing your application. You will receive an email once approved.</p>
+              </div>
+            </div>
+          )}
+
+          {brand.approval_status === "rejected" && (
+            <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 flex items-start gap-3">
+              <span className="h-5 w-5 flex items-center justify-center bg-red-100 text-red-600 rounded-full font-bold text-xs shrink-0 mt-0.5">!</span>
+              <div>
+                <h4 className="text-sm font-bold text-red-900">Application Rejected</h4>
+                <p className="text-xs text-red-700 mt-1">Unfortunately, your application did not meet our criteria. Please contact support for more details.</p>
+              </div>
+            </div>
+          )}
+
+          {brand.approval_status === "suspended" && (
+            <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 flex items-start gap-3">
+              <span className="h-5 w-5 flex items-center justify-center bg-red-100 text-red-600 rounded-full font-bold text-xs shrink-0 mt-0.5">!</span>
+              <div>
+                <h4 className="text-sm font-bold text-red-900">Account Suspended</h4>
+                <p className="text-xs text-red-700 mt-1">Your account has been suspended. Please contact partnerships@ugcfy.com for assistance.</p>
+              </div>
+            </div>
+          )}
+
+          <div className="p-6 md:p-8 lg:p-10 max-w-[1600px] mx-auto w-full">
+            <ErrorBoundary name="DashboardLayout">
+              {children}
+            </ErrorBoundary>
           </div>
         </main>
       </div>
 
       <AnimatePresence>
-        {isPricingOpen && <PricingModal isOpen={isPricingOpen} onClose={() => setIsPricingOpen(false)} />}
+        {isPaywallOpen && (
+          <SubscriptionPaywallModal
+            isOpen={isPaywallOpen}
+            onClose={() => setIsPaywallOpen(false)}
+            onUpgrade={() => {
+              setSubscriptionStatus("premium");
+              setIsPaywallOpen(false);
+            }}
+          />
+        )}
       </AnimatePresence>
     </div>
   );

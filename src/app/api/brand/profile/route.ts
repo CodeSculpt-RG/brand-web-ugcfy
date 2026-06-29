@@ -5,20 +5,6 @@ import { brandProfileSchema } from "@/lib/validation/brandProfile";
 import { ZodError } from "zod";
 import { jsonError, jsonSuccess } from "@/lib/api-response";
 
-export async function GET() {
-  const brandSession = await verifyBrand();
-
-  if (!brandSession.ok) {
-    return jsonError("UNAUTHENTICATED", brandSession.message || "Please login to continue.", 401);
-  }
-
-  if (!brandSession.brand) {
-    return jsonError("BRAND_PROFILE_NOT_FOUND", "Brand profile not found.", 404);
-  }
-
-  return jsonSuccess({ profile: brandSession.brand });
-}
-
 export async function PATCH(req: NextRequest) {
   try {
     const brandSession = await verifyBrand();

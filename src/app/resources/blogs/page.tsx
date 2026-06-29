@@ -9,7 +9,7 @@ const BLOG_POSTS = [
   {
     id: "1",
     title: "How to Lower CPA by 40% with Authentic UGC",
-    excerpt: "A complete tear-down of how top D2C brands are replacing expensive studio shoots with high-volume, authentic creator content to drastically lower their acquisition costs.",
+    excerpt: "A complete tear-down of how top D2C brands are replacing expensive studio shoots with high-volume, authentic creator content to drastically lower their acquisition costs on TikTok.",
     category: "Case Study",
     author: "Sarah Jenkins",
     date: "Oct 12, 2026",
@@ -19,7 +19,7 @@ const BLOG_POSTS = [
   },
   {
     id: "2",
-    title: "The 3 Social Hooks That Convert in 2026",
+    title: "The 3 TikTok Hooks That Convert in 2026",
     excerpt: "Stop guessing what works. We analyzed over 10,000 top-performing ad creatives to find the exact hook structures that maximize retention in the first 3 seconds.",
     category: "Strategy",
     author: "Marcus Chen",
@@ -52,8 +52,8 @@ const BLOG_POSTS = [
   },
   {
     id: "5",
-    title: "Navigating Social Commerce Affiliate Programs",
-    excerpt: "Social commerce is eating the world. A step-by-step guide to syncing your creator campaigns directly with Social Commerce APIs.",
+    title: "Navigating TikTok Shop Affiliate Programs",
+    excerpt: "Social commerce is eating the world. A step-by-step guide to syncing your creator campaigns directly with TikTok Shop APIs.",
     category: "Social Commerce",
     author: "Sarah Jenkins",
     date: "Sep 22, 2026",

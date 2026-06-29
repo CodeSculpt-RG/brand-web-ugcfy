@@ -16,24 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-
-    const normalizedBody = {
-      ...body,
-      platforms: Array.isArray(body.platforms)
-        ? body.platforms
-        : typeof body.platforms === "string"
-          ? [body.platforms]
-          : typeof body.platform === "string"
-            ? [body.platform]
-            : [],
-    };
-
-    const validatedData = campaignSchema.parse(normalizedBody);
-    const budget = Number(validatedData.budget);
-
-    if (!Number.isFinite(budget) || budget <= 0) {
-      return jsonError("VALIDATION_ERROR", "Campaign budget must be greater than zero before payment.", 400);
-    }
+    const validatedData = campaignSchema.parse(body);
 
     const supabase = await createClient();
 
@@ -43,18 +26,17 @@ export async function POST(req: NextRequest) {
         brand_id: brandSession.brand.id,
         title: validatedData.title,
         description: validatedData.description || null,
-        objective: null,
+        objective: validatedData.objective || null,
         platforms: validatedData.platforms,
         deliverables: validatedData.deliverables,
-        budget,
+        budget: validatedData.budget || null,
         currency: validatedData.currency,
-        start_date: null,
-        end_date: null,
+        start_date: validatedData.start_date || null,
+        end_date: validatedData.end_date || null,
         requirements: validatedData.requirements,
-        guidelines: null,
+        guidelines: validatedData.guidelines || null,
         created_by: brandSession.user.id,
-        status: "draft",
-        payment_status: "pending"
+        status: "draft"
       })
       .select()
       .single();
@@ -66,32 +48,18 @@ export async function POST(req: NextRequest) {
         details: error.details,
         hint: error.hint,
       });
-      return jsonError("CAMPAIGN_CREATE_FAILED", "Unable to create campaign draft.", 500);
+      return jsonError("SUPABASE_INSERT_FAILED", error.message || "Failed to create campaign", 500, {
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      });
     }
 
-    return jsonSuccess({
-      campaign: {
-        id: data.id,
-        status: data.status,
-        payment_status: data.payment_status
-      },
-      paymentRequired: true,
-      nextAction: "continue_to_payment"
-    }, 201);
+    return jsonSuccess(data);
   } catch (err: unknown) {
     console.error("[form-api] unexpected error", err);
     if (err instanceof ZodError) {
-      return Response.json(
-        {
-          ok: false,
-          error: {
-            code: "VALIDATION_ERROR",
-            message: "Invalid campaign payload.",
-            issues: err.issues
-          }
-        },
-        { status: 400 }
-      );
+      return jsonError("VALIDATION_ERROR", err.issues[0]?.message || "Validation failed", 400);
     }
     return jsonError("INTERNAL_ERROR", "Internal Server Error", 500);
   }
