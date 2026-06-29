@@ -3,7 +3,7 @@ import { PlayCircle, Image as ImageIcon, BarChart2, MoreHorizontal } from 'lucid
 
 export default function CampaignDashboardMockup() {
   const deliverables = [
-    { type: "Video", platform: "TikTok", creator: "@miastyles", status: "Approved", icon: PlayCircle, color: "text-rose-500", bg: "bg-rose-100" },
+    { type: "Video", platform: "YouTube", creator: "@miastyles", status: "Approved", icon: PlayCircle, color: "text-rose-500", bg: "bg-rose-100" },
     { type: "Image", platform: "Instagram", creator: "@jake_fits", status: "In Review", icon: ImageIcon, color: "text-purple-500", bg: "bg-purple-100" },
     { type: "Video", platform: "YouTube", creator: "@sarahj.beauty", status: "Drafting", icon: PlayCircle, color: "text-blue-500", bg: "bg-blue-100" },
   ];

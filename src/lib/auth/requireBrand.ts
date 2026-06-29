@@ -1,7 +1,9 @@
 import { verifyBrand } from './verifyBrand';
 import { redirect } from 'next/navigation';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export async function requireBrand() {
+  noStore();
   const result = await verifyBrand();
 
   if (!result.ok) {
