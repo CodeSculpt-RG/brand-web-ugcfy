@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -311,13 +312,8 @@ export default function DashboardClientLayout({
       <div className="dashboard-shell flex min-h-screen w-full flex-col bg-[#FDFBFB] text-slate-950">
         <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-black text-white">
-                <span className="text-lg font-extrabold tracking-tight">U</span>
-              </div>
-              <span className="text-lg font-extrabold tracking-tight text-slate-950">
-                UGC<span className="text-brand-red-600">FY</span>
-              </span>
+            <div className="flex items-center">
+              <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={120} height={36} className="h-8 w-auto object-contain" priority />
             </div>
             <button
               type="button"
@@ -344,14 +340,11 @@ export default function DashboardClientLayout({
         }`}
       >
         <div className="flex h-16 items-center justify-between border-b border-slate-200 px-4">
-          <Link href="/dashboard" className="flex min-w-0 items-center gap-2">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-brand-black text-white">
-              <span className="text-lg font-extrabold tracking-tight">U</span>
-            </div>
-            {!isSidebarCollapsed && (
-              <span className="truncate text-lg font-extrabold tracking-tight text-slate-950">
-                UGC<span className="text-brand-red-600">FY</span>
-              </span>
+          <Link href="/dashboard" className="flex min-w-0 items-center">
+            {isSidebarCollapsed ? (
+              <Image src="/brand/ugcfy-icon.png" alt="UGCFY" width={36} height={36} className="h-9 w-9 object-contain" />
+            ) : (
+              <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={120} height={36} className="h-8 w-auto object-contain" priority />
             )}
           </Link>
           <button
@@ -403,13 +396,8 @@ export default function DashboardClientLayout({
               className="fixed inset-y-0 left-0 z-50 flex w-[min(22rem,92vw)] flex-col bg-white shadow-2xl md:hidden"
             >
               <div className="flex h-16 items-center justify-between border-b border-slate-200 px-4">
-                <Link href="/dashboard" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-black text-white">
-                    <span className="text-lg font-extrabold tracking-tight">U</span>
-                  </div>
-                  <span className="text-lg font-extrabold tracking-tight text-slate-950">
-                    UGC<span className="text-brand-red-600">FY</span>
-                  </span>
+                <Link href="/dashboard" onClick={() => setIsMobileOpen(false)} className="flex items-center">
+                  <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={120} height={36} className="h-8 w-auto object-contain" priority />
                 </Link>
                 <button
                   type="button"

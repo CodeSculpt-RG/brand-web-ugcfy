@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Smartphone } from "lucide-react";
 import AppComingSoonModal from "./landing/AppComingSoonModal";
 
@@ -20,11 +21,8 @@ export default function Footer() {
           
           {/* Column 1: Brand & Bio */}
           <div className="lg:col-span-2 pr-0 lg:pr-12">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-10 w-10 bg-[#0A0A0A] flex items-center justify-center rounded-xl shadow-md border border-gray-200">
-                <span className="text-white font-extrabold text-xl tracking-tighter">u</span>
-              </div>
-              <span className="font-extrabold text-2xl tracking-tight text-[#0A0A0A]">UGCFY</span>
+            <div className="flex items-center mb-6">
+              <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={140} height={44} className="w-[115px] md:w-[140px] h-auto object-contain" />
             </div>
             <p className="text-gray-500 text-[15px] leading-relaxed mb-8 max-w-sm">
               The ultra-premium creator platform for high-converting 9:16 video formats, authentic UGC, and automated influencer marketing.

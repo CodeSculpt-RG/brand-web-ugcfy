@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronDown, X } from "lucide-react";
 import RequestAccessModal from "./RequestAccessModal";
 import { MegaMenuPanel, PLATFORM_DATA, SOLUTIONS_DATA, RESOURCES_DATA, SERVICES_DATA, COMPANY_DATA } from "./MegaMenu";
@@ -55,11 +56,8 @@ export default function Navbar({ theme = "transparent-to-dark" }: NavbarProps) {
     <>
       <header className={`fixed top-0 w-full z-50 transition-colors duration-300 py-1.5 ${headerBg} border-b border-white/10`}>
         <div className="max-w-[1280px] mx-auto px-6 h-[76px] flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="h-10 w-10 bg-[#000000] flex items-center justify-center rounded-xl border border-white/20 shadow-lg">
-              <span className="text-[#D90429] font-extrabold text-xl tracking-tighter">u</span>
-            </div>
-            <span className="font-extrabold text-2xl tracking-tight text-white">UGCFY</span>
+          <Link href="/" className="flex items-center">
+            <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={140} height={40} className="h-8 w-auto object-contain brightness-0 invert" priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8 font-medium text-[15px] text-white h-full">

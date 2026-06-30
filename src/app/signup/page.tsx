@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -149,14 +150,8 @@ export default function RequestAccessPage() {
         
         <div className="w-full max-w-md flex flex-col justify-between h-full relative z-20 text-white py-12">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 self-start cursor-pointer group">
-            <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-black/10 group-hover:scale-105 transition-transform">
-              <span className="text-brand-red-600 font-extrabold text-xl tracking-tighter">U</span>
-            </div>
-            <div>
-              <h1 className="font-extrabold text-2xl tracking-tight leading-none text-white">UGC<span className="text-white/80 font-normal">FY</span></h1>
-              <p className="text-[10px] text-brand-red-100 tracking-wider uppercase font-semibold leading-none mt-1">Request Vetted Access</p>
-            </div>
+          <Link href="/" className="flex items-center self-start cursor-pointer group">
+            <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={160} height={45} className="h-10 w-auto object-contain brightness-0 invert group-hover:scale-105 transition-transform" priority />
           </Link>
 
           {/* Floating Vetted Cards */}

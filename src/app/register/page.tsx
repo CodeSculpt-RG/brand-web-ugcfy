@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -117,11 +118,8 @@ export default function RegisterPage() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-12">
         <div className="w-full max-w-md mx-auto">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 mb-16">
-            <div className="h-10 w-10 bg-[#000000] flex items-center justify-center rounded-xl shadow-lg">
-              <span className="text-[#D90429] font-extrabold text-xl tracking-tighter">u</span>
-            </div>
-            <span className="font-extrabold text-2xl tracking-tight text-slate-900">UGCFY</span>
+          <Link href="/" className="flex items-center mb-16">
+            <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={160} height={45} className="h-10 w-auto object-contain" priority />
           </Link>
 
           <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">Create an account</h1>

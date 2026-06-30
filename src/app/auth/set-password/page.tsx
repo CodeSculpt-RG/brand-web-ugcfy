@@ -2,6 +2,7 @@
 
 import React, { Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, KeyRound } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PasswordInput } from "@/components/ui/PasswordInput";
@@ -35,7 +36,16 @@ function SetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
-  const [pendingSignup] = React.useState(() => getPendingSignup(searchParams.get("email")));
+  const [pendingSignup, setPendingSignup] = React.useState<PendingSignup>({ 
+    firstName: "", 
+    lastName: "", 
+    email: searchParams.get("email") || "" 
+  });
+  
+  React.useEffect(() => {
+    // eslint-disable-next-line
+    setPendingSignup(getPendingSignup(searchParams.get("email")));
+  }, [searchParams]);
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [isSaving, setIsSaving] = React.useState(false);
@@ -111,11 +121,8 @@ function SetPasswordForm() {
     <div className="min-h-screen bg-white flex">
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-12">
         <div className="w-full max-w-md mx-auto">
-          <Link href="/" className="flex items-center gap-3 mb-16">
-            <div className="h-10 w-10 bg-[#000000] flex items-center justify-center rounded-xl shadow-lg">
-              <span className="text-[#D90429] font-extrabold text-xl tracking-tighter">u</span>
-            </div>
-            <span className="font-extrabold text-2xl tracking-tight text-slate-900">UGCFY</span>
+          <Link href="/" className="flex items-center mb-16">
+            <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={160} height={45} className="h-10 w-auto object-contain" priority />
           </Link>
 
           <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-[#E11D48]">
