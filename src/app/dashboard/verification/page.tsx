@@ -43,7 +43,7 @@ export default async function VerificationPage() {
       .from("brand_kyc_documents")
       .select("*")
       .eq("brand_id", brandId)
-      .order("uploaded_at", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) {
       if (error.code !== "42P01" && !error.message?.includes("does not exist")) {
