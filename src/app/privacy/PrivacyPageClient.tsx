@@ -73,7 +73,7 @@ export default function PrivacyPolicy() {
             <div className="space-y-3">
               <h2 className="text-lg font-bold text-white">6. Your Rights & Contacts</h2>
               <p>
-                You have the right to request access to, correction of, or deletion of your personal data. For any questions regarding this Privacy Policy, please contact our legal support desk at <a href="mailto:support@ugcfy.com" className="text-brand-red-500 hover:underline">support@ugcfy.com</a>.
+                You have the right to request access to, correction of, or deletion of your personal data. For any questions regarding this Privacy Policy, please contact our legal support desk at <a href="mailto:privacy@ugcfy.com" className="text-brand-red-500 hover:underline">privacy@ugcfy.com</a>. For escalations or grievances, please contact <a href="mailto:grievance@ugcfy.com" className="text-brand-red-500 hover:underline">grievance@ugcfy.com</a>.
               </p>
             </div>
           </div>

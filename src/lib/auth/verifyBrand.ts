@@ -9,11 +9,16 @@ export type BrandSession = {
     id: string;
     user_id?: string | null;
     email?: string | null; // Using contact_email from DB
-    company_name?: string | null;
-    brand_name?: string | null;
-    approval_status?: string | null;
-  };
-};
+	    company_name?: string | null;
+	    brand_name?: string | null;
+	    approval_status?: string | null;
+	    kyc_status?: string | null;
+	    onboarding_status?: string | null;
+	    status?: string | null;
+	    rejection_reason?: string | null;
+	    hold_reason?: string | null;
+	  };
+	};
 
 export type VerifyBrandResult =
   | {
@@ -23,11 +28,16 @@ export type VerifyBrandResult =
         id: string;
         user_id?: string | null;
         email?: string | null;
-        company_name?: string | null;
-        brand_name?: string | null;
-        approval_status?: string | null;
-      };
-    }
+	        company_name?: string | null;
+	        brand_name?: string | null;
+	        approval_status?: string | null;
+	        kyc_status?: string | null;
+	        onboarding_status?: string | null;
+	        status?: string | null;
+	        rejection_reason?: string | null;
+	        hold_reason?: string | null;
+	      };
+	    }
   | {
       ok: false;
       code: 
@@ -50,10 +60,10 @@ export async function verifyBrand(): Promise<VerifyBrandResult> {
     }
 
     // Attempt to lookup by user_id first (primary link from app registration)
-    const { data: brandProfiles, error: brandError } = await supabase
-      .from('brand_profiles')
-      .select('id, user_id, contact_email, company_name, brand_name, approval_status')
-      .eq('user_id', user.id);
+	    const { data: brandProfiles, error: brandError } = await supabase
+	      .from('brand_profiles')
+	      .select('*')
+	      .eq('user_id', user.id);
 
     if (brandError) {
       console.error('[verifyBrand] brand profile query failed', {
@@ -84,12 +94,17 @@ export async function verifyBrand(): Promise<VerifyBrandResult> {
       brand: {
         id: brandProfile.id,
         user_id: brandProfile.user_id,
-        email: brandProfile.contact_email,
-        company_name: brandProfile.company_name,
-        brand_name: brandProfile.brand_name,
-        approval_status: brandProfile.approval_status
-      }
-    };
+	        email: brandProfile.contact_email,
+	        company_name: brandProfile.company_name,
+	        brand_name: brandProfile.brand_name,
+	        approval_status: brandProfile.approval_status,
+	        kyc_status: brandProfile.kyc_status,
+	        onboarding_status: brandProfile.onboarding_status,
+	        status: brandProfile.status,
+	        rejection_reason: brandProfile.rejection_reason,
+	        hold_reason: brandProfile.hold_reason,
+	      }
+	    };
   } catch (error) {
     console.error('[verifyBrand] unexpected error', {
       message: error instanceof Error ? error.message : "Unknown error"

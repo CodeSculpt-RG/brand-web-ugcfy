@@ -33,9 +33,11 @@ export function getBrandAccessStatus(profile: any): BrandAccessStatus {
     approvalStatus === "pending_verification" ||
     approvalStatus === "under_review" ||
     kycStatus === "pending" ||
+    kycStatus === "pending_verification" ||
     kycStatus === "submitted" ||
     kycStatus === "under_review" ||
     onboardingStatus === "submitted" ||
+    onboardingStatus === "under_review" ||
     status === "pending";
 
   if (isPending) return "pending";
@@ -54,11 +56,24 @@ export function getBrandAccessStatus(profile: any): BrandAccessStatus {
     approvalStatus === "needs_changes" ||
     approvalStatus === "changes_requested" ||
     kycStatus === "on_hold" ||
-    kycStatus === "needs_changes";
+    kycStatus === "needs_changes" ||
+    kycStatus === "changes_requested" ||
+    status === "on_hold";
 
   if (isOnHold) return "on_hold";
 
-  if (kycStatus === "draft") return "draft";
+  if (
+    approvalStatus === "draft" ||
+    approvalStatus === "profile_incomplete" ||
+    approvalStatus === "incomplete" ||
+    kycStatus === "draft" ||
+    kycStatus === "not_started" ||
+    kycStatus === "not_submitted" ||
+    onboardingStatus === "draft" ||
+    onboardingStatus === "in_progress"
+  ) {
+    return "draft";
+  }
 
   return "incomplete";
 }

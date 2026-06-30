@@ -11,39 +11,52 @@ function redirectTo(origin: string, pathname: string) {
   return NextResponse.redirect(new URL(pathname, origin));
 }
 
-function redirectToLogin(origin: string, error: string) {
-  return redirectTo(origin, `/login?error=${encodeURIComponent(error)}`);
-}
-
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const origin = requestUrl.origin;
+  const callbackLog = {
+    origin,
+    codePresent: Boolean(code),
+    exchangeSuccess: false,
+    userExists: false,
+    profileExists: false,
+    accessStatus: "unknown",
+    finalRedirectPath: "",
+  };
+
+  const finish = (pathname: string) => {
+    callbackLog.finalRedirectPath = pathname;
+    console.info("[Auth Callback] routing", callbackLog);
+    return redirectTo(origin, pathname);
+  };
 
   if (!code) {
-    return redirectToLogin(origin, "missing_oauth_code");
+    return finish(`/login?error=${encodeURIComponent("missing_oauth_code")}`);
   }
 
   try {
     const supabase = await createClient();
 
     const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+    callbackLog.exchangeSuccess = !exchangeError;
 
     if (exchangeError) {
       console.error("[Auth Callback] exchange failed:", serializeSupabaseError(exchangeError));
-      return redirectToLogin(origin, "oauth_exchange_failed");
+      return finish(`/login?error=${encodeURIComponent("oauth_exchange_failed")}`);
     }
 
     const {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser();
+    callbackLog.userExists = Boolean(user);
 
     if (userError || !user) {
       if (userError) {
         console.error("[Auth Callback] user lookup failed:", serializeSupabaseError(userError));
       }
-      return redirectToLogin(origin, "session_missing");
+      return finish(`/login?error=${encodeURIComponent("session_missing")}`);
     }
 
     const decision = await getBrandRoutingDecision(supabase, user.id);
@@ -54,23 +67,27 @@ export async function GET(request: Request) {
         message: decision.message,
         error: decision.error,
       });
-      return redirectToLogin(origin, "oauth_profile_check_failed");
+      return finish(`/login?error=${encodeURIComponent("oauth_profile_check_failed")}`);
     }
+    callbackLog.profileExists = Boolean(decision.profile);
+    callbackLog.accessStatus = decision.accessStatus;
 
     if (decision.reason === "missing_profile") {
       const { error: createProfileError } = await createMinimalBrandProfile(supabase, user);
 
       if (createProfileError) {
         console.error("[Auth Callback] minimal profile create failed:", serializeSupabaseError(createProfileError));
-        return redirectToLogin(origin, "oauth_profile_create_failed");
+        return finish(`/login?error=${encodeURIComponent("oauth_profile_create_failed")}`);
       }
 
-      return redirectTo(origin, BRAND_VERIFICATION_PATH);
+      callbackLog.profileExists = true;
+      callbackLog.accessStatus = "incomplete";
+      return finish(BRAND_VERIFICATION_PATH);
     }
 
-    return redirectTo(origin, decision.redirectTo);
+    return finish(decision.redirectTo);
   } catch (error) {
     console.error("[Auth Callback] unexpected failure:", serializeSupabaseError(error));
-    return redirectToLogin(origin, "oauth_callback_failed");
+    return finish(`/login?error=${encodeURIComponent("oauth_callback_failed")}`);
   }
 }

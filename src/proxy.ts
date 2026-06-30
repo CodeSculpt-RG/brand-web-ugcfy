@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+import { getBrandAccessStatus } from './lib/auth/getBrandAccessStatus';
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
@@ -41,6 +42,10 @@ export async function proxy(request: NextRequest) {
                       request.nextUrl.pathname.startsWith('/register') ||
                       request.nextUrl.pathname.startsWith('/signup');
 
+  if (request.nextUrl.pathname.startsWith('/auth/callback')) {
+    return response;
+  }
+
   if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL('/login?next=' + request.nextUrl.pathname, request.url));
   }
@@ -56,25 +61,23 @@ export async function proxy(request: NextRequest) {
       .eq('user_id', user.id)
       .limit(1);
 
-    const profile = profiles?.[0];
-    const status = String(profile?.approval_status || '').toLowerCase();
-    const kycStatus = String(profile?.kyc_status || '').toLowerCase();
-    const isComplete =
-      status === 'pending_verification' ||
-      status === 'approved' ||
-      status === 'verified' ||
-      status === 'active' ||
-      kycStatus === 'submitted' ||
-      kycStatus === 'approved' ||
-      kycStatus === 'completed';
-
-    if (!isComplete) {
+    if (getBrandAccessStatus(profiles?.[0]) !== 'approved') {
       return NextResponse.redirect(new URL('/dashboard/verification', request.url));
     }
   }
 
   if (isAuthRoute && user) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    const { data: profiles } = await supabase
+      .from('brand_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .limit(1);
+
+    const redirectPath = getBrandAccessStatus(profiles?.[0]) === 'approved'
+      ? '/dashboard'
+      : '/dashboard/verification';
+
+    return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
   return response;

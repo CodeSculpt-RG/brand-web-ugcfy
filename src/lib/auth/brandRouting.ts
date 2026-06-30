@@ -1,4 +1,5 @@
 import type { SupabaseClient, User } from "@supabase/supabase-js";
+import { getBrandAccessStatus } from "./getBrandAccessStatus";
 
 export const BRAND_ONBOARDING_PATH = "/brand/onboarding";
 export const BRAND_VERIFICATION_PATH = "/dashboard/verification";
@@ -28,6 +29,7 @@ export type BrandRoutingDecision =
       profile: BrandProfileForRouting | null;
       redirectTo: typeof BRAND_ONBOARDING_PATH | typeof BRAND_VERIFICATION_PATH | typeof BRAND_DASHBOARD_PATH;
       reason: "missing_profile" | "profile_incomplete" | "verification_required" | "ready";
+      accessStatus: "incomplete" | "draft" | "pending" | "approved" | "rejected" | "on_hold";
     }
   | {
       ok: false;
@@ -68,10 +70,6 @@ export function isMissingRelationError(error: MaybeSupabaseError | null | undefi
   return error?.code === "42P01" || Boolean(error?.message?.includes("does not exist"));
 }
 
-
-
-import { getBrandAccessStatus } from "./getBrandAccessStatus";
-
 export async function getBrandRoutingDecision(
   supabase: SupabaseClient,
   userId: string
@@ -97,6 +95,7 @@ export async function getBrandRoutingDecision(
       profile: null,
       redirectTo: BRAND_VERIFICATION_PATH,
       reason: "missing_profile",
+      accessStatus: "incomplete",
     };
   }
 
@@ -117,6 +116,7 @@ export async function getBrandRoutingDecision(
       profile,
       redirectTo: BRAND_DASHBOARD_PATH,
       reason: "ready",
+      accessStatus: status,
     };
   }
 
@@ -126,6 +126,7 @@ export async function getBrandRoutingDecision(
       profile,
       redirectTo: BRAND_VERIFICATION_PATH,
       reason: "profile_incomplete",
+      accessStatus: status,
     };
   }
 
@@ -134,6 +135,7 @@ export async function getBrandRoutingDecision(
     profile,
     redirectTo: BRAND_VERIFICATION_PATH,
     reason: "verification_required",
+    accessStatus: status,
   };
 }
 
@@ -141,7 +143,10 @@ export async function createMinimalBrandProfile(supabase: SupabaseClient, user: 
   return supabase.from("brand_profiles").upsert({
     id: user.id,
     user_id: user.id,
+    profile_id: user.id,
     contact_email: user.email ?? null,
     approval_status: "profile_incomplete",
+    kyc_status: "draft",
+    onboarding_completed: false,
   });
 }

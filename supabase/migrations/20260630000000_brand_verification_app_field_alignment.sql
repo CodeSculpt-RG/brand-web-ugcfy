@@ -19,9 +19,13 @@ add column if not exists din_number text,
 add column if not exists contact_email text,
 add column if not exists finance_email text,
 add column if not exists kyc_status text default 'not_started',
+add column if not exists onboarding_status text default 'in_progress',
 add column if not exists onboarding_completed boolean default false,
+add column if not exists onboarding_completed_at timestamptz,
+add column if not exists is_verified boolean default false,
 add column if not exists kyc_submitted_at timestamptz,
-add column if not exists verification_submitted_at timestamptz;
+add column if not exists verification_submitted_at timestamptz,
+add column if not exists updated_at timestamptz default now();
 
 update public.brand_profiles
 set profile_id = (

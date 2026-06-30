@@ -242,6 +242,7 @@ const platformFeatures = [
     highlight: "Influencers",
     description: "84% of marketers say finding the right influencers is their top challenge. But No Worries, our AI influencer marketing tool is ready to cater this problem with its advanced influencer discovery features. In just few clicks, find perfect match for your campaign by leveraging filters like audience demographics, follower count, target audience details, influencer and audience location, brand collaborations, engagement rate, average likes, average comments, story views, and more all within a high-tech influencer finder tool.",
     buttonText: "Explore More",
+    buttonLink: "/platform/discover",
     visual: <CreatorDiscoveryMockup />
   },
   {
@@ -250,6 +251,7 @@ const platformFeatures = [
     highlight: "Made Easy",
     description: "Say goodbye to messy spreadsheets and lost emails. Our platform allows you to automate personalized outreach campaigns at scale. Sync your email, track open rates, and manage negotiations all from a single, unified inbox designed specifically for influencer relations.",
     buttonText: "Start Outreach",
+    buttonLink: "/platform/outreach",
     visual: <CampaignWorkflowMockup />
   },
   {
@@ -258,6 +260,7 @@ const platformFeatures = [
     highlight: "Campaigns",
     description: "Keep your entire team in sync with real-time campaign tracking. Monitor content deliverables, approve drafts, and track live posts automatically. Our comprehensive dashboard gives you a bird's-eye view of your entire influencer marketing ecosystem.",
     buttonText: "View Dashboard",
+    buttonLink: "/platform/manage",
     visual: <CampaignDashboardMockup />
   }
 ];
@@ -473,9 +476,9 @@ export default function LandingPage() {
                     <p className="text-gray-500 text-lg leading-relaxed mb-8 max-w-lg">
                       {feature.description}
                     </p>
-                    <button className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-bold py-3.5 px-8 rounded-lg shadow-lg shadow-[var(--shadow-cta)] hover:shadow-[var(--shadow-cta)] transform hover:-translate-y-1 transition-all duration-300">
+                    <Link href={feature.buttonLink} className="inline-flex items-center justify-center bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-bold py-3.5 px-8 rounded-lg shadow-lg shadow-[var(--shadow-cta)] hover:shadow-[var(--shadow-cta)] transform hover:-translate-y-1 transition-all duration-300">
                       {feature.buttonText}
-                    </button>
+                    </Link>
                   </motion.div>
 
                 </div>

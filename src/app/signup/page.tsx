@@ -21,13 +21,12 @@ import {
   Users,
   ArrowLeft
 } from "lucide-react";
-import { PasswordInput } from "@/components/ui/PasswordInput";
 
 // Form Validation Schema
 const requestAccessSchema = z.object({
   companyName: z.string().min(2, "Company name must be at least 2 characters"),
   email: z.string().email("Please enter a valid work email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  
   websiteUrl: z.string()
     .transform(val => {
       if (!val) return "";
@@ -68,7 +67,7 @@ export default function RequestAccessPage() {
     defaultValues: {
       companyName: "",
       email: "",
-      password: "",
+      
       websiteUrl: ""
     }
   });
@@ -80,14 +79,15 @@ export default function RequestAccessPage() {
 
     try {
       // 1. Sign up the user in Supabase
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      const { data: signUpData, error: signUpError } = await supabase.auth.signInWithOtp({
         email: data.email,
-        password: data.password,
         options: {
+          shouldCreateUser: true,
           data: {
             role: "brand",
             full_name: data.companyName,
           },
+          emailRedirectTo: `${window.location.origin}/auth/verify-otp`,
         },
       });
 
@@ -102,44 +102,34 @@ export default function RequestAccessPage() {
         return;
       }
 
-      if (signUpData?.user) {
-        // 2. Proactively update their brand profile with incomplete profile status
-        const { error: updateError } = await supabase
-          .from("brand_profiles")
-          .update({
-            company_name: data.companyName,
-            website: data.websiteUrl || null,
-            approval_status: "profile_incomplete",
-          })
-          .eq("id", signUpData.user.id);
-
-        if (updateError) {
-          console.error("Error updating brand profile:", updateError);
-          
-          // Try upserting if trigger hasn't fired yet
-          const { error: upsertError } = await supabase
-            .from("brand_profiles")
-            .upsert({
-              id: signUpData.user.id,
-              user_id: signUpData.user.id,
-              contact_email: signUpData.user.email,
-              company_name: data.companyName,
-              website: data.websiteUrl || null,
-              approval_status: "profile_incomplete",
-            });
-
-          if (upsertError) {
-            console.error("Error upserting brand profile:", upsertError);
-          }
-        }
-      }
 
       setIsSubmitted(true);
       reset();
-      
-      // Attempt to redirect if there's a session (auto-login enabled in Supabase by default unless email verification is strictly required)
+
+      sessionStorage.setItem(
+        "pendingBrandSignup",
+        JSON.stringify({
+          firstName: data.companyName,
+          lastName: "Brand",
+          email: data.email.toLowerCase(),
+          passwordSet: false,
+        })
+      );
+
       if (signUpData?.session) {
-        router.push('/dashboard');
+        await fetch("/api/auth/complete-signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            firstName: data.companyName,
+            lastName: "Brand",
+            email: data.email.toLowerCase(),
+          }),
+        });
+        router.push("/dashboard/verification");
+      } else {
+        router.push(`/auth/verify-otp?email=${encodeURIComponent(data.email.toLowerCase())}`);
       }
     } catch (err: unknown) {
       console.error(err);
@@ -336,55 +326,17 @@ export default function RequestAccessPage() {
                     )}
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">
-                      Password
-                    </label>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-slate-700">Company Website</label>
                     <div className="relative">
-                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <Sparkles className="h-4.5 w-4.5" />
-                      </span>
-                      <PasswordInput
-                        autoComplete="new-password"
-                        {...register("password")}
-                        disabled={isLoading}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200/80 text-xs sm:text-sm focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-100 outline-none transition bg-slate-50/50 focus:bg-white font-medium"
-                        placeholder="••••••••"
-                      />
-                    </div>
-                    {errors.password && (
-                      <p className="text-red-500 text-[10px] font-bold mt-1 flex items-center gap-1">
-                        <AlertCircle className="h-3.5 w-3.5" />
-                        {errors.password.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500">
-                        Brand Website
-                      </label>
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Optional but Recommended</span>
-                    </div>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <Globe className="h-4.5 w-4.5" />
-                      </span>
+                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                       <input
-                        type="text"
                         {...register("websiteUrl")}
-                        disabled={isLoading}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200/80 text-xs sm:text-sm focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-100 outline-none transition bg-slate-50/50 focus:bg-white font-medium"
-                        placeholder="e.g. www.yourbrand.com"
+                        className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50"
+                        placeholder="example.com"
                       />
                     </div>
-                    {errors.websiteUrl && (
-                      <p className="text-red-500 text-[10px] font-bold mt-1 flex items-center gap-1">
-                        <AlertCircle className="h-3.5 w-3.5" />
-                        {errors.websiteUrl.message}
-                      </p>
-                    )}
+                    {errors.websiteUrl && <p className="text-red-500 text-xs mt-1 font-medium">{errors.websiteUrl.message}</p>}
                   </div>
 
                   {/* Premium Submit Button */}

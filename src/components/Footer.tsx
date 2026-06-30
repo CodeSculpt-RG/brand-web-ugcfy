@@ -1,9 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Smartphone } from "lucide-react";
+import AppComingSoonModal from "./landing/AppComingSoonModal";
 
 export default function Footer() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalPlatform, setModalPlatform] = useState<"app-store" | "google-play" | "mobile-app">("mobile-app");
+
+  const handleOpenModal = (platform: "app-store" | "google-play") => {
+    setModalPlatform(platform);
+    setModalOpen(true);
+  };
   return (
     <footer className="bg-white text-gray-900 pt-10 pb-10 border-t border-gray-100">
       <div className="max-w-[1280px] mx-auto px-6">
@@ -56,14 +65,22 @@ export default function Footer() {
             <h4 className="font-bold tracking-widest uppercase mb-6 text-xs text-gray-900">Get The App</h4>
             <p className="text-gray-500 text-sm mb-6">Manage your campaigns directly from your phone.</p>
             <div className="flex flex-col gap-3">
-              <button className="flex items-center justify-center gap-3 bg-[#0A0A0A] text-white hover:bg-gray-800 rounded-xl px-4 py-3 transition-colors shadow-md w-full sm:w-auto lg:w-full">
+              <button 
+                type="button" 
+                onClick={() => handleOpenModal("app-store")}
+                className="flex items-center justify-center gap-3 bg-[#0A0A0A] text-white hover:bg-gray-800 rounded-xl px-4 py-3 transition-colors shadow-md w-full sm:w-auto lg:w-full"
+              >
                 <Smartphone className="w-6 h-6" /> 
                 <div className="flex flex-col items-start text-left">
                   <span className="text-[10px] leading-none text-gray-300 mb-0.5">Download on the</span>
                   <span className="text-sm font-semibold leading-none">App Store</span>
                 </div>
               </button>
-              <button className="flex items-center justify-center gap-3 bg-[#0A0A0A] text-white hover:bg-gray-800 rounded-xl px-4 py-3 transition-colors shadow-md w-full sm:w-auto lg:w-full">
+              <button 
+                type="button" 
+                onClick={() => handleOpenModal("google-play")}
+                className="flex items-center justify-center gap-3 bg-[#0A0A0A] text-white hover:bg-gray-800 rounded-xl px-4 py-3 transition-colors shadow-md w-full sm:w-auto lg:w-full"
+              >
                 <Smartphone className="w-6 h-6" /> 
                 <div className="flex flex-col items-start text-left">
                   <span className="text-[10px] leading-none text-gray-300 mb-0.5">GET IT ON</span>
@@ -79,12 +96,24 @@ export default function Footer() {
         <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-gray-500 font-medium">
           <p className="text-gray-400">© {new Date().getFullYear()} UGCFY Inc. All Rights Reserved.</p>
           <div className="flex flex-wrap gap-6 justify-center md:justify-end">
+            <a href="mailto:support@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Support</a>
+            <a href="mailto:hello@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Contact</a>
+            <a href="mailto:legal@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Legal</a>
+            <a href="mailto:privacy@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Privacy</a>
+            <a href="mailto:grievance@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Grievance</a>
+            <a href="mailto:security@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Security</a>
             <Link href="/privacy" className="hover:text-[#E11D48] transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-[#E11D48] transition-colors">Terms of Service</Link>
             <Link href="/cookie-settings" className="hover:text-[#E11D48] transition-colors">Cookie Settings</Link>
           </div>
         </div>
       </div>
+
+      <AppComingSoonModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        platform={modalPlatform} 
+      />
     </footer>
   );
 }

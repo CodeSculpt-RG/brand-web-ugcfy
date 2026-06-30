@@ -73,7 +73,7 @@ export default function TermsOfService() {
             <div className="space-y-3">
               <h2 className="text-lg font-bold text-white">6. Changes to Terms</h2>
               <p>
-                We reserve the right to modify these terms at any time. We will notify you of any material changes by updating the date on this page. Continuing to use the platform indicates agreement to the updated terms. For legal inquiries, contact <a href="mailto:support@ugcfy.com" className="text-brand-red-500 hover:underline">support@ugcfy.com</a>.
+                We reserve the right to modify these terms at any time. We will notify you of any material changes by updating the date on this page. Continuing to use the platform indicates agreement to the updated terms. For legal inquiries, contact <a href="mailto:legal@ugcfy.com" className="text-brand-red-500 hover:underline">legal@ugcfy.com</a>. For grievances, contact <a href="mailto:grievance@ugcfy.com" className="text-brand-red-500 hover:underline">grievance@ugcfy.com</a>.
               </p>
             </div>
           </div>

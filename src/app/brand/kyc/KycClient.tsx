@@ -11,9 +11,11 @@ import {
   Save,
   ShieldCheck,
   UploadCloud,
+  LogOut,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { VerificationStatusWall } from "@/app/dashboard/verification/VerificationStatusWall";
+import type { BrandAccessStatus } from "@/lib/auth/getBrandAccessStatus";
 
 type BrandUploadKey = "doc1" | "doc2" | "doc3" | "doc4" | "doc5";
 
@@ -47,7 +49,7 @@ interface Props {
   initialProfile: any;
   initialSubmission: any;
   userEmail: string | null;
-  accessStatus: string;
+  accessStatus: BrandAccessStatus;
 }
 
 const INPUT_CLASS =
@@ -148,6 +150,7 @@ export function KycClient({ initialDocuments, initialProfile, initialSubmission,
   const [busyAction, setBusyAction] = useState<"save_draft" | "submit" | null>(null);
   const [uploadingKey, setUploadingKey] = useState<BrandUploadKey | null>(null);
   const [isEditing, setIsEditing] = useState(() => accessStatus === "incomplete" || accessStatus === "draft");
+  const [currentStatus, setCurrentStatus] = useState<BrandAccessStatus>(accessStatus);
 
   const wordCount = getWordCount(form.bio);
   const uploadedCount = Object.values(uploads).filter(Boolean).length;
@@ -312,6 +315,7 @@ export function KycClient({ initialDocuments, initialProfile, initialSubmission,
 
       router.refresh();
       if (action === "submit") {
+        setCurrentStatus("pending");
         setIsEditing(false);
       }
     } catch (error) {
@@ -331,7 +335,7 @@ export function KycClient({ initialDocuments, initialProfile, initialSubmission,
   if (!isEditing) {
     return (
       <VerificationStatusWall
-        status={accessStatus as any}
+        status={currentStatus === "approved" || currentStatus === "rejected" || currentStatus === "on_hold" ? currentStatus : "pending"}
         rejectionReason={initialProfile?.rejection_reason}
         holdReason={initialProfile?.hold_reason}
         onEdit={() => setIsEditing(true)}
@@ -577,6 +581,21 @@ export function KycClient({ initialDocuments, initialProfile, initialSubmission,
             Drafts persist after refresh. Submit when all mobile KYC fields and documents are complete.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={async () => {
+                if (!busyAction) {
+                  await save("save_draft");
+                }
+                await supabase.auth.signOut();
+                router.push("/login");
+                router.refresh();
+              }}
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-extrabold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:w-auto"
+            >
+              <LogOut className="h-4 w-4" />
+              Save & Log Out
+            </button>
             <button
               type="button"
               onClick={() => void save("save_draft")}

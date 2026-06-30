@@ -64,6 +64,7 @@ function LoginForm() {
     setLoadingProvider("google");
 
     const origin = window.location.origin;
+    console.log("Google OAuth redirectTo:", `${origin}/auth/callback`);
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",

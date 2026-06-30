@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: "UGC FY — AI-Powered Influencer Marketing Platform",
@@ -29,7 +30,22 @@ const websiteJsonLd = {
     "UGC FY helps brands discover creators, manage UGC campaigns, review content, track performance, and scale influencer marketing with AI-powered workflows.",
 };
 
-export default function Page() {
+type Props = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export default function Page({ searchParams }: Props) {
+  // Production Google OAuth rescue: if Supabase redirects to homepage with a code,
+  // push it to the correct callback route immediately.
+  if (searchParams?.code) {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(searchParams)) {
+      const val = Array.isArray(value) ? value[0] : value;
+      if (val) params.append(key, val);
+    }
+    redirect(`/auth/callback?${params.toString()}`);
+  }
+
   return (
     <>
       <JsonLd data={organizationJsonLd} />

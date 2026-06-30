@@ -24,7 +24,7 @@ export function VerificationStatusWall({
   let badgeColor = "border-amber-200 bg-amber-50 text-amber-700";
   let badgeText = "Pending Review";
   let title = "Verification submitted";
-  let subtitle = "Your brand verification is under review. We will notify you once the review is completed.";
+  let subtitle = "Your brand verification is under review. We will notify you once the review is complete.";
 
   if (status === "approved") {
     Icon = CheckCircle2;

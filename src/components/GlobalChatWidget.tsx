@@ -121,7 +121,7 @@ export default function GlobalChatWidget() {
     <>
       {/* EMAIL / CONTACT US BUTTON */}
       <a
-        href="mailto:ugcfyapp@creator-navigator.in"
+        href="mailto:support@ugcfy.com"
         className={`fixed right-6 z-40 h-[60px] w-[60px] rounded-full flex items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.5)] hover:-translate-y-1 active:scale-95 transition-all duration-500 cursor-pointer group bottom-[96px] overflow-visible ${isOpen ? "opacity-0 pointer-events-none translate-y-4 scale-75" : "opacity-100 translate-y-0 scale-100"
           }`}
         aria-label="Contact Us via Email"

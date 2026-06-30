@@ -4,18 +4,87 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { PasswordInput } from "@/components/ui/PasswordInput";
 import { createClient } from "@/lib/supabase/client";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loadingProvider, setLoadingProvider] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState("");
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const supabase = createClient();
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/dashboard");
+    setErrorMsg("");
+
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!trimmedFirstName) {
+      setErrorMsg("Please enter your first name.");
+      return;
+    }
+
+    if (!trimmedLastName) {
+      setErrorMsg("Please enter your last name.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      setErrorMsg("Please enter a valid work email.");
+      return;
+    }
+
+    
+
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: normalizedEmail,
+        options: {
+          shouldCreateUser: true,
+          data: {
+            role: "brand",
+            first_name: trimmedFirstName,
+            last_name: trimmedLastName,
+            full_name: `${trimmedFirstName} ${trimmedLastName}`,
+          },
+          emailRedirectTo: `${window.location.origin}/auth/verify-otp`,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      sessionStorage.setItem(
+        "pendingBrandSignup",
+        JSON.stringify({
+          firstName: trimmedFirstName,
+          lastName: trimmedLastName,
+          email: normalizedEmail,
+          passwordSet: false,
+        })
+      );
+
+      
+
+      router.push(`/auth/verify-otp?email=${encodeURIComponent(normalizedEmail)}`);
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : "We could not send the verification code. Please try again.";
+      if (errMsg.toLowerCase().includes("rate limit") || errMsg.toLowerCase().includes("too many requests")) {
+        setErrorMsg("Too many requests. Please wait before requesting another code.");
+      } else {
+        setErrorMsg(errMsg);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -23,6 +92,7 @@ export default function RegisterPage() {
     setLoadingProvider("google");
 
     const origin = window.location.origin;
+    console.log("Google OAuth redirectTo:", `${origin}/auth/callback`);
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -79,27 +149,24 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-700">First Name</label>
-                <input type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="John" />
+                <input type="text" value={firstName} onChange={(event) => setFirstName(event.target.value)} autoComplete="given-name" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="John" />
               </div>
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-700">Last Name</label>
-                <input type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="Doe" />
+                <input type="text" value={lastName} onChange={(event) => setLastName(event.target.value)} autoComplete="family-name" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="Doe" />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-slate-700">Work Email</label>
-              <input type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="john@company.com" />
+              <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="john@company.com" />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-slate-700">Password</label>
-              <PasswordInput autoComplete="new-password" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="••••••••" />
-            </div>
+            
 
-            <button type="submit" className="w-full btn-primary flex items-center justify-center gap-2 group text-lg px-8 py-4 mt-8 shadow-xl shadow-red-500/20">
-              Create Account
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <button type="submit" disabled={loading} className="w-full btn-primary flex items-center justify-center gap-2 group text-lg px-8 py-4 mt-8 shadow-xl shadow-red-500/20 disabled:cursor-not-allowed disabled:opacity-70">
+              {loading ? "Sending Code..." : "Send Verification Code"}
+              {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 

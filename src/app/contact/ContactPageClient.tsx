@@ -82,10 +82,31 @@ export default function ContactUs() {
               <div className="h-10 w-10 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center text-brand-red-500">
                 <Mail className="h-5 w-5" />
               </div>
-              <div>
-                <p className="font-bold text-white">Support Email</p>
-                <a href="mailto:support@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold">
+              <div className="w-full">
+                <p className="font-bold text-white mb-2">General Enquiries</p>
+                <a href="mailto:hello@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block mb-4">
+                  hello@ugcfy.com
+                </a>
+                
+                <p className="font-bold text-white mb-2">Support</p>
+                <a href="mailto:support@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block mb-4">
                   support@ugcfy.com
+                </a>
+
+                <p className="font-bold text-white mb-2">Billing & Payments</p>
+                <a href="mailto:billing@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block">
+                  billing@ugcfy.com
+                </a>
+                <a href="mailto:payments@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block mb-4">
+                  payments@ugcfy.com
+                </a>
+                
+                <p className="font-bold text-white mb-2">Technical & Security</p>
+                <a href="mailto:tech@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block">
+                  tech@ugcfy.com
+                </a>
+                <a href="mailto:security@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block mb-4">
+                  security@ugcfy.com
                 </a>
               </div>
             </div>

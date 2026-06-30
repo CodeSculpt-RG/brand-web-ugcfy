@@ -10,7 +10,7 @@ export async function requireBrand() {
     if (result.code === 'UNAUTHENTICATED') {
       redirect('/login?next=/dashboard');
     } else if (result.code === 'BRAND_PROFILE_NOT_FOUND') {
-      redirect('/brand/onboarding');
+      redirect('/dashboard/verification');
     } else if (result.code === 'BRAND_PROFILE_INACTIVE') {
       redirect('/login?error=brand_inactive');
     } else if (result.code === 'BRAND_PROFILE_DUPLICATE') {

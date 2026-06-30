@@ -9,6 +9,16 @@ export const revalidate = 0;
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   // Strongly protect the dashboard routes on the server
   const brandSession = await requireBrand();
+  const accessStatus = getBrandAccessStatus(brandSession.brand);
+
+  if (accessStatus !== "approved") {
+    return (
+      <main className="min-h-screen bg-[#FDFBFB]">
+        {children}
+      </main>
+    );
+  }
+
   const supabase = await createClient();
   let pocCount = 0;
   let subscriptionStatus = "free";
@@ -50,7 +60,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         status: (brandSession.brand as any).status ?? null,
         onboarding_status: (brandSession.brand as any).onboarding_status ?? null,
         /* eslint-enable @typescript-eslint/no-explicit-any */
-        access_status: getBrandAccessStatus(brandSession.brand),
+        access_status: accessStatus,
         poc_count: pocCount,
         subscription_status: subscriptionStatus,
       }}
