@@ -21,6 +21,7 @@ import {
   Users,
   ArrowLeft
 } from "lucide-react";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 // Form Validation Schema
 const requestAccessSchema = z.object({
@@ -343,8 +344,8 @@ export default function RequestAccessPage() {
                       <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                         <Sparkles className="h-4.5 w-4.5" />
                       </span>
-                      <input
-                        type="password"
+                      <PasswordInput
+                        autoComplete="new-password"
                         {...register("password")}
                         disabled={isLoading}
                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200/80 text-xs sm:text-sm focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-100 outline-none transition bg-slate-50/50 focus:bg-white font-medium"

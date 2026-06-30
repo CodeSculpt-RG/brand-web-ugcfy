@@ -4,13 +4,41 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/ui/PasswordInput";
+import { createClient } from "@/lib/supabase/client";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [loadingProvider, setLoadingProvider] = React.useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = React.useState("");
+  const supabase = createClient();
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     router.push("/dashboard");
+  };
+
+  const handleGoogleLogin = async () => {
+    setErrorMsg("");
+    setLoadingProvider("google");
+
+    const origin = window.location.origin;
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/auth/callback`,
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
+      },
+    });
+
+    if (error) {
+      setErrorMsg("Google sign-in could not be completed. Please try again.");
+      setLoadingProvider(null);
+    }
   };
 
   return (
@@ -29,11 +57,17 @@ export default function RegisterPage() {
           <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">Create an account</h1>
           <p className="text-slate-500 mb-8">Join thousands of brands scaling their creator pipeline.</p>
 
-          <button className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-3 transition-colors mb-6 shadow-sm">
+          <button 
+            type="button" 
+            onClick={handleGoogleLogin} 
+            disabled={loadingProvider === "google"}
+            className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-3 transition-colors mb-6 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
-            Sign up with Google
+            {loadingProvider === "google" ? "Connecting..." : "Continue with Google"}
           </button>
+          {errorMsg && <p className="text-red-500 text-xs font-bold mb-4">{errorMsg}</p>}
 
           <div className="flex items-center gap-4 mb-6">
             <div className="h-px bg-slate-200 flex-1"></div>
@@ -60,7 +94,7 @@ export default function RegisterPage() {
 
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-slate-700">Password</label>
-              <input type="password" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="••••••••" />
+              <PasswordInput autoComplete="new-password" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="••••••••" />
             </div>
 
             <button type="submit" className="w-full btn-primary flex items-center justify-center gap-2 group text-lg px-8 py-4 mt-8 shadow-xl shadow-red-500/20">

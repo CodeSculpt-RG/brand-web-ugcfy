@@ -19,6 +19,7 @@ import {
   Loader2
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 interface Props {
   initialProfile: any;
@@ -366,8 +367,8 @@ export function SettingsClient({ initialProfile, initialTeamMembers }: Props) {
 
                         <div className="flex flex-col gap-1.5">
                           <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Current Password</label>
-                          <input
-                            type="password"
+                          <PasswordInput
+                            autoComplete="current-password"
                             required
                             value={passwords.current}
                             onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
@@ -378,8 +379,8 @@ export function SettingsClient({ initialProfile, initialTeamMembers }: Props) {
 
                         <div className="flex flex-col gap-1.5">
                           <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">New Password</label>
-                          <input
-                            type="password"
+                          <PasswordInput
+                            autoComplete="new-password"
                             required
                             value={passwords.new}
                             onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
@@ -390,8 +391,8 @@ export function SettingsClient({ initialProfile, initialTeamMembers }: Props) {
 
                         <div className="flex flex-col gap-1.5">
                           <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Confirm New Password</label>
-                          <input
-                            type="password"
+                          <PasswordInput
+                            autoComplete="new-password"
                             required
                             value={passwords.confirm}
                             onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}

@@ -21,34 +21,71 @@ export async function GET() {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const brandSession = await verifyBrand();
-    if (!brandSession.ok) {
-      return jsonError("UNAUTHENTICATED", brandSession.message || "Please login to continue.", 401);
-    }
-    if (!brandSession.brand) {
-      return jsonError("BRAND_PROFILE_NOT_FOUND", "Brand profile not found.", 404);
-    }
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
 
+    if (userError || !user) {
+      return jsonError("UNAUTHENTICATED", userError?.message || "Please login to continue.", 401);
+    }
+    
     const body = await req.json();
     const validatedData = brandProfileSchema.parse(body);
 
-    const supabase = await createClient();
-
-    const { error } = await supabase
+    const { data: brandProfiles, error: profileError } = await supabase
       .from("brand_profiles")
-      .update({
-        brand_name: validatedData.brand_name,
-        company_name: validatedData.company_name || null,
-        business_type: validatedData.business_type || null,
-        website: validatedData.website || null,
-        industry: validatedData.industry || null,
-        contact_phone: validatedData.contact_phone || null,
-        business_description: validatedData.business_description || null,
-        gst_number: validatedData.gst_number || null,
-        logo_url: validatedData.logo_url || null,
-        onboarding_completed_at: new Date().toISOString()
-      })
-      .eq("id", brandSession.brand.id);
+      .select("id")
+      .eq("user_id", user.id)
+      .limit(2);
+
+    if (profileError) {
+      console.error("[supabase-form-error]", {
+        message: profileError.message,
+        code: profileError.code,
+        details: profileError.details,
+        hint: profileError.hint,
+      });
+      return jsonError("SUPABASE_QUERY_FAILED", profileError.message || "Failed to load profile", 500, {
+        code: profileError.code,
+        details: profileError.details,
+        hint: profileError.hint,
+      });
+    }
+
+    if (brandProfiles && brandProfiles.length > 1) {
+      return jsonError("BRAND_PROFILE_DUPLICATE", "Multiple brand profiles found for this user.", 409);
+    }
+
+    const profilePayload = {
+      brand_name: validatedData.brand_name,
+      company_name: validatedData.company_name || null,
+      business_type: validatedData.business_type || null,
+      website: validatedData.website || null,
+      industry: validatedData.industry || null,
+      contact_phone: validatedData.contact_phone || null,
+      business_description: validatedData.business_description || null,
+      gst_number: validatedData.gst_number || null,
+      logo_url: validatedData.logo_url || null,
+      onboarding_completed_at: new Date().toISOString()
+    };
+
+    const existingProfile = brandProfiles?.[0];
+    const { error } = existingProfile
+      ? await supabase
+          .from("brand_profiles")
+          .update(profilePayload)
+          .eq("id", existingProfile.id)
+      : await supabase
+          .from("brand_profiles")
+          .insert({
+            id: user.id,
+            user_id: user.id,
+            contact_email: user.email ?? null,
+            approval_status: "profile_incomplete",
+            ...profilePayload,
+          });
 
     if (error) {
       console.error("[supabase-form-error]", {

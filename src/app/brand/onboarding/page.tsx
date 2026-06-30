@@ -54,13 +54,19 @@ export default function BrandOnboardingPage() {
 
       const { data: profile } = await supabase
         .from("brand_profiles")
-        .select("company_name, website, approval_status")
-        .eq("id", user.id)
+        .select("company_name, brand_name, website, approval_status")
+        .eq("user_id", user.id)
         .maybeSingle();
 
       if (profile) {
-        if (profile.approval_status !== "profile_incomplete") {
+        const hasCompletedProfile = Boolean(profile.company_name || profile.brand_name);
+        if (hasCompletedProfile && profile.approval_status === "pending_verification") {
           router.push("/dashboard");
+          return;
+        }
+
+        if (hasCompletedProfile) {
+          router.push("/dashboard/verification");
           return;
         }
         

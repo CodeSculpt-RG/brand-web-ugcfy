@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { verifyBrand } from "@/lib/auth/verifyBrand";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -30,8 +28,6 @@ export default async function ProfilePage() {
     contact_email: brandSession.brand.email || brandSession.user.email || ""
   };
 
-  let campaigns: any[] = [];
-  let pocs: any[] = [];
   let tableMissing = false;
 
   try {
@@ -54,32 +50,6 @@ export default async function ProfilePage() {
         ...brandData
       };
     }
-
-    if (!tableMissing) {
-      // Fetch Campaigns
-      const { data: campaignData, error: campaignError } = await supabase
-        .from("campaigns")
-        .select("*")
-        .eq("brand_id", brandId);
-
-      if (campaignError) {
-        if (campaignError.code !== "42P01") console.error("[Profile] Error fetching campaigns:", campaignError);
-      } else if (campaignData) {
-        campaigns = campaignData;
-      }
-
-      // Fetch POCs
-      const { data: pocData, error: pocError } = await supabase
-        .from("brand_poc")
-        .select("*")
-        .eq("brand_id", brandId);
-
-      if (pocError) {
-        if (pocError.code !== "42P01") console.error("[Profile] Error fetching pocs:", pocError);
-      } else if (pocData) {
-        pocs = pocData;
-      }
-    }
   } catch (err) {
     console.warn("[Profile] Error:", err);
   }
@@ -96,5 +66,5 @@ export default async function ProfilePage() {
     );
   }
 
-  return <ProfileClient initialProfile={profile} initialCampaigns={campaigns} initialPocs={pocs} />;
+  return <ProfileClient initialProfile={profile} />;
 }

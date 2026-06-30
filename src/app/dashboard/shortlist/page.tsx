@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { GitCompare, MessageSquarePlus, Trash2, UserRoundCheck } from "lucide-react";
+import { GitCompare, Trash2, UserRoundCheck } from "lucide-react";
 import { verifyBrand } from "@/lib/auth/verifyBrand";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
@@ -9,6 +9,7 @@ import { DashboardRouteScaffold } from "@/components/dashboard/DashboardRouteSca
 import { SafeAvatar } from "@/components/dashboard/SafeAvatar";
 import { formatDashboardDate } from "@/lib/dashboard/formatDashboardDate";
 import { isMissingRelationError, logSupabaseError } from "@/lib/dashboard/safeSupabaseQuery";
+import { StartCollaborationButton } from "./StartCollaborationButton";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -163,10 +164,10 @@ export default async function ShortlistPage() {
                   </div>
 
                   <div className="mt-5 grid grid-cols-3 gap-2 border-t border-slate-100 pt-4">
-                    <Link href="/dashboard/campaigns" className="inline-flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-brand-red-600 text-xs font-extrabold text-white transition hover:bg-brand-red-700">
-                      <MessageSquarePlus className="h-3.5 w-3.5" />
-                      Invite
-                    </Link>
+                    <StartCollaborationButton 
+                      campaignId={item.campaign_id ?? null} 
+                      creatorId={item.creator_id ?? null} 
+                    />
                     <Link href={item.creator_id ? `/dashboard/creators/${item.creator_id}` : "/dashboard/creators"} className="inline-flex min-h-10 items-center justify-center rounded-2xl border border-slate-200 text-xs font-extrabold text-slate-700 transition hover:border-brand-red-200 hover:text-brand-red-600">
                       Profile
                     </Link>

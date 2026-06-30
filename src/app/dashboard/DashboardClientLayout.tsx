@@ -50,6 +50,10 @@ interface BrandProp {
   brand_name?: string | null;
   email?: string | null;
   approval_status?: string | null;
+  kyc_status?: string | null;
+  status?: string | null;
+  onboarding_status?: string | null;
+  access_status?: string;
   poc_count?: number;
   subscription_status?: string | null;
 }
@@ -242,6 +246,13 @@ export default function DashboardClientLayout({
     .join("")
     .toUpperCase() || "BR";
   const isMessagingRoute = pathname === "/dashboard/collaboration" || pathname.startsWith("/dashboard/collaboration/");
+  const isApproved = brand.access_status === "approved";
+
+  useEffect(() => {
+    if (!isApproved && pathname !== "/dashboard/verification" && !pathname.startsWith("/dashboard/verification/")) {
+      router.replace("/dashboard/verification");
+    }
+  }, [isApproved, pathname, router]);
 
   useEffect(() => {
     const handleOpenPricing = () => setIsPricingOpen(true);
@@ -294,6 +305,36 @@ export default function DashboardClientLayout({
     router.replace("/login");
     router.refresh();
   };
+
+  if (!isApproved) {
+    return (
+      <div className="dashboard-shell flex min-h-screen w-full flex-col bg-[#FDFBFB] text-slate-950">
+        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-black text-white">
+                <span className="text-lg font-extrabold tracking-tight">U</span>
+              </div>
+              <span className="text-lg font-extrabold tracking-tight text-slate-950">
+                UGC<span className="text-brand-red-600">FY</span>
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50 hover:text-slate-950"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </header>
+        <main className="flex-1">
+          <ErrorBoundary name="DashboardLayout">{children}</ErrorBoundary>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-shell flex h-screen w-full overflow-hidden bg-brand-surface text-slate-950">

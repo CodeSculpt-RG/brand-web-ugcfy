@@ -1,26 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { redirect } from "next/navigation";
-import { FileText } from "lucide-react";
 import { verifyBrand } from "@/lib/auth/verifyBrand";
 import { createClient } from "@/lib/supabase/server";
-import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
-import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { createMinimalBrandProfile } from "@/lib/auth/brandRouting";
+import { getBrandAccessStatus } from "@/lib/auth/getBrandAccessStatus";
 import { KycClient } from "@/app/brand/kyc/KycClient";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function VerificationPage() {
-  const brandSession = await verifyBrand();
+  let brandSession = await verifyBrand();
 
   if (!brandSession.ok) {
-    redirect("/login");
+    if (brandSession.code === "BRAND_PROFILE_NOT_FOUND") {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        redirect("/login?next=/dashboard/verification");
+      }
+
+      await createMinimalBrandProfile(supabase, user);
+      brandSession = await verifyBrand();
+    }
+
+    if (!brandSession.ok) {
+      redirect("/login?next=/dashboard/verification");
+    }
   }
 
   const supabase = await createClient();
   const brandId = brandSession.brand.id;
   let documents: any[] = [];
-  let tableMissing = false;
+  let profile: any = null;
+  let submission: any = null;
 
   try {
     const { data, error } = await supabase
@@ -30,11 +46,9 @@ export default async function VerificationPage() {
       .order("uploaded_at", { ascending: false });
 
     if (error) {
-      if (error.code === "42P01" || error.message?.includes("does not exist")) {
-        tableMissing = true;
-      } else {
+      if (error.code !== "42P01" && !error.message?.includes("does not exist")) {
         console.error("[Verification] Error fetching documents:", error);
-      }
+      } 
     } else {
       documents = data ?? [];
     }
@@ -42,21 +56,52 @@ export default async function VerificationPage() {
     console.warn("[Verification] handled error:", err);
   }
 
-  if (tableMissing) {
-    return (
-      <div className="space-y-6">
-        <DashboardPageHeader
-          title="Verification"
-          description="Submit business registration documents and track verification status."
-        />
-        <DashboardEmptyState
-          title="Verification unavailable"
-          description="The KYC verification service is currently being configured."
-          icon={FileText}
-        />
-      </div>
-    );
+  try {
+    const { data, error } = await supabase
+      .from("brand_profiles")
+      .select("*")
+      .eq("id", brandId)
+      .maybeSingle();
+
+    if (error) {
+      console.error("[Verification] Error fetching profile:", error);
+    } else {
+      profile = data;
+    }
+  } catch (err) {
+    console.warn("[Verification] profile handled error:", err);
   }
 
-  return <KycClient initialDocuments={documents} />;
+  try {
+    const { data, error } = await supabase
+      .from("kyc_submissions")
+      .select("*")
+      .eq("user_id", brandSession.user.id)
+      .maybeSingle();
+
+    if (error) {
+      if (error.code !== "42P01" && !error.message?.includes("does not exist")) {
+        console.error("[Verification] Error fetching KYC submission:", error);
+      }
+    } else {
+      submission = data;
+    }
+  } catch (err) {
+    console.warn("[Verification] KYC submission handled error:", err);
+  }
+
+  const accessStatus = getBrandAccessStatus({
+    ...profile,
+    approval_status: brandSession.brand.approval_status,
+  });
+
+  return (
+    <KycClient
+      initialDocuments={documents}
+      initialProfile={profile}
+      initialSubmission={submission}
+      userEmail={brandSession.user.email}
+      accessStatus={accessStatus}
+    />
+  );
 }

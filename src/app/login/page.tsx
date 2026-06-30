@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 function getSafeNext(next: string | null) {
   if (!next) return "/dashboard";
@@ -14,6 +15,20 @@ function getSafeNext(next: string | null) {
   return next;
 }
 
+function getLoginErrorMessage(error: string | null) {
+  if (!error) return "";
+  if (error.startsWith("oauth_") || error === "missing_oauth_code" || error === "session_missing") {
+    return "Google sign-in could not be completed. Please try again.";
+  }
+  if (error === "brand_profile_duplicate") {
+    return "We found more than one brand profile for this account. Please contact support.";
+  }
+  if (error === "brand_inactive") {
+    return "This brand account is not active. Please contact support.";
+  }
+  return "We could not complete sign-in. Please try again.";
+}
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,7 +36,9 @@ function LoginForm() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [loadingProvider, setLoadingProvider] = React.useState<string | null>(null);
   const [errorMsg, setErrorMsg] = React.useState("");
+  const displayErrorMsg = errorMsg || getLoginErrorMessage(searchParams.get("error"));
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +59,29 @@ function LoginForm() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setErrorMsg("");
+    setLoadingProvider("google");
+
+    const origin = window.location.origin;
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/auth/callback`,
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
+      },
+    });
+
+    if (error) {
+      setErrorMsg("Google sign-in could not be completed. Please try again.");
+      setLoadingProvider(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex">
       {/* Left Form Side */}
@@ -58,11 +98,17 @@ function LoginForm() {
           <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">Welcome back</h1>
           <p className="text-slate-500 mb-8">Log in to your account to manage your campaigns.</p>
 
-          <button className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-3 transition-colors mb-6 shadow-sm">
+          <button 
+            type="button" 
+            onClick={handleGoogleLogin} 
+            disabled={loadingProvider === "google"}
+            className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-3 transition-colors mb-6 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
-            Log in with Google
+            {loadingProvider === "google" ? "Connecting..." : "Continue with Google"}
           </button>
+          {displayErrorMsg && <p className="text-red-500 text-xs font-bold mb-4">{displayErrorMsg}</p>}
 
           <div className="flex items-center gap-4 mb-6">
             <div className="h-px bg-slate-200 flex-1"></div>
@@ -81,10 +127,8 @@ function LoginForm() {
                 <label className="text-sm font-semibold text-slate-700">Password</label>
                 <a href="#" className="text-xs font-semibold text-[var(--color-primary)] hover:underline">Forgot password?</a>
               </div>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="••••••••" />
+              <PasswordInput autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="••••••••" />
             </div>
-
-            {errorMsg && <p className="text-red-500 text-xs font-bold">{errorMsg}</p>}
 
             <button type="submit" disabled={loading} className="w-full bg-[#0A0A0A] hover:bg-black text-white flex items-center justify-center gap-2 group text-lg px-8 py-4 mt-8 rounded-[14px] shadow-xl transition-all disabled:opacity-75">
               {loading ? "Logging In..." : "Log In"}

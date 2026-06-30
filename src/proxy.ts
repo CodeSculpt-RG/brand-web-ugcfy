@@ -38,10 +38,39 @@ export async function proxy(request: NextRequest) {
                            request.nextUrl.pathname.startsWith('/settings');
 
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
+                      request.nextUrl.pathname.startsWith('/register') ||
                       request.nextUrl.pathname.startsWith('/signup');
 
   if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL('/login?next=' + request.nextUrl.pathname, request.url));
+  }
+
+  if (
+    user &&
+    request.nextUrl.pathname.startsWith('/dashboard') &&
+    !request.nextUrl.pathname.startsWith('/dashboard/verification')
+  ) {
+    const { data: profiles } = await supabase
+      .from('brand_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .limit(1);
+
+    const profile = profiles?.[0];
+    const status = String(profile?.approval_status || '').toLowerCase();
+    const kycStatus = String(profile?.kyc_status || '').toLowerCase();
+    const isComplete =
+      status === 'pending_verification' ||
+      status === 'approved' ||
+      status === 'verified' ||
+      status === 'active' ||
+      kycStatus === 'submitted' ||
+      kycStatus === 'approved' ||
+      kycStatus === 'completed';
+
+    if (!isComplete) {
+      return NextResponse.redirect(new URL('/dashboard/verification', request.url));
+    }
   }
 
   if (isAuthRoute && user) {

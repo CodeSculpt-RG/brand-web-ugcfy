@@ -1,58 +1,92 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { BrandProfile, BrandPoc, Campaign } from "@/lib/supabase/types";
-import {
-  Globe,
-  Phone,
-  MapPin,
-  Star,
-  Video,
-  Users,
-  Wallet,
-  FileText,
-  ArrowUpRight,
-  AtSign,
-  ShieldCheck,
-  Download,
-  Image as ImageIcon,
-  Camera
-} from "lucide-react";
-import { SafeAvatar } from "@/components/dashboard/SafeAvatar";
-import { normalizeImageUrl } from "@/lib/shared/normalizeImage";
-import { formatDashboardDate } from "@/lib/dashboard/formatDashboardDate";
-import { formatDashboardNumber } from "@/lib/dashboard/formatDashboardNumber";
+import { Camera, Save, Building, Mail, Globe, Phone, FileText, CheckCircle2, AlertCircle, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { SafeAvatar } from "@/components/dashboard/SafeAvatar";
 
 interface Props {
   initialProfile: any;
-  initialCampaigns: any[];
-  initialPocs: any[];
 }
 
-export function ProfileClient({ initialProfile, initialCampaigns, initialPocs }: Props) {
-  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "poc" | "assets">("overview");
-
+export function ProfileClient({ initialProfile }: Props) {
   const router = useRouter();
-  const [profile, setProfile] = useState(initialProfile);
-  const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
-  const [pocs, setPocs] = useState<BrandPoc[]>(initialPocs);
-  
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadMessage, setUploadMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [profile, setProfile] = useState({
+    company_name: initialProfile?.company_name || "",
+    website: initialProfile?.website_url || initialProfile?.website || "",
+    industry: initialProfile?.industry || "",
+    location: initialProfile?.location || "",
+    business_description: initialProfile?.business_description || "",
+    contact_email: initialProfile?.contact_email || "",
+    phone: initialProfile?.phone || "",
+    logo_url: initialProfile?.logo_url || "",
+  });
 
-  const handleUpload = async (file: File, assetType: string) => {
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  const [isUploading, setIsUploading] = useState(false);
+
+  const inputClass = "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#E11D48] focus:outline-none focus:ring-4 focus:ring-[#E11D48]/10 transition-all";
+  const textareaClass = "min-h-[120px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#E11D48] focus:outline-none focus:ring-4 focus:ring-[#E11D48]/10 transition-all";
+
+  // Calculate completion percentage
+  const fields = [
+    profile.company_name,
+    profile.website,
+    profile.industry,
+    profile.location,
+    profile.business_description,
+    profile.contact_email,
+    profile.phone,
+    profile.logo_url
+  ];
+  const filledFields = fields.filter(f => typeof f === 'string' && f.trim().length > 0).length;
+  const completionPercentage = Math.round((filledFields / fields.length) * 100);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveStatus(null);
+    try {
+      const payload = {
+        brand_name: profile.company_name, // the API expects brand_name
+        company_name: profile.company_name,
+        website: profile.website,
+        industry: profile.industry,
+        contact_phone: profile.phone,
+        business_description: profile.business_description,
+        logo_url: profile.logo_url
+      };
+      
+      const res = await fetch("/api/brand/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error?.message || "Failed to save profile");
+      }
+      
+      setSaveStatus({ type: "success", message: "Profile saved successfully." });
+      setTimeout(() => setSaveStatus(null), 3000);
+      router.refresh();
+    } catch (err: any) {
+      setSaveStatus({ type: "error", message: err.message || "An error occurred while saving." });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleUpload = async (file: File) => {
     setIsUploading(true);
-    setUploadMessage(null);
+    setSaveStatus(null);
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("assetType", assetType);
+      formData.append("assetType", "logo");
 
       const res = await fetch("/api/brand/profile-assets", {
         method: "POST",
@@ -61,420 +95,310 @@ export function ProfileClient({ initialProfile, initialCampaigns, initialPocs }:
 
       const data = await res.json();
       if (!res.ok) {
-        setUploadMessage({ type: "error", text: data.error || "Upload failed" });
+        setSaveStatus({ type: "error", message: data.error || "Upload failed" });
         return;
       }
 
-      setProfile((prev: any) => ({
-        ...prev,
-        [assetType === "avatar" || assetType === "logo" ? "logo_url" : "cover_image_url"]: data.url
-      }));
-      setUploadMessage({ type: "success", text: "Image updated successfully!" });
-      setTimeout(() => setUploadMessage(null), 3000);
-      router.refresh();
+      setProfile((prev) => ({ ...prev, logo_url: data.url }));
+      setSaveStatus({ type: "success", message: "Logo updated successfully!" });
+      setTimeout(() => setSaveStatus(null), 3000);
     } catch (err) {
       console.error(err);
-      setUploadMessage({ type: "error", text: "Error uploading file" });
+      setSaveStatus({ type: "error", message: "Error uploading file" });
     } finally {
       setIsUploading(false);
     }
   };
 
-  const [stats, setStats] = useState({
-    campaignsCount: initialCampaigns.length,
-    escrowDeployed: initialCampaigns.reduce((acc, c) => acc + (c.budget || 0), 0),
-    creatorRating: 4.85,
-    pocCount: initialPocs.filter(p => p.status === "Active").length
-  });
-
-  const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "campaigns", label: "Active Campaigns" },
-    { id: "poc", label: "POC Directory" },
-    { id: "assets", label: "Brand Assets" }
-  ] as const;
-
   return (
-    <div className="space-y-6">
+    <div className="w-full max-w-5xl mx-auto pb-24 space-y-8 animate-in fade-in duration-500">
+      
+      {/* 1. Header section */}
+      <div className="flex flex-col gap-2 border-b border-slate-200 pb-6">
+        <h1 className="text-3xl font-extrabold text-[#0A0A0A] tracking-tight">Brand Profile</h1>
+        <p className="text-slate-500 text-sm max-w-2xl">
+          Manage your company identity, billing-facing details, and public campaign profile. Keep this information up to date to build trust with creators.
+        </p>
+      </div>
 
-      {/* 1. LINKEDIN-STYLE HERO PROFILE CARD */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden pb-6">
-
-        {uploadMessage && (
-          <div className={`p-4 text-center text-sm font-bold text-white ${uploadMessage.type === "success" ? "bg-emerald-500" : "bg-red-500"}`}>
-            {uploadMessage.text}
+      {/* 2. Profile completion card */}
+      <div className="bg-white rounded-[24px] border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-6 w-full md:w-auto">
+          <div className="relative h-16 w-16 shrink-0">
+            <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
+              <path
+                className="text-slate-100"
+                strokeWidth="3"
+                stroke="currentColor"
+                fill="none"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+              <path
+                className={`${completionPercentage === 100 ? 'text-emerald-500' : 'text-[#E11D48]'} transition-all duration-1000 ease-out`}
+                strokeDasharray={`${completionPercentage}, 100`}
+                strokeWidth="3"
+                strokeDashoffset="0"
+                strokeLinecap="round"
+                stroke="currentColor"
+                fill="none"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-slate-800">
+              {completionPercentage}%
+            </div>
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900">Profile Completion</h3>
+            <p className="text-sm text-slate-500 mt-1">
+              {completionPercentage === 100 
+                ? "Your profile is fully complete. Great job!" 
+                : "Complete all fields to increase your credibility with top creators."}
+            </p>
+          </div>
+        </div>
+        
+        {completionPercentage < 100 && (
+          <div className="w-full md:w-auto bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">
+            <p className="text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wider">Missing Fields</p>
+            <div className="flex flex-wrap gap-2">
+              {fields.map((f, idx) => {
+                const names = ['Company Name', 'Website', 'Industry', 'Location', 'Description', 'Email', 'Phone', 'Logo'];
+                if (typeof f !== 'string' || f.trim().length === 0) {
+                  return (
+                    <span key={idx} className="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2 py-1 rounded-md text-[10px] font-bold border border-red-100">
+                      <AlertCircle className="h-3 w-3" />
+                      {names[idx]}
+                    </span>
+                  );
+                }
+                return null;
+              })}
+            </div>
           </div>
         )}
-        {/* Cover Banner (Strict height restriction h-48 md:h-56) */}
-        <div 
-          className="h-48 md:h-56 w-full relative group cursor-pointer bg-gradient-to-tr from-red-700 via-rose-950 to-slate-900 overflow-hidden"
-          onClick={() => document.getElementById("coverUpload")?.click()}
-        >
-          {/* Subtle grid pattern background */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px]" />
-
-          {/* Cover photo image overlay */}
-          {normalizeImageUrl(profile.cover_image_url) && (
-            <img
-              src={normalizeImageUrl(profile.cover_image_url) as string}
-              alt="Brand Cover"
-              className="w-full h-full object-cover opacity-45 mix-blend-overlay"
-            />
-          )}
-
-          {/* Editable State */}
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-sm">
-            {isUploading ? (
-               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
-            ) : (
-               <>
-                 <Camera className="h-5 w-5" />
-                 <span>Change Cover</span>
-               </>
-            )}
-          </div>
-          <input 
-            type="file" 
-            id="coverUpload" 
-            className="hidden" 
-            accept="image/jpeg,image/png,image/webp"
-            onChange={(e) => {
-              if (e.target.files?.[0]) handleUpload(e.target.files[0], "cover");
-            }}
-          />
-        </div>
-
-        {/* Brand Details Layer */}
-        <div className="px-6 relative flex flex-col text-left">
-
-          {/* Overlapping circular avatar */}
-          <div className="-mt-16 md:-mt-20 z-10 relative inline-block self-start">
-            <div 
-              className="size-32 rounded-full border-4 border-white shadow-xl relative group cursor-pointer bg-white overflow-hidden flex items-center justify-center"
-              onClick={() => document.getElementById("logoUpload")?.click()}
-            >
-              {/* Fallback to text initials or premium image */}
-              <SafeAvatar
-                src={profile.logo_url}
-                name={profile.brand_name ?? profile.company_name ?? "UGC FY"}
-                alt={`${profile.brand_name ?? "Brand"} logo`}
-                size="xl"
-                className="h-full w-full bg-gradient-to-br from-red-600 to-rose-700 text-white border-0 shadow-none text-3xl font-extrabold tracking-tighter"
-              />
-
-              {/* Editable State */}
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
-                {isUploading ? (
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white" />
-                ) : (
-                  <>
-                    <ImageIcon className="h-6 w-6 mb-1" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Update</span>
-                  </>
-                )}
-              </div>
-              <input 
-                type="file" 
-                id="logoUpload" 
-                className="hidden" 
-                accept="image/jpeg,image/png,image/webp"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) handleUpload(e.target.files[0], "logo");
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Brand Identity details aligned left below avatar */}
-          <div className="mt-4 space-y-2.5">
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                {profile.company_name}
-                <ShieldCheck className="h-6 w-6 text-red-500 fill-red-50" />
-              </h1>
-
-              {/* Go Plus Tier badge */}
-              <div className="px-3 py-1 bg-gradient-to-r from-red-50 to-rose-50 border border-red-100/40 text-red-600 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
-                <span className="h-1.5 w-1.5 bg-red-600 rounded-full animate-ping" />
-                Verified Go Plus
-              </div>
-            </div>
-
-            {/* Industry and Metadata */}
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{profile.industry || "General"}</p>
-
-            {/* Website & Location links */}
-            <div className="flex flex-wrap items-center gap-4 text-slate-500 text-xs font-semibold pt-1">
-              {profile.website_url && (
-                <a
-                  href={profile.website_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1 hover:text-red-600 transition"
-                >
-                  <Globe className="h-3.5 w-3.5" />
-                  <span>{profile.website_url.replace("https://", "")}</span>
-                  <ArrowUpRight className="h-3 w-3" />
-                </a>
-              )}
-
-              {profile.location && (
-                <span className="flex items-center gap-1">
-                  <MapPin className="h-3.5 w-3.5" />
-                  {profile.location}
-                </span>
-              )}
-            </div>
-          </div>
-
-        </div>
-
       </div>
 
-      {/* 2. BIO & BENTO STATISTICS GRID (STACKED FOR HIGH DENSITY DENSITY) */}
-      <div className="space-y-6">
-
-        {/* Bio Section */}
-        <div className="glass-card p-6 rounded-3xl text-left space-y-4 border border-slate-200/60 shadow-sm bg-white">
-          <h3 className="text-xs font-extrabold uppercase tracking-widest text-slate-400">
-            Brand Narrative
-          </h3>
-          <p className="text-sm text-slate-600 leading-relaxed font-medium">
-            {profile.business_description || "No description provided."}
-          </p>
-
-          <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-x-6 gap-y-2.5 text-xs font-bold text-slate-500">
-            {profile.phone && (
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-slate-400" />
-                Hotline: {profile.phone}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Left Column */}
+        <div className="lg:col-span-2 space-y-8">
+          
+          {/* 3. Company information card */}
+          <div className="bg-white rounded-[24px] border border-slate-200 p-6 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-10 w-10 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-center shrink-0">
+                <Building className="h-5 w-5 text-slate-500" />
               </div>
-            )}
-            <div className="flex items-center gap-2">
-              <AtSign className="h-4 w-4 text-slate-400" />
-              Account email: {profile.contact_email}
+              <h2 className="text-xl font-bold text-slate-900">Company Information</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2 col-span-1 md:col-span-2">
+                <label className="block text-sm font-bold text-slate-700">Brand / Company Name <span className="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  value={profile.company_name} 
+                  onChange={e => setProfile({...profile, company_name: e.target.value})}
+                  className={inputClass} 
+                  placeholder="e.g. Acme Corp" 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-slate-700">Website URL</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Globe className="h-4 w-4 text-slate-400" />
+                  </div>
+                  <input 
+                    type="url" 
+                    value={profile.website} 
+                    onChange={e => setProfile({...profile, website: e.target.value})}
+                    className={`${inputClass} pl-10`} 
+                    placeholder="https://example.com" 
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-slate-700">Industry / Category</label>
+                <input 
+                  type="text" 
+                  value={profile.industry} 
+                  onChange={e => setProfile({...profile, industry: e.target.value})}
+                  className={inputClass} 
+                  placeholder="e.g. Beauty, Tech, Fashion" 
+                />
+              </div>
+
+              <div className="space-y-2 col-span-1 md:col-span-2">
+                <label className="block text-sm font-bold text-slate-700">Country / City Location</label>
+                <input 
+                  type="text" 
+                  value={profile.location} 
+                  onChange={e => setProfile({...profile, location: e.target.value})}
+                  className={inputClass} 
+                  placeholder="e.g. New York, USA" 
+                />
+              </div>
+
+              <div className="space-y-2 col-span-1 md:col-span-2">
+                <label className="block text-sm font-bold text-slate-700">About Brand (Description)</label>
+                <textarea 
+                  value={profile.business_description} 
+                  onChange={e => setProfile({...profile, business_description: e.target.value})}
+                  className={textareaClass} 
+                  placeholder="Describe your brand, your mission, and the type of content you usually look for..." 
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* 4. Contact information card */}
+          <div className="bg-white rounded-[24px] border border-slate-200 p-6 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-10 w-10 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-center shrink-0">
+                <Mail className="h-5 w-5 text-slate-500" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-900">Contact Information</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-slate-700">Work Email <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Mail className="h-4 w-4 text-slate-400" />
+                  </div>
+                  <input 
+                    type="email" 
+                    disabled
+                    value={profile.contact_email} 
+                    className={`${inputClass} pl-10 bg-slate-50 cursor-not-allowed`} 
+                    placeholder="email@company.com" 
+                  />
+                </div>
+                <p className="text-xs text-slate-500 mt-1">To change billing email, please contact support.</p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-slate-700">Phone Number</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Phone className="h-4 w-4 text-slate-400" />
+                  </div>
+                  <input 
+                    type="tel" 
+                    value={profile.phone} 
+                    onChange={e => setProfile({...profile, phone: e.target.value})}
+                    className={`${inputClass} pl-10`} 
+                    placeholder="+1 (555) 000-0000" 
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bento stats cards: Total Campaigns, Escrow Deployed, Creator Rating, Approved POCs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-          {/* stat 1 */}
-          <div className="bg-white/60 backdrop-blur-xl border border-slate-200/50 hover:bg-white hover:border-slate-300 transition-all duration-300 p-5 rounded-2xl text-left flex flex-col justify-between h-32 relative overflow-hidden group shadow-sm">
-            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Campaigns</p>
-            <h3 className="text-2xl font-extrabold text-slate-800">{stats.campaignsCount}</h3>
-            <Video className="absolute right-3 bottom-3 h-8 w-8 text-slate-200/40 group-hover:text-red-500/10 transition" />
-          </div>
-
-          {/* stat 2 */}
-          <div className="bg-white/60 backdrop-blur-xl border border-slate-200/50 hover:bg-white hover:border-slate-300 transition-all duration-300 p-5 rounded-2xl text-left flex flex-col justify-between h-32 relative overflow-hidden group shadow-sm">
-            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Escrow Deployed</p>
-            <h3 className="text-xl font-extrabold text-slate-800">₹{(stats.escrowDeployed / 1000).toFixed(0)}k</h3>
-            <Wallet className="absolute right-3 bottom-3 h-8 w-8 text-slate-200/40 group-hover:text-red-500/10 transition" />
-          </div>
-
-          {/* stat 3 */}
-          <div className="bg-white/60 backdrop-blur-xl border border-slate-200/50 hover:bg-white hover:border-slate-300 transition-all duration-300 p-5 rounded-2xl text-left flex flex-col justify-between h-32 relative overflow-hidden group shadow-sm">
-            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Creator Rating</p>
-            <h3 className="text-2xl font-extrabold text-amber-600 flex items-center gap-1">
-              {stats.creatorRating}
-              <Star className="h-5 w-5 fill-amber-500 text-amber-500" />
-            </h3>
-            <Star className="absolute right-3 bottom-3 h-8 w-8 text-slate-200/40 group-hover:text-red-500/10 transition" />
-          </div>
-
-          {/* stat 4 */}
-          <div className="bg-white/60 backdrop-blur-xl border border-slate-200/50 hover:bg-white hover:border-slate-300 transition-all duration-300 p-5 rounded-2xl text-left flex flex-col justify-between h-32 relative overflow-hidden group shadow-sm">
-            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Approved POCs</p>
-            <h3 className="text-2xl font-extrabold text-slate-800">{stats.pocCount}</h3>
-            <Users className="absolute right-3 bottom-3 h-8 w-8 text-slate-200/40 group-hover:text-red-500/10 transition" />
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* 3. STICKY CONTENT TABS SYSTEM */}
-      <div className="space-y-6">
-
-        {/* Navigation underline indicator */}
-        <div className="border-b border-slate-200/60 sticky top-[72px] bg-slate-50/90 backdrop-blur-md z-10 py-1.5">
-          <div className="flex items-center gap-6 max-w-7xl mx-auto w-full overflow-x-auto no-scrollbar">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`py-2 text-xs font-bold transition whitespace-nowrap cursor-pointer relative ${isActive ? "text-red-600" : "text-slate-400 hover:text-slate-700"
-                    }`}
-                >
-                  {tab.label}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTabUnderline"
-                      className="absolute bottom-0 inset-x-0 h-0.5 bg-red-600 rounded-full"
+        {/* Right Column */}
+        <div className="lg:col-span-1 space-y-8">
+          
+          {/* 5. Brand assets card */}
+          <div className="bg-white rounded-[24px] border border-slate-200 p-6 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-10 w-10 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-center shrink-0">
+                <ImageIcon className="h-5 w-5 text-slate-500" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-900">Brand Assets</h2>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-6 bg-slate-50 transition-all hover:bg-slate-100/50">
+                <div className="relative mb-4 group cursor-pointer" onClick={() => document.getElementById("logoUpload")?.click()}>
+                  <div className="h-24 w-24 rounded-2xl bg-white shadow-sm border border-slate-200 overflow-hidden flex items-center justify-center">
+                    <SafeAvatar
+                      src={profile.logo_url}
+                      name={profile.company_name || "B"}
+                      size="xl"
+                      className="h-full w-full rounded-none"
                     />
-                  )}
+                  </div>
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl flex items-center justify-center text-white">
+                    {isUploading ? (
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+                    ) : (
+                      <Camera className="h-6 w-6" />
+                    )}
+                  </div>
+                  <input 
+                    type="file" 
+                    id="logoUpload" 
+                    className="hidden" 
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) handleUpload(e.target.files[0]);
+                    }}
+                  />
+                </div>
+                <div className="text-center">
+                  <h4 className="text-sm font-bold text-slate-900">Company Logo</h4>
+                  <p className="text-xs text-slate-500 mt-1">Square format, recommended 512x512px. PNG or JPG.</p>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => document.getElementById("logoUpload")?.click()}
+                  className="mt-4 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
+                >
+                  Upload Image
                 </button>
-              );
-            })}
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-slate-700">Brand Guidelines</label>
+                <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl bg-white">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-red-50 text-red-500 rounded-lg flex items-center justify-center shrink-0">
+                      <FileText className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">PDF Document</p>
+                      <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Not Uploaded</p>
+                    </div>
+                  </div>
+                  <button className="text-xs font-bold text-red-600 hover:text-red-700" disabled>
+                    Coming Soon
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Dynamic Tab Panels */}
-        <div className="min-h-[250px]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.2 }}
-            >
+      </div>
 
-              {/* TAB 1: OVERVIEW & TONE */}
-              {activeTab === "overview" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                  <div className="glass-card p-6 rounded-3xl bg-white space-y-4">
-                    <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-800 flex items-center gap-1.5">
-                      Visual Brand voice
-                    </h4>
-                    <div className="space-y-3 text-xs leading-relaxed text-slate-600">
-                      <div className="p-3.5 bg-slate-50 border border-slate-100 rounded-2xl">
-                        <span className="font-extrabold text-slate-700 block">Tone of Content</span>
-                        <span className="font-semibold text-slate-500 mt-0.5 block">Professional, Inspiring, High-Energy</span>
-                      </div>
-                      <div className="p-3.5 bg-slate-50 border border-slate-100 rounded-2xl">
-                        <span className="font-extrabold text-slate-700 block">Visual Guidelines</span>
-                        <span className="font-semibold text-slate-500 mt-0.5 block">Cinematic wide angle shots, outdoor tracks, clean gym backdrops</span>
-                      </div>
-                    </div>
-                  </div>
+      {/* 6. Sticky Save Button */}
+      <div className="fixed bottom-0 left-0 right-0 lg:left-64 bg-white/80 backdrop-blur-xl border-t border-slate-200 p-4 z-40 flex items-center justify-between md:justify-end gap-4 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
+        
+        {saveStatus && (
+          <div className={`text-sm font-bold flex items-center gap-2 ${saveStatus.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
+            {saveStatus.type === 'success' ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+            {saveStatus.message}
+          </div>
+        )}
 
-                  <div className="glass-card p-6 rounded-3xl bg-white space-y-4">
-                    <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-800">
-                      Product Directives
-                    </h4>
-                    <div className="space-y-3 text-xs leading-relaxed text-slate-600">
-                      <div className="p-3.5 bg-slate-50 border border-slate-100 rounded-2xl">
-                        <span className="font-extrabold text-emerald-700 block">DOs</span>
-                        <span className="font-semibold text-slate-500 mt-0.5 block">Emphasize cushioning technology in close-up slow motion.</span>
-                      </div>
-                      <div className="p-3.5 bg-slate-50 border border-slate-100 rounded-2xl">
-                        <span className="font-extrabold text-red-700 block">DONTs</span>
-                        <span className="font-semibold text-slate-500 mt-0.5 block">Avoid busy street clutter or low-light indoor studios.</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* TAB 2: ACTIVE CAMPAIGNS */}
-              {activeTab === "campaigns" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
-                  {campaigns.length === 0 ? (
-                    <div className="col-span-1 sm:col-span-2 text-center py-12 text-slate-400 font-bold text-sm">
-                      No active campaigns found.
-                    </div>
-                  ) : campaigns.map((c) => (
-                    <div key={c.id} className="glass-card p-6 rounded-3xl bg-white flex flex-col justify-between h-48 border border-slate-200/60 shadow-sm">
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${c.status === "Active"
-                              ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                              : "bg-amber-50 text-amber-700 border border-amber-100"
-                            }`}>
-                            {c.status}
-                          </span>
-                          <span className="text-[10px] font-mono font-bold text-slate-400">₹{formatDashboardNumber(c.budget)}</span>
-                        </div>
-                        <h4 className="text-xs font-bold text-slate-900 mt-3">{c.title}</h4>
-                        <p className="text-[10px] text-slate-500 mt-1 line-clamp-2">{c.description}</p>
-                      </div>
-
-                      <div className="border-t border-slate-100 pt-3 flex items-center justify-between mt-4">
-                        <span className="text-[9px] font-bold text-slate-400">Deadline: {formatDashboardDate(c.deadline)}</span>
-                        <button className="text-red-600 hover:text-red-700 font-bold text-[10px] uppercase tracking-wider cursor-pointer">
-                          View details
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* TAB 3: POC DIRECTORY */}
-              {activeTab === "poc" && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
-                  {pocs.length === 0 ? (
-                    <div className="col-span-1 sm:col-span-3 text-center py-12 text-slate-400 font-bold text-sm">
-                      No POCs found.
-                    </div>
-                  ) : pocs.map((poc) => (
-                    <div key={poc.id} className="glass-card p-5 rounded-3xl bg-white flex items-center gap-3 border border-slate-200/60 shadow-sm">
-                      <img
-                        src={poc.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(poc.name || "U")}`}
-                        alt={poc.name}
-                        className="h-10 w-10 rounded-full object-cover border border-slate-200 bg-slate-50"
-                      />
-                      <div className="truncate">
-                        <h4 className="text-xs font-bold text-slate-900 truncate">{poc.name}</h4>
-                        <p className="text-[9px] font-bold text-slate-400 mt-0.5 truncate">{poc.role}</p>
-                        <span className={`inline-block mt-2 px-2 py-0.5 text-[8px] font-bold uppercase rounded-full ${poc.status === "Active"
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                            : "bg-amber-50 text-amber-700 border border-amber-100"
-                          }`}>
-                          {poc.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* TAB 4: BRAND ASSETS */}
-              {activeTab === "assets" && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
-                  {/* asset 1 */}
-                  <div className="glass-card p-5 rounded-3xl bg-white border border-slate-200/60 shadow-sm flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 bg-slate-100 text-slate-500 rounded-xl flex items-center justify-center border border-slate-200 shrink-0">
-                        <ImageIcon className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-900">Vector Logo Pack</h4>
-                        <p className="text-[9px] text-slate-400 font-bold mt-0.5">SVG / EPS format (4.2MB)</p>
-                      </div>
-                    </div>
-                    <button className="p-2 hover:bg-slate-50 text-slate-400 hover:text-red-600 rounded-xl border border-slate-200/60 cursor-pointer">
-                      <Download className="h-4 w-4" />
-                    </button>
-                  </div>
-
-                  {/* asset 2 */}
-                  <div className="glass-card p-5 rounded-3xl bg-white border border-slate-200/60 shadow-sm flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 bg-slate-100 text-slate-500 rounded-xl flex items-center justify-center border border-slate-200 shrink-0">
-                        <FileText className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-900">Creative Media Kit</h4>
-                        <p className="text-[9px] text-slate-400 font-bold mt-0.5">PDF Guidelines (12.4MB)</p>
-                      </div>
-                    </div>
-                    <button className="p-2 hover:bg-slate-50 text-slate-400 hover:text-red-600 rounded-xl border border-slate-200/60 cursor-pointer">
-                      <Download className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
+        <button 
+          onClick={handleSave}
+          disabled={isSaving || !profile.company_name}
+          className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#E11D48] px-6 py-3.5 text-sm font-semibold text-white shadow-md shadow-red-500/20 transition-all hover:bg-[#BE123C] disabled:cursor-not-allowed disabled:opacity-60 hover:-translate-y-0.5 active:translate-y-0"
+        >
+          {isSaving ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
+          {isSaving ? "Saving changes..." : "Save Profile"}
+        </button>
       </div>
 
     </div>
