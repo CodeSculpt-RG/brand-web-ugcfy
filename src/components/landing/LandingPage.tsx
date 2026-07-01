@@ -10,7 +10,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
   Sparkles, ArrowRight, CheckCircle2, MessageCircle, Users,
-  Brain, LayoutDashboard, TrendingUp, Check,
+  Brain, LayoutDashboard, TrendingUp, Check, Globe2, Cpu, Layers, Activity, ShieldCheck,
   Headset, BadgeDollarSign, Bot, Quote, ChevronLeft, ChevronRight, ChevronDown, X
 } from "lucide-react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
@@ -18,11 +18,11 @@ import Image from "next/image";
 import RequestAccessModal from "@/components/RequestAccessModal";
 
 const whyChooseData = [
-  { title: "200M+ Influencers Database", desc: "Access a global network of over 200 million influencers. Find your perfect match across platforms and boost visibility.", icon: Users },
-  { title: "Smart AI Powered Dashboard", desc: "Get real-time insights and smart recommendations to track performance, measure ROI, and optimize your campaigns.", icon: Brain },
-  { title: "End to End Campaign Management", desc: "From influencer discovery to final reporting, manage every step of your campaign in one seamless workflow.", icon: CheckCircle2 },
-  { title: "Realtime Performance Tracking", desc: "Monitor your campaign as it happens with live updates on reach and engagement to modify strategies instantly.", icon: TrendingUp },
-  { title: "Expert Support at Every Step", desc: "Our dedicated team is always available to guide you through setup, troubleshooting, and scaling.", icon: Headset },
+  { title: "200M+ Influencers Database", desc: "Access a global network of over 200 million influencers. Find your perfect match across platforms and boost visibility.", icon: Globe2 },
+  { title: "Smart AI Powered Dashboard", desc: "Get real-time insights and smart recommendations to track performance, measure ROI, and optimize your campaigns.", icon: Cpu },
+  { title: "End to End Campaign Management", desc: "From influencer discovery to final reporting, manage every step of your campaign in one seamless workflow.", icon: Layers },
+  { title: "Realtime Performance Tracking", desc: "Monitor your campaign as it happens with live updates on reach and engagement to modify strategies instantly.", icon: Activity },
+  { title: "Expert Support at Every Step", desc: "Our dedicated team is always available to guide you through setup, troubleshooting, and scaling.", icon: ShieldCheck },
 ];
 
 interface AiFeature {
@@ -617,59 +617,66 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 8: PROFESSIONAL USP GRID */}
-      <section className="py-24 bg-white">
-        <div className="max-w-[1100px] mx-auto px-6">
-
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#0A0A0A] tracking-tight">
-              Why Choose UGCFY
+      <section className="py-24 bg-white relative overflow-hidden">
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        
+        <div className="max-w-[1200px] mx-auto px-6 relative z-10">
+          <div className="text-center mb-16 max-w-2xl mx-auto relative z-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm mb-6">
+              <div className="w-2 h-2 rounded-full bg-brand-red-500 animate-pulse" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-gray-900">The UGCFY Advantage</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-6">
+              Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red-500 to-rose-400">UGCFY?</span>
             </h2>
+            <p className="text-lg text-gray-500 font-medium leading-relaxed">
+              Experience the next generation of influencer marketing. Everything you need to discover, manage, and scale your campaigns in one unified platform.
+            </p>
           </div>
 
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false }}
-            transition={{ staggerChildren: 0.1 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-16 mb-16"
-          >
-            {whyChooseData.slice(0, 3).map((usp, idx) => (
-              <motion.div
-                key={idx}
-                variants={cardVariants}
-                className="flex flex-col items-center text-center"
-              >
-                <div className="w-16 h-16 mb-6 flex items-center justify-center">
-                  <usp.icon className="w-12 h-12 text-red-500" strokeWidth={1.5} />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4 tracking-tight">{usp.title}</h3>
-                <p className="text-gray-500 leading-relaxed text-base max-w-[300px]">{usp.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div
-            variants={gridContainerVariants}
             initial="hidden"
             whileInView="show"
             viewport={{ once: false }}
-            className="flex flex-col md:flex-row justify-center gap-x-12 gap-y-16"
+            variants={{
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+            }}
+            className="grid grid-cols-1 md:grid-cols-6 gap-6"
           >
-            {whyChooseData.slice(3, 5).map((usp, idx) => (
-              <motion.div
-                key={idx + 3}
-                variants={cardVariants}
-                className="flex flex-col items-center text-center md:w-1/3"
-              >
-                <div className="w-16 h-16 mb-6 flex items-center justify-center">
-                  <usp.icon className="w-12 h-12 text-red-500" strokeWidth={1.5} />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4 tracking-tight">{usp.title}</h3>
-                <p className="text-gray-500 leading-relaxed text-base max-w-[300px]">{usp.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+            {whyChooseData.map((usp, idx) => {
+              const colSpanClasses = [
+                "md:col-span-4",
+                "md:col-span-2",
+                "md:col-span-2",
+                "md:col-span-2",
+                "md:col-span-2",
+              ];
+              
+              const isLarge = idx === 0;
 
+              return (
+                <motion.div
+                  key={idx}
+                  variants={cardVariants}
+                  className={`bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl p-8 flex ${isLarge ? 'flex-col sm:flex-row items-center sm:items-start text-center sm:text-left' : 'flex-col items-start text-left'} shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group ${colSpanClasses[idx]}`}
+                >
+                  {/* Hover Flare */}
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-brand-red-500/5 rounded-full translate-x-20 -translate-y-20 group-hover:scale-150 transition-transform duration-700 ease-out blur-xl" />
+                  
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-tr from-white to-brand-red-50/50 flex items-center justify-center shadow-sm border border-gray-100/60 relative z-10 shrink-0 group-hover:border-brand-red-100 transition-colors duration-300 ${isLarge ? 'mb-6 sm:mb-0 sm:mr-8 w-20 h-20' : 'mb-6'}`}>
+                    <usp.icon className={`${isLarge ? 'w-8 h-8' : 'w-7 h-7'} text-brand-red-500`} strokeWidth={1.5} />
+                  </div>
+                  
+                  <div className="relative z-10 flex-1 flex flex-col justify-center h-full">
+                    <h3 className={`font-bold text-gray-900 tracking-tight mb-3 ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl'}`}>{usp.title}</h3>
+                    <p className={`text-gray-500 leading-relaxed ${isLarge ? 'text-base md:text-lg max-w-lg' : 'text-sm'}`}>{usp.desc}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
         </div>
       </section>
 
