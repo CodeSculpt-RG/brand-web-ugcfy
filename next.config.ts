@@ -32,6 +32,21 @@ const nextConfig: NextConfig = {
         destination: "/dashboard/settings",
         permanent: false,
       },
+      {
+        source: "/legal/terms-of-service",
+        destination: "/legal/terms-and-conditions",
+        permanent: true,
+      },
+      {
+        source: "/privacy",
+        destination: "/legal/privacy-policy",
+        permanent: true,
+      },
+      {
+        source: "/terms",
+        destination: "/legal/terms-and-conditions",
+        permanent: true,
+      },
     ];
   },
 };

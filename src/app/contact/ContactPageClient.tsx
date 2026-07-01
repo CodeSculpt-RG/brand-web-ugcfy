@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -45,133 +46,130 @@ export default function ContactUs() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0A0A0F] text-zinc-100 flex flex-col justify-between selection:bg-brand-red-100 select-none">
+    <main className="min-h-screen bg-[#F8F9FA] text-gray-900 flex flex-col justify-between selection:bg-brand-red-100 font-sans">
+      <Navbar theme="dark" />
 
-      {/* Top Navbar */}
-      <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between border-b border-zinc-900">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="h-9 w-9 bg-brand-red-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-extrabold text-lg tracking-tighter">U</span>
+      {/* Hero Header */}
+      <section className="w-full pt-32 pb-16 px-6 relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-red-500/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm mb-8">
+            <div className="w-2 h-2 rounded-full bg-brand-red-500 animate-pulse" />
+            <span className="text-[11px] font-bold uppercase tracking-widest text-gray-900">Get in Touch</span>
           </div>
-          <span className="font-extrabold text-xl tracking-tight text-white">UGC<span className="text-brand-red-600">FY</span></span>
-        </Link>
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-white transition"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Link>
-      </header>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
+            We&apos;re here to <span className="text-brand-red-500">help.</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            Have questions about SIYAA&apos;s onboarding, brand access approvals, or creator escrow integrations? Drop us a message.
+          </p>
+        </div>
+      </section>
 
       {/* Main Content Area */}
-      <section className="flex-1 w-full max-w-7xl mx-auto py-16 px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
+      <section className="flex-1 w-full max-w-7xl mx-auto pb-32 px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-start relative z-10">
+        
         {/* Left Side: Contact Info */}
-        <div className="space-y-8 text-left">
-          <div className="space-y-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-red-500">Get in Touch</span>
-            <h1 className="text-4xl font-extrabold text-white tracking-tight leading-none">Contact Us</h1>
-            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-semibold max-w-md">
-              Have questions about SIYAA&apos;s onboarding, brand access approvals, or creator escrow integrations? Drop us a message and our support team will respond shortly.
-            </p>
-          </div>
-
-          <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
-            <div className="flex items-center gap-3.5">
-              <div className="h-10 w-10 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center text-brand-red-500">
+        <div className="lg:col-span-5 space-y-12">
+          
+          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-12 w-12 bg-gray-50 rounded-full flex items-center justify-center text-gray-900">
                 <Mail className="h-5 w-5" />
               </div>
-              <div className="w-full">
-                <p className="font-bold text-white mb-2">General Enquiries</p>
-                <a href="mailto:hello@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block mb-4">
-                  hello@ugcfy.com
-                </a>
-                
-                <p className="font-bold text-white mb-2">Support</p>
-                <a href="mailto:support@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block mb-4">
-                  support@ugcfy.com
-                </a>
-
-                <p className="font-bold text-white mb-2">Billing & Payments</p>
-                <a href="mailto:billing@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block">
-                  billing@ugcfy.com
-                </a>
-                <a href="mailto:payments@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block mb-4">
-                  payments@ugcfy.com
-                </a>
-                
-                <p className="font-bold text-white mb-2">Technical & Security</p>
-                <a href="mailto:tech@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block">
-                  tech@ugcfy.com
-                </a>
-                <a href="mailto:security@ugcfy.com" className="text-zinc-400 hover:text-brand-red-400 transition font-semibold block mb-4">
-                  security@ugcfy.com
-                </a>
-              </div>
+              <h3 className="text-xl font-bold text-gray-900">Email Directory</h3>
             </div>
-
-            <div className="flex items-center gap-3.5">
-              <div className="h-10 w-10 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center text-brand-red-500">
-                <Phone className="h-5 w-5" />
+            
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-gray-50">
+                <span className="font-semibold text-gray-900 text-sm">General Enquiries</span>
+                <a href="mailto:hello@ugcfy.com" className="text-brand-red-500 font-medium text-sm hover:text-brand-red-600 transition">hello@ugcfy.com</a>
               </div>
-              <div>
-                <p className="font-bold text-white">Office Line</p>
-                <p className="text-zinc-400 font-semibold">+91 90001 90001</p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-gray-50">
+                <span className="font-semibold text-gray-900 text-sm">Support</span>
+                <a href="mailto:support@ugcfy.com" className="text-brand-red-500 font-medium text-sm hover:text-brand-red-600 transition">support@ugcfy.com</a>
               </div>
-            </div>
-
-            <div className="flex items-center gap-3.5">
-              <div className="h-10 w-10 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center text-brand-red-500">
-                <MapPin className="h-5 w-5" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-gray-50">
+                <span className="font-semibold text-gray-900 text-sm">Billing & Payments</span>
+                <div className="flex flex-col sm:items-end">
+                  <a href="mailto:billing@ugcfy.com" className="text-brand-red-500 font-medium text-sm hover:text-brand-red-600 transition">billing@ugcfy.com</a>
+                  <a href="mailto:payments@ugcfy.com" className="text-brand-red-500 font-medium text-sm hover:text-brand-red-600 transition">payments@ugcfy.com</a>
+                </div>
               </div>
-              <div>
-                <p className="font-bold text-white">Headquarters</p>
-                <p className="text-zinc-400 font-semibold">Bhilai, CG 490001</p>
-
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-3">
+                <span className="font-semibold text-gray-900 text-sm">Tech & Security</span>
+                <div className="flex flex-col sm:items-end">
+                  <a href="mailto:tech@ugcfy.com" className="text-brand-red-500 font-medium text-sm hover:text-brand-red-600 transition">tech@ugcfy.com</a>
+                  <a href="mailto:security@ugcfy.com" className="text-brand-red-500 font-medium text-sm hover:text-brand-red-600 transition">security@ugcfy.com</a>
+                </div>
               </div>
             </div>
           </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md flex flex-col items-start">
+              <div className="h-10 w-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-900 mb-4">
+                <Phone className="h-4 w-4" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">Call Us</h3>
+              <p className="text-gray-500 text-sm mb-4">Mon-Fri, 9am - 6pm</p>
+              <p className="text-gray-900 font-semibold">+91 90001 90001</p>
+            </div>
+
+            <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md flex flex-col items-start">
+              <div className="h-10 w-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-900 mb-4">
+                <MapPin className="h-4 w-4" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">Visit Us</h3>
+              <p className="text-gray-500 text-sm mb-4">Our Headquarters</p>
+              <p className="text-gray-900 font-semibold">Bhilai, CG 490001</p>
+            </div>
+          </div>
+
         </div>
 
         {/* Right Side: Form Container */}
-        <div className="bg-[#0D0D12] border border-zinc-850 p-6 sm:p-8 rounded-3xl shadow-xl relative overflow-hidden text-left">
-          {/* Accent red glow */}
-          <div className="absolute -top-16 -right-16 w-32 h-32 bg-brand-red-600/5 blur-3xl pointer-events-none rounded-full" />
+        <div className="lg:col-span-7 bg-white p-8 sm:p-12 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Send us a message</h2>
+            <p className="text-gray-500">We aim to respond to all inquiries within 24 hours.</p>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
-            <div>
-              <label htmlFor="name" className="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">
-                Full Name
-              </label>
-              <input
-                id="name"
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="e.g. Sarah Jenkins"
-                className="w-full bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs text-white focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-500/10 outline-none transition font-semibold"
-              />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="name" className="block text-[13px] font-semibold text-gray-700">
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Sarah Jenkins"
+                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm text-gray-900 focus:border-brand-red-500 focus:ring-4 focus:ring-brand-red-500/10 hover:border-gray-300 outline-none transition-all duration-300 font-medium placeholder:text-gray-400"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="email" className="block text-[13px] font-semibold text-gray-700">
+                  Work Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="sarah@brand.com"
+                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm text-gray-900 focus:border-brand-red-500 focus:ring-4 focus:ring-brand-red-500/10 hover:border-gray-300 outline-none transition-all duration-300 font-medium placeholder:text-gray-400"
+                />
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="email" className="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">
-                Work Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="e.g. sarah@brand.com"
-                className="w-full bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs text-white focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-500/10 outline-none transition font-semibold"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="subject" className="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">
+            <div className="space-y-2">
+              <label htmlFor="subject" className="block text-[13px] font-semibold text-gray-700">
                 Subject
               </label>
               <input
@@ -181,28 +179,28 @@ export default function ContactUs() {
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 placeholder="How can we help?"
-                className="w-full bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs text-white focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-500/10 outline-none transition font-semibold"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm text-gray-900 focus:border-brand-red-500 focus:ring-4 focus:ring-brand-red-500/10 hover:border-gray-300 outline-none transition-all duration-300 font-medium placeholder:text-gray-400"
               />
             </div>
 
-            <div>
-              <label htmlFor="message" className="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">
+            <div className="space-y-2">
+              <label htmlFor="message" className="block text-[13px] font-semibold text-gray-700">
                 Message Detail
               </label>
               <textarea
                 id="message"
                 required
-                rows={4}
+                rows={5}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="Write your details here..."
-                className="w-full bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs text-white focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-500/10 outline-none transition font-semibold resize-none"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm text-gray-900 focus:border-brand-red-500 focus:ring-4 focus:ring-brand-red-500/10 hover:border-gray-300 outline-none transition-all duration-300 font-medium placeholder:text-gray-400 resize-none"
               />
             </div>
 
             {errorMessage && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-xs font-semibold flex items-start gap-2">
-                <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></div>
+              <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-red-600 shrink-0"></div>
                 <p>{errorMessage}</p>
               </div>
             )}
@@ -210,15 +208,15 @@ export default function ContactUs() {
             <button
               type="submit"
               disabled={status === "sending"}
-              className="w-full py-3.5 bg-gradient-to-tr from-brand-red-600 to-rose-600 hover:from-brand-red-700 hover:to-rose-700 disabled:from-zinc-800 disabled:to-zinc-900 disabled:cursor-not-allowed text-white font-bold rounded-xl text-xs transition shadow-lg shadow-brand-red-600/15 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+              className="w-full py-4 bg-gray-900 hover:bg-black disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold rounded-xl text-sm transition-all duration-300 shadow-[0_4px_14px_0_rgb(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-4"
             >
               {status === "sending" ? (
-                <span>Sending Message...</span>
+                <span>Sending...</span>
               ) : status === "success" ? (
-                <span className="text-emerald-400">✓ Message Sent Successfully!</span>
+                <span className="text-emerald-400">✓ Message Sent</span>
               ) : (
                 <>
-                  <Send className="h-3.5 w-3.5" />
+                  <Send className="h-4 w-4" />
                   <span>Send Message</span>
                 </>
               )}
@@ -228,17 +226,7 @@ export default function ContactUs() {
 
       </section>
 
-      {/* Footer */}
-      <footer className="w-full max-w-7xl mx-auto px-6 py-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-600">
-        <span>© 2026 UGCFY. All rights reserved.</span>
-        <div className="flex gap-4">
-          <Link href="/privacy" className="hover:text-zinc-300 transition">Privacy Policy</Link>
-          <Link href="/terms" className="hover:text-zinc-300 transition">Terms of Service</Link>
-          <Link href="/contact" className="hover:text-zinc-300 transition">Contact</Link>
-          <Link href="/about" className="hover:text-zinc-300 transition">About</Link>
-        </div>
-      </footer>
-
+      <Footer />
     </main>
   );
 }

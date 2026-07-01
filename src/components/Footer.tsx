@@ -17,7 +17,7 @@ export default function Footer() {
   return (
     <footer className="bg-white text-gray-900 pt-10 pb-10 border-t border-gray-100">
       <div className="max-w-[1280px] mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-12 lg:gap-8 mb-16">
           
           {/* Column 1: Brand & Bio */}
           <div className="lg:col-span-2 pr-0 lg:pr-12">
@@ -51,14 +51,25 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <h4 className="font-bold tracking-widest uppercase mb-6 text-xs text-gray-900">Resources</h4>
             <ul className="space-y-4 text-gray-500 text-[15px] font-medium">
-              <li><Link href="/resources/case-studies" className="hover:text-[#E11D48] transition-colors">Case Studies</Link></li>
-              <li><Link href="/resources/blogs" className="hover:text-[#E11D48] transition-colors">Blog & Guides</Link></li>
-              <li><Link href="/resources/help-center" className="hover:text-[#E11D48] transition-colors">Help Center</Link></li>
-              <li><Link href="/resources/api-docs" className="hover:text-[#E11D48] transition-colors">API Documentation</Link></li>
+              <li><Link href="/case-studies" className="hover:text-[#E11D48] transition-colors">Case Studies</Link></li>
+              <li><Link href="/blog" className="hover:text-[#E11D48] transition-colors">Blog & Guides</Link></li>
+              <li><Link href="/support" className="hover:text-[#E11D48] transition-colors">Help Center</Link></li>
+              <li><Link href="/api-docs" className="hover:text-[#E11D48] transition-colors">API Documentation</Link></li>
             </ul>
           </div>
 
-          {/* Column 4: App Store */}
+          {/* Column 4: Legal */}
+          <div className="lg:col-span-1">
+            <h4 className="font-bold tracking-widest uppercase mb-6 text-xs text-gray-900">Legal</h4>
+            <ul className="space-y-4 text-gray-500 text-[15px] font-medium">
+              <li><Link href="/legal/privacy-policy" className="hover:text-[#E11D48] transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/legal/terms-and-conditions" className="hover:text-[#E11D48] transition-colors">Terms & Conditions</Link></li>
+              <li><Link href="/legal/community-guidelines" className="hover:text-[#E11D48] transition-colors">Community Guidelines</Link></li>
+              <li><Link href="/legal/security" className="hover:text-[#E11D48] transition-colors">Security</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 5: App Store */}
           <div className="lg:col-span-1">
             <h4 className="font-bold tracking-widest uppercase mb-6 text-xs text-gray-900">Get The App</h4>
             <p className="text-gray-500 text-sm mb-6">Manage your campaigns directly from your phone.</p>
@@ -94,14 +105,7 @@ export default function Footer() {
         <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-gray-500 font-medium">
           <p className="text-gray-400">© {new Date().getFullYear()} UGCFY Inc. All Rights Reserved.</p>
           <div className="flex flex-wrap gap-6 justify-center md:justify-end">
-            <a href="mailto:support@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Support</a>
-            <a href="mailto:hello@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Contact</a>
-            <a href="mailto:legal@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Legal</a>
-            <a href="mailto:privacy@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Privacy</a>
-            <a href="mailto:grievance@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Grievance</a>
-            <a href="mailto:security@ugcfy.com" className="hover:text-[#E11D48] transition-colors">Security</a>
-            <Link href="/privacy" className="hover:text-[#E11D48] transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-[#E11D48] transition-colors">Terms of Service</Link>
+            <Link href="/support" className="hover:text-[#E11D48] transition-colors">Support</Link>
             <Link href="/cookie-settings" className="hover:text-[#E11D48] transition-colors">Cookie Settings</Link>
           </div>
         </div>

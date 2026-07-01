@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronDown, X } from "lucide-react";
@@ -9,30 +9,44 @@ import { MegaMenuPanel, PLATFORM_DATA, SOLUTIONS_DATA, RESOURCES_DATA, SERVICES_
 
 interface NavbarProps {
   theme?: "transparent-to-dark" | "dark";
+  hideOnScroll?: boolean;
 }
 
-export default function Navbar({ theme = "transparent-to-dark" }: NavbarProps) {
+export default function Navbar({ theme = "transparent-to-dark", hideOnScroll = false }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [scrolled, setScrolled] = useState(theme === "dark");
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
-    if (theme === "dark") {
-      return;
-    }
-
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      
+      // Background logic
+      if (theme !== "dark") {
+        setScrolled(currentScrollY > 20);
+      }
+
+      // Hide on scroll logic
+      if (hideOnScroll) {
+        if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+          setIsVisible(false); // Scrolling down
+        } else if (currentScrollY < lastScrollY.current) {
+          setIsVisible(true);  // Scrolling up
+        }
+        lastScrollY.current = currentScrollY;
+      }
     };
     
     // Check initial scroll position
     handleScroll();
     
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [theme]);
+  }, [theme, hideOnScroll]);
 
   useEffect(() => {
     async function checkAuth() {
@@ -51,10 +65,11 @@ export default function Navbar({ theme = "transparent-to-dark" }: NavbarProps) {
   }, []);
 
   const headerBg = scrolled || theme === "dark" ? "bg-[#000000] shadow-xl" : "bg-transparent backdrop-blur-md";
+  const transformStyle = hideOnScroll && !isVisible ? "-translate-y-full" : "translate-y-0";
 
   return (
     <>
-      <header className={`fixed top-0 w-full z-50 transition-colors duration-300 py-1.5 ${headerBg} border-b border-white/10`}>
+      <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${transformStyle} py-1.5 ${headerBg} border-b border-white/10`}>
         <div className="max-w-[1280px] mx-auto px-6 h-[76px] flex items-center justify-between">
           <Link href="/" className="flex items-center">
             <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={140} height={40} className="h-8 w-auto object-contain brightness-0 invert" priority />
