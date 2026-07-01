@@ -268,8 +268,8 @@ const platformFeatures = [
 const uspData = [
   {
     id: 1,
-    title: "WhatsApp & Zalo Chat Integration",
-    description: "Receive real-time updates on WhatsApp and Zalo for campaigns, queries, and workflows. Seamless, personal-level communication between influencers and brands, keeping everyone informed instantly.",
+    title: "WhatsApp Chat Integration",
+    description: "Receive real-time updates on WhatsApp for campaigns, queries, and workflows. Seamless, personal-level communication between influencers and brands, keeping everyone informed instantly.",
     icon: MessageCircle,
   },
   {
