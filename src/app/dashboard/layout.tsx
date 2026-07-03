@@ -54,12 +54,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         email: brandSession.user.email ?? brandSession.brand.email ?? null,
         company_name: brandSession.brand.company_name ?? null,
         brand_name: brandSession.brand.brand_name ?? null,
-        approval_status: brandSession.brand.approval_status ?? null,
-        /* eslint-disable @typescript-eslint/no-explicit-any */
-        kyc_status: (brandSession.brand as any).kyc_status ?? null,
-        status: (brandSession.brand as any).status ?? null,
-        onboarding_status: (brandSession.brand as any).onboarding_status ?? null,
-        /* eslint-enable @typescript-eslint/no-explicit-any */
+        kyc_status: brandSession.brand.kyc_status ?? null,
         access_status: accessStatus,
         poc_count: pocCount,
         subscription_status: subscriptionStatus,

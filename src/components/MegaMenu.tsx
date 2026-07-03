@@ -2,7 +2,7 @@ import React from "react";
 import { 
   Search, MessageCircle, LayoutDashboard, CreditCard, PieChart, 
   Bot, Zap, LineChart, Users, Smartphone, Globe, Video, 
-  PenTool, Star, Play, MapPin, Info, Phone, Briefcase, HelpCircle, Package, FileText
+  PenTool, Star, Play, MapPin, Info, Phone, Briefcase, HelpCircle, FileText
 } from "lucide-react";
 import Link from "next/link";
 
@@ -217,35 +217,35 @@ export const PLATFORM_DATA: MegaMenuData = {
   ]
 };
 
-export const SOLUTIONS_DATA: MegaMenuData = {
-  columns: 4,
+export const ECOSYSTEM_DATA: MegaMenuData = {
+  columns: 3,
   cards: [
     {
-      title: "Brands",
-      description: "Scale ad creatives with vetted creators. End-to-end tracking & escrow.",
-      icon: Globe,
-      href: "/solutions/brands",
+      title: "Creators",
+      description: "Join UGCFY as a creator, build your portfolio, discover brand campaigns, and apply for paid UGC collaborations directly from the app.",
+      icon: Video,
+      href: "/ecosystem/creators",
       visualWindow: (
         <div className="w-full flex items-center justify-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center relative overflow-hidden">
              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-             <Globe className="w-5 h-5 text-white" />
+             <Video className="w-5 h-5 text-white" />
           </div>
           <div className="w-10 h-10 rounded-xl bg-[var(--color-primary-hover)] border border-[var(--color-primary)] shadow-[var(--shadow-cta)] flex items-center justify-center relative group-hover/card:scale-110 transition-transform">
-             <Star className="w-5 h-5 text-white" />
+             <Users className="w-5 h-5 text-white" />
           </div>
           <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center relative overflow-hidden">
              <div className="absolute inset-0 bg-gradient-to-tl from-white/20 to-transparent"></div>
-             <Users className="w-5 h-5 text-white" />
+             <Star className="w-5 h-5 text-white" />
           </div>
         </div>
       )
     },
     {
-      title: "Agencies",
-      description: "Manage multiple clients under a single powerful dashboard.",
-      icon: Briefcase,
-      href: "/solutions/agencies",
+      title: "Brands",
+      description: "Launch campaigns, find vetted creators, manage collaborations, and scale UGC content production with a structured brand workflow.",
+      icon: Globe,
+      href: "/ecosystem/brands",
       visualWindow: (
         <div className="w-full h-full flex flex-col gap-2">
            <div className="w-full h-6 bg-white/[0.05] rounded border border-white/10 flex items-center px-2 gap-2">
@@ -264,38 +264,24 @@ export const SOLUTIONS_DATA: MegaMenuData = {
       )
     },
     {
-      title: "Social Commerce",
-      description: "Drive direct sales with unique affiliate tracking links.",
+      title: "Download the App",
+      description: "Get the UGCFY mobile app to complete onboarding, manage your profile, access campaigns, and use creator or brand tools on the go.",
       icon: Smartphone,
-      href: "/solutions/social-commerce",
+      href: "/ecosystem/download-app",
       visualWindow: (
-        <div className="w-full h-full flex flex-col justify-end relative">
-          <div className="absolute top-0 right-0 w-8 h-8 rounded bg-[var(--color-primary-hover)]/20 border border-[var(--color-primary)]/50 flex items-center justify-center text-[var(--color-primary)] text-[10px] font-bold group-hover/card:translate-y-1 transition-transform">+5%</div>
-          <div className="flex items-end gap-1.5 w-full h-12">
-             <div className="w-1/4 h-[40%] bg-white/20 rounded-t"></div>
-             <div className="w-1/4 h-[60%] bg-white/20 rounded-t"></div>
-             <div className="w-1/4 h-[80%] bg-white/20 rounded-t"></div>
-             <div className="w-1/4 h-[100%] bg-[var(--color-primary-hover)] shadow-[var(--shadow-cta)] rounded-t group-hover/card:h-[110%] transition-all"></div>
-          </div>
-        </div>
-      )
-    },
-    {
-      title: "Content Seeding",
-      description: "Distribute your product strategically to niche micro-creators.",
-      icon: Package,
-      href: "/solutions/content-seeding",
-      visualWindow: (
-        <div className="relative w-full h-full flex items-center justify-center">
-           <div className="absolute w-16 h-16 border-2 border-white/10 rounded-full animate-ping opacity-20"></div>
-           <div className="absolute w-12 h-12 border border-[var(--color-primary)]/50 rounded-full group-hover/card:scale-125 transition-transform duration-700"></div>
-           <div className="w-6 h-6 bg-[var(--color-primary-hover)] rounded-full shadow-[var(--shadow-cta)] z-10 flex items-center justify-center">
-             <div className="w-2 h-2 bg-white rounded-full"></div>
+        <div className="w-full h-full flex items-center justify-center gap-3 relative">
+           <div className="w-12 h-20 bg-white/10 rounded-lg border border-white/20 p-1 flex flex-col gap-1 relative group-hover/card:scale-105 transition-transform duration-300">
+             <div className="w-full h-2 bg-[var(--color-primary-hover)] rounded-sm"></div>
+             <div className="w-full h-1 bg-white/30 rounded-sm"></div>
+             <div className="w-full h-1 bg-white/30 rounded-sm"></div>
+             <div className="w-full h-1 bg-white/30 rounded-sm"></div>
+             <div className="absolute bottom-1 left-1 right-1 h-3 bg-white/20 rounded-sm flex items-center justify-center">
+               <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary-hover)]"></div>
+             </div>
            </div>
-           
-           <div className="absolute top-2 left-2 w-2 h-2 bg-white/30 rounded-full"></div>
-           <div className="absolute bottom-2 right-2 w-3 h-3 bg-white/20 rounded-full"></div>
-           <div className="absolute top-4 right-4 w-1.5 h-1.5 bg-[var(--color-primary)]/50 rounded-full"></div>
+           <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-[var(--color-primary-hover)] flex items-center justify-center shadow-[var(--shadow-cta)]">
+             <Smartphone className="w-3 h-3 text-white" />
+           </div>
         </div>
       )
     }

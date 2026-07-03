@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientChatWrapper from "@/components/ClientChatWrapper";
+import { CookieConsentProvider } from "@/context/CookieConsentProvider";
+import CookieBanner from "@/components/cookies/CookieBanner";
+import CookieSettingsModal from "@/components/cookies/CookieSettingsModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -108,8 +111,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col overflow-x-hidden bg-white text-gray-900" suppressHydrationWarning>
-        {children}
-        <ClientChatWrapper />
+        <CookieConsentProvider>
+          {children}
+          <CookieBanner />
+          <CookieSettingsModal />
+          <ClientChatWrapper />
+        </CookieConsentProvider>
       </body>
     </html>
   );

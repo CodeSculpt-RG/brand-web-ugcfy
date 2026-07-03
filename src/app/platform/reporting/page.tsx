@@ -7,7 +7,6 @@ import PremiumHero from "@/components/ui/PremiumHero";
 import PremiumStats from "@/components/ui/PremiumStats";
 import PremiumAlternatingFeatures from "@/components/ui/PremiumAlternatingFeatures";
 import PremiumCtaSection from "@/components/ui/PremiumCtaSection";
-import { Sparkles } from "lucide-react";
 
 export default function Page() {
   return (
@@ -19,7 +18,7 @@ export default function Page() {
           title="Actionable Campaign"
           highlight="Reporting"
           description="Measure the exact ROI, CPA, and engagement metrics of every creator and piece of content in real-time."
-          icon={<Sparkles className="w-8 h-8 text-[var(--color-primary)]" />}
+          icon={null}
         />
         
         <PremiumAlternatingFeatures 
@@ -31,8 +30,8 @@ export default function Page() {
               imagePlaceholderText: "ROI Analytics Chart"
             },
             {
-              title: "White-Labeled Client Reports",
-              description: "Agencies and teams can automatically generate beautiful, comprehensive PDF reports featuring your brand's logo, colors, and specific KPIs to share with stakeholders.",
+              title: "White-Labeled PDF Reports",
+              description: "Businesses and teams can automatically generate beautiful, comprehensive PDF reports featuring your brand's logo, colors, and specific KPIs to share with stakeholders.",
               bullets: ["Automated generation","Custom branding","Scheduled delivery"],
               imagePlaceholderText: "Report Builder UI"
             }

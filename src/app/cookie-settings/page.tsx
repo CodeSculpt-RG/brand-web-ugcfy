@@ -1,15 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PremiumHero from "@/components/ui/PremiumHero";
 import PremiumStats from "@/components/ui/PremiumStats";
 import PremiumAlternatingFeatures from "@/components/ui/PremiumAlternatingFeatures";
-import PremiumCtaSection from "@/components/ui/PremiumCtaSection";
-import { Sparkles } from "lucide-react";
+import { useCookieConsent } from "@/context/CookieConsentProvider";
+import CookieSettingsButton from "@/components/cookies/CookieSettingsButton";
 
 export default function Page() {
+  const { openSettings } = useCookieConsent();
+
+  useEffect(() => {
+    // Open settings modal automatically when arriving at this page
+    openSettings();
+  }, [openSettings]);
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar theme="dark" />
@@ -19,7 +26,7 @@ export default function Page() {
           title="Privacy &"
           highlight="Cookies"
           description="Manage your data preferences and understand how we use cookies to improve your experience."
-          icon={<Sparkles className="w-8 h-8 text-[var(--color-primary)]" />}
+          icon={null}
         />
         
         <PremiumAlternatingFeatures 
@@ -41,10 +48,13 @@ export default function Page() {
         
         <PremiumStats stats={[{"value":"100%","label":"Transparent"},{"value":"GDPR","label":"Compliant"},{"value":"CCPA","label":"Ready"},{"value":"Total","label":"Control"}]} />
         
-        <PremiumCtaSection 
-          title="Update your preferences."
-          description="Take control of your data today."
-        />
+        <div className="py-24 bg-white text-center flex flex-col items-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Update your preferences.</h2>
+          <p className="text-gray-500 mb-10 max-w-lg mx-auto text-lg">Take control of your data today by updating your cookie preferences.</p>
+          <CookieSettingsButton className="px-8 py-4 rounded-xl bg-[#E11D48] text-white font-semibold text-lg hover:bg-[#BE123C] transition shadow-xl hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-[#E11D48]/30">
+            Open Cookie Settings
+          </CookieSettingsButton>
+        </div>
       </main>
 
       <Footer />

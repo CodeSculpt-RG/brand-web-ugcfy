@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { CreditCard, ReceiptText, Sparkles } from "lucide-react";
+import { CreditCard, ReceiptText } from "lucide-react";
 import { verifyBrand } from "@/lib/auth/verifyBrand";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
@@ -104,7 +104,7 @@ export default async function BillingPage() {
               </p>
             </div>
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-red-50 text-brand-red-600">
-              <Sparkles className="h-5 w-5" />
+              
             </div>
           </div>
           <PricingButton className="mt-6 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-brand-black px-4 text-sm font-extrabold text-white transition hover:bg-brand-red-700" />

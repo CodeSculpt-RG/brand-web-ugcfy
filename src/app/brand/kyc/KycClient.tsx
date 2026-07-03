@@ -336,8 +336,6 @@ export function KycClient({ initialDocuments, initialProfile, initialSubmission,
     return (
       <VerificationStatusWall
         status={currentStatus === "approved" || currentStatus === "rejected" || currentStatus === "on_hold" ? currentStatus : "pending"}
-        rejectionReason={initialProfile?.rejection_reason}
-        holdReason={initialProfile?.hold_reason}
         onEdit={() => setIsEditing(true)}
         onGoDashboard={() => router.push("/dashboard")}
         onSignOut={async () => {
@@ -614,6 +612,31 @@ export function KycClient({ initialDocuments, initialProfile, initialSubmission,
               {busyAction === "submit" ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
               Submit Verification
             </button>
+            {process.env.NODE_ENV !== "production" && (
+              <button
+                type="button"
+                onClick={async () => {
+                  setBusyAction("submit");
+                  try {
+                    const res = await fetch("/api/brand/bypass", { method: "POST" });
+                    if (res.ok) {
+                      router.push("/dashboard");
+                      router.refresh();
+                    } else {
+                      setBanner({ type: "error", message: "Bypass failed" });
+                    }
+                  } catch {
+                    setBanner({ type: "error", message: "Bypass failed" });
+                  } finally {
+                    setBusyAction(null);
+                  }
+                }}
+                disabled={Boolean(busyAction)}
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-200 px-5 text-sm font-extrabold text-slate-700 transition hover:bg-slate-300 sm:w-auto"
+              >
+                Bypass (Test)
+              </button>
+            )}
           </div>
         </div>
       </div>

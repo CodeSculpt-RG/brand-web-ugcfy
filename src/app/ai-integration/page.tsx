@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "AI Integration — UGC FY Creator Marketing Intelligence",
 };
 import Link from 'next/link';
-import { Check, Sparkles, Target, Zap, Bot, ShieldCheck, LineChart } from 'lucide-react';
+import { Check, Target, Zap, Bot, ShieldCheck, LineChart } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -151,7 +151,7 @@ export default function AiIntegrationPage() {
           <div className="max-w-[1024px] mx-auto text-center relative z-10">
 
             <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-md mb-6 mx-auto">
-              <Sparkles className="w-4 h-4 text-[#D90429]" />
+              
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D90429]">
                 Intelligent Marketing
               </span>

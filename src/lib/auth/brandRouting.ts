@@ -11,7 +11,6 @@ type BrandProfileForRouting = {
   contact_email?: string | null;
   company_name?: string | null;
   brand_name?: string | null;
-  approval_status?: string | null;
   kyc_status?: string | null;
 };
 
@@ -145,7 +144,6 @@ export async function createMinimalBrandProfile(supabase: SupabaseClient, user: 
     user_id: user.id,
     profile_id: user.id,
     contact_email: user.email ?? null,
-    approval_status: "profile_incomplete",
     kyc_status: "draft",
     onboarding_completed: false,
   });

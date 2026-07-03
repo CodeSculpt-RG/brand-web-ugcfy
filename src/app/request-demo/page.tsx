@@ -93,7 +93,7 @@ export default function RequestDemoPage() {
             </h1>
             
             <p className="text-xl text-gray-400 leading-relaxed max-w-lg font-medium">
-              Join thousands of leading brands and agencies. Get a personalized walkthrough of our AI-powered influencer marketing platform.
+              Join thousands of leading brands. Get a personalized walkthrough of our AI-powered influencer marketing platform.
             </p>
 
             {/* Social Proof Block (Highly SaaS Standard) */}

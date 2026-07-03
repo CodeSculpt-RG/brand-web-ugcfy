@@ -62,9 +62,6 @@ export async function PATCH(req: NextRequest) {
       contact_email: payload.form.contactEmail,
       finance_email: payload.form.financeEmail,
       kyc_status: isSubmit ? "pending_verification" : "draft",
-      approval_status: isSubmit ? "pending" : "profile_incomplete",
-      onboarding_status: isSubmit ? "submitted" : "in_progress",
-      is_verified: false,
       onboarding_completed: isSubmit,
       onboarding_completed_at: isSubmit ? now : null,
       verification_submitted_at: isSubmit ? now : null,
@@ -80,6 +77,19 @@ export async function PATCH(req: NextRequest) {
     if (profileError) {
       console.error("[Brand Verification] profile update failed", { table: "brand_profiles", operation: "update", ...serializeError(profileError) });
       return jsonError("SUPABASE_UPDATE_FAILED", "Unable to save verification details.", 500, process.env.NODE_ENV !== "production" ? serializeError(profileError) : undefined);
+    }
+
+    const { error: baseProfileError } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        kyc_status: isSubmit ? "submitted" : "draft",
+        approval_status: isSubmit ? "under_review" : "pending",
+        updated_at: now,
+      })
+      .eq("id", brandSession.user.id);
+
+    if (baseProfileError) {
+      console.error("[Brand Verification] base profile update failed", { table: "profiles", operation: "update", ...serializeError(baseProfileError) });
     }
 
     const documentUrls = payload.uploads.map((upload) => upload.path);

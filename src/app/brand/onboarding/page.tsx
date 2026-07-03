@@ -54,13 +54,13 @@ export default function BrandOnboardingPage() {
 
       const { data: profile } = await supabase
         .from("brand_profiles")
-        .select("company_name, brand_name, website, approval_status")
+        .select("company_name, brand_name, website, kyc_status")
         .eq("user_id", user.id)
         .maybeSingle();
 
       if (profile) {
         const hasCompletedProfile = Boolean(profile.company_name || profile.brand_name);
-        if (hasCompletedProfile && profile.approval_status === "pending_verification") {
+        if (hasCompletedProfile && profile.kyc_status === "pending_verification") {
           router.push("/dashboard");
           return;
         }
@@ -243,11 +243,32 @@ export default function BrandOnboardingPage() {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-4">
+              {process.env.NODE_ENV !== "production" && (
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={async () => {
+                    setIsLoading(true);
+                    try {
+                      const res = await fetch("/api/brand/bypass", { method: "POST" });
+                      if (res.ok) router.push("/dashboard");
+                      else setErrorMsg("Bypass failed");
+                    } catch {
+                      setErrorMsg("Bypass failed");
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }}
+                  className="text-xs font-bold text-slate-400 hover:text-slate-800 transition px-2"
+                >
+                  Bypass (Test)
+                </button>
+              )}
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full md:w-auto md:px-12 ml-auto flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white rounded-xl py-3.5 text-sm font-bold transition disabled:opacity-75 cursor-pointer shadow-lg shadow-slate-900/10"
+                className="w-full md:w-auto md:px-12 flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white rounded-xl py-3.5 text-sm font-bold transition disabled:opacity-75 cursor-pointer shadow-lg shadow-slate-900/10"
               >
                 {isLoading ? "Saving..." : "Continue to KYC"}
                 {!isLoading && <ArrowRight className="h-4 w-4" />}

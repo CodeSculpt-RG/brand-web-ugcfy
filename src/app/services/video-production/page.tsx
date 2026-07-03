@@ -7,7 +7,6 @@ import PremiumHero from "@/components/ui/PremiumHero";
 import PremiumStats from "@/components/ui/PremiumStats";
 import PremiumAlternatingFeatures from "@/components/ui/PremiumAlternatingFeatures";
 import PremiumCtaSection from "@/components/ui/PremiumCtaSection";
-import { Sparkles } from "lucide-react";
 
 export default function Page() {
   return (
@@ -19,7 +18,7 @@ export default function Page() {
           title="Professional"
           highlight="Video Editing"
           description="Transform raw creator footage into high-converting, polished ads optimized for paid social."
-          icon={<Sparkles className="w-8 h-8 text-[var(--color-primary)]" />}
+          icon={null}
         />
         
         <PremiumAlternatingFeatures 

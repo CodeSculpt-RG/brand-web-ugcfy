@@ -55,25 +55,27 @@ export async function proxy(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/dashboard') &&
     !request.nextUrl.pathname.startsWith('/dashboard/verification')
   ) {
-    const { data: profiles } = await supabase
-      .from('brand_profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .limit(1);
+    const [{ data: brandProfiles }, { data: profiles }] = await Promise.all([
+      supabase.from('brand_profiles').select('*').eq('user_id', user.id).limit(1),
+      supabase.from('profiles').select('*').eq('id', user.id).limit(1)
+    ]);
 
-    if (getBrandAccessStatus(profiles?.[0]) !== 'approved') {
+    const mergedProfile = { ...brandProfiles?.[0], ...profiles?.[0] };
+
+    if (getBrandAccessStatus(mergedProfile) !== 'approved') {
       return NextResponse.redirect(new URL('/dashboard/verification', request.url));
     }
   }
 
   if (isAuthRoute && user) {
-    const { data: profiles } = await supabase
-      .from('brand_profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .limit(1);
+    const [{ data: brandProfiles }, { data: profiles }] = await Promise.all([
+      supabase.from('brand_profiles').select('*').eq('user_id', user.id).limit(1),
+      supabase.from('profiles').select('*').eq('id', user.id).limit(1)
+    ]);
 
-    const redirectPath = getBrandAccessStatus(profiles?.[0]) === 'approved'
+    const mergedProfile = { ...brandProfiles?.[0], ...profiles?.[0] };
+
+    const redirectPath = getBrandAccessStatus(mergedProfile) === 'approved'
       ? '/dashboard'
       : '/dashboard/verification';
 

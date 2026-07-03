@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Smartphone } from "lucide-react";
 import AppComingSoonModal from "./landing/AppComingSoonModal";
+import CookieSettingsButton from "./cookies/CookieSettingsButton";
 
 export default function Footer() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,7 +44,9 @@ export default function Footer() {
               <li><Link href="/platform/discover" className="hover:text-[#E11D48] transition-colors">Creator Discovery</Link></li>
               <li><Link href="/platform/manage" className="hover:text-[#E11D48] transition-colors">Campaign Management</Link></li>
               <li><Link href="/platform/reporting" className="hover:text-[#E11D48] transition-colors">Analytics & ROI</Link></li>
-              <li><Link href="/solutions/agencies" className="hover:text-[#E11D48] transition-colors">Agency Services</Link></li>
+              <li><Link href="/ecosystem/creators" className="hover:text-[#E11D48] transition-colors">Creators</Link></li>
+              <li><Link href="/ecosystem/brands" className="hover:text-[#E11D48] transition-colors">Brands</Link></li>
+              <li><Link href="/ecosystem/download-app" className="hover:text-[#E11D48] transition-colors">Download App</Link></li>
             </ul>
           </div>
 
@@ -106,7 +109,7 @@ export default function Footer() {
           <p className="text-gray-400">© {new Date().getFullYear()} UGCFY Inc. All Rights Reserved.</p>
           <div className="flex flex-wrap gap-6 justify-center md:justify-end">
             <Link href="/support" className="hover:text-[#E11D48] transition-colors">Support</Link>
-            <Link href="/cookie-settings" className="hover:text-[#E11D48] transition-colors">Cookie Settings</Link>
+            <CookieSettingsButton />
           </div>
         </div>
       </div>

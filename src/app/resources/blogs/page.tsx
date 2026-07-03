@@ -52,9 +52,9 @@ const BLOG_POSTS = [
   },
   {
     id: "5",
-    title: "Navigating Social Commerce Affiliate Programs",
-    excerpt: "Social commerce is eating the world. A step-by-step guide to syncing your creator campaigns directly with Social Commerce APIs.",
-    category: "Social Commerce",
+    title: "Scaling Creator Collaboration Workflows",
+    excerpt: "Workflows are the heartbeat of campaigns. A step-by-step guide to scaling creator collaborations using structured platform workflows.",
+    category: "Creator Workflows",
     author: "Sarah Jenkins",
     date: "Sep 22, 2026",
     readTime: "9 min read",

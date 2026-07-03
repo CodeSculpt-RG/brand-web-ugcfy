@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import SafeImage from "./SafeImage";
 import Link from "next/link";
 import {
-  Sparkles,
   X,
   Send,
   AlertCircle,
@@ -170,7 +169,7 @@ export default function GlobalChatWidget() {
               >
                 <div className="relative">
                   <MessageSquare className="h-6 w-6 text-white group-hover:scale-110 transition-transform duration-300" fill="currentColor" fillOpacity={0.1} />
-                  <Sparkles className="absolute -top-1.5 -right-2 h-3.5 w-3.5 text-[#E11D48] animate-pulse" />
+                  
                 </div>
               </motion.div>
             )}
@@ -283,9 +282,7 @@ export default function GlobalChatWidget() {
                       }`}
                   >
                     <div className="flex items-start gap-3">
-                      {error.message?.includes("free chat limit") ? (
-                        <Sparkles className="h-5 w-5 shrink-0 mt-0.5 text-emerald-400" />
-                      ) : (
+                      {error.message?.includes("free chat limit") ? null : (
                         <AlertCircle className={`h-4 w-4 shrink-0 mt-0.5 ${error.message?.includes("429") || error.message?.includes("SIYAA is currently assisting")
                           ? "text-amber-600"
                           : "text-red-500"

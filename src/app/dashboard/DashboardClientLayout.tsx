@@ -23,7 +23,6 @@ import {
   Search,
   Settings,
   ShieldCheck,
-  Sparkles,
   UserRoundCheck,
   UsersRound,
   X,
@@ -50,10 +49,7 @@ interface BrandProp {
   company_name?: string | null;
   brand_name?: string | null;
   email?: string | null;
-  approval_status?: string | null;
   kyc_status?: string | null;
-  status?: string | null;
-  onboarding_status?: string | null;
   access_status?: string;
   poc_count?: number;
   subscription_status?: string | null;
@@ -179,7 +175,7 @@ function GoPlusCard({
         onClick={onUpgrade}
         className="mx-3 mb-3 flex h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-brand-red-600 transition hover:border-brand-red-200 hover:bg-brand-red-50"
       >
-        <Sparkles className="h-4.5 w-4.5" />
+        
       </button>
     );
   }
@@ -194,7 +190,7 @@ function GoPlusCard({
           </p>
         </div>
         <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-red-50 text-brand-red-600">
-          <Sparkles className="h-4.5 w-4.5" />
+          
         </div>
       </div>
       <div className="mt-4">
@@ -463,7 +459,7 @@ export default function DashboardClientLayout({
                 onClick={() => setIsPricingOpen(true)}
                 className="hidden min-h-10 items-center gap-2 rounded-2xl bg-brand-black px-4 text-xs font-extrabold text-white transition hover:bg-brand-red-700 sm:flex"
               >
-                <Sparkles className="h-4 w-4" />
+                
                 <span>Go Plus</span>
               </button>
 
@@ -566,7 +562,7 @@ export default function DashboardClientLayout({
         </header>
 
         <main className={`flex-1 ${isMessagingRoute ? "min-h-0 p-0" : "px-4 py-6 sm:px-6 lg:px-8"}`}>
-          {brand.approval_status === "profile_incomplete" && (
+          {brand.kyc_status === "draft" && (
             <div className="mx-auto mb-6 flex max-w-7xl flex-col gap-3 rounded-3xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-sm font-extrabold text-slate-950">Your profile is incomplete</h2>

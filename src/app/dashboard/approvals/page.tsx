@@ -15,7 +15,6 @@ import {
   X, 
   CheckCircle2, 
   Lock,
-  Sparkles,
   RotateCcw,
   ShieldCheck
 } from "lucide-react";
@@ -275,7 +274,7 @@ export default function ApprovalsPage() {
                       <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none text-white z-10 flex flex-col justify-end">
                         <p className="text-xs font-bold flex items-center gap-1">
                           @{safeLower(selectedSub.creator.full_name).replace(/\s/g, "")}
-                          <Sparkles className="h-3 w-3 text-red-400 fill-red-400" />
+                          
                         </p>
                         <p className="text-[9px] text-white/80 mt-1 line-clamp-2 leading-relaxed">
                           {selectedSub.caption}

@@ -10,7 +10,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { createClient } from "@/lib/supabase/client";
 import { 
-  Sparkles, 
   ArrowRight, 
   Mail, 
   Building, 
@@ -252,7 +251,7 @@ export default function RequestAccessPage() {
                 <div className="mb-8 text-left">
                   <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
                     Apply for Brand Access
-                    <Sparkles className="h-6 w-6 text-brand-red-500 animate-pulse shrink-0" />
+                    
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed">
                     UGC FY is an exclusive network of vetted creators. Submit your brand details below, and our team will review your application within 24 hours.

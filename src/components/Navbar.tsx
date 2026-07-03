@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronDown, X } from "lucide-react";
 import RequestAccessModal from "./RequestAccessModal";
-import { MegaMenuPanel, PLATFORM_DATA, SOLUTIONS_DATA, RESOURCES_DATA, SERVICES_DATA, COMPANY_DATA } from "./MegaMenu";
+import { MegaMenuPanel, PLATFORM_DATA, ECOSYSTEM_DATA, RESOURCES_DATA, SERVICES_DATA, COMPANY_DATA } from "./MegaMenu";
 
 interface NavbarProps {
   theme?: "transparent-to-dark" | "dark";
@@ -84,12 +84,12 @@ export default function Navbar({ theme = "transparent-to-dark", hideOnScroll = f
               <MegaMenuPanel data={PLATFORM_DATA} />
             </div>
 
-            {/* SOLUTIONS MEGA MENU */}
+            {/* ECOSYSTEM MEGA MENU */}
             <div className="group px-4 py-6 cursor-pointer">
               <span className="flex items-center gap-1 font-medium text-[15px] hover:text-[var(--color-primary)] transition-colors">
-                Solutions <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+                Ecosystem <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
               </span>
-              <MegaMenuPanel data={SOLUTIONS_DATA} />
+              <MegaMenuPanel data={ECOSYSTEM_DATA} />
             </div>
 
             {/* RESOURCES MEGA MENU */}
@@ -145,7 +145,7 @@ export default function Navbar({ theme = "transparent-to-dark", hideOnScroll = f
           <div className="absolute top-full left-0 w-full bg-[#000000] border-b border-white/10 shadow-2xl z-50 lg:hidden">
             <div className="px-6 py-4 flex flex-col gap-4 text-white">
               <Link href="/platform/discover" className="text-lg font-bold hover:text-[#E11D48] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Platform</Link>
-              <Link href="/solutions/brands" className="text-lg font-bold hover:text-[#E11D48] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Solutions</Link>
+              <Link href="/ecosystem/brands" className="text-lg font-bold hover:text-[#E11D48] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Ecosystem</Link>
               <Link href="/resources/blogs" className="text-lg font-bold hover:text-[#E11D48] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Resources</Link>
               <Link href="/services/influencer-marketing" className="text-lg font-bold hover:text-[#E11D48] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Services</Link>
               <Link href="/about" className="text-lg font-bold hover:text-[#E11D48] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Company</Link>

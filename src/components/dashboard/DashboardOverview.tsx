@@ -12,7 +12,6 @@ import {
   MessageSquareText,
   Search,
   ShieldCheck,
-  Sparkles,
   UserRoundCheck,
   UsersRound,
   Video,
@@ -32,7 +31,7 @@ interface Props {
 
 const quickActions = [
   { label: "Create Campaign", href: "/dashboard/campaigns", icon: Video },
-  { label: "Explore Inspiration", href: "/dashboard/inspiration", icon: Sparkles },
+  { label: "Explore Inspiration", href: "/dashboard/inspiration", icon: FolderOpen },
   { label: "Discover Creators", href: "/dashboard/creators", icon: Search },
   { label: "Add Team/POC", href: "/dashboard/team", icon: UsersRound },
   { label: "Complete Verification", href: "/dashboard/verification", icon: ShieldCheck },
@@ -186,7 +185,7 @@ export function DashboardOverview({ data }: Props) {
               <p className="mt-1 text-sm font-medium text-slate-500">Go Plus status and limits.</p>
             </div>
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-red-50 text-brand-red-600">
-              <Sparkles className="h-5 w-5" />
+              
             </div>
           </div>
           <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">

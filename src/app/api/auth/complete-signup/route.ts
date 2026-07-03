@@ -72,6 +72,24 @@ export async function POST(req: NextRequest) {
       console.error("[complete-signup] user metadata update failed", serializeError(metadataError));
     }
 
+    const { error: baseProfileError } = await supabase
+      .from("profiles")
+      .upsert({
+        id: user.id,
+        email: normalizedEmail,
+        role: "brand",
+        full_name: fullName,
+        kyc_status: "not_started",
+        approval_status: "pending",
+        profile_completed: false,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "id" });
+
+    if (baseProfileError) {
+      console.error("[complete-signup] base profile upsert failed", serializeError(baseProfileError));
+      return jsonError("PROFILE_UPSERT_FAILED", "Unable to prepare your profile. Please try again.", 500);
+    }
+
     const { error: profileError } = await supabase
       .from("brand_profiles")
       .upsert({
@@ -81,7 +99,6 @@ export async function POST(req: NextRequest) {
         contact_email: normalizedEmail,
         brand_name: fullName,
         company_name: fullName,
-        approval_status: "profile_incomplete",
         kyc_status: "draft",
         onboarding_completed: false,
       }, { onConflict: "id" });

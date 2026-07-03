@@ -25,7 +25,7 @@ export default function AboutUs() {
           {/* Description paragraphs */}
           <div className="space-y-6 text-sm text-gray-700 leading-relaxed">
             <p>
-              Traditional influencer marketing is plagued by manual negotiations, high agency overheads, and payment insecurity. UGCFY resolves these paint points by introducing an escrow-protected collaboration hub. Brands fund campaigns securely, and creators receive payouts instantly upon brief fulfillment.
+              Traditional influencer marketing is plagued by manual negotiations, high management overheads, and payment insecurity. UGCFY resolves these paint points by introducing an escrow-protected collaboration hub. Brands fund campaigns securely, and creators receive payouts instantly upon brief fulfillment.
             </p>
             <p>
               To push the boundaries of productivity, we have built <strong>SIYAA</strong>—our proprietary AI onboarding and matchmaking agent. SIYAA acts as an automated concierge that completes partner KYC verifications, compiles creative brand profiles, and expedites platform access.

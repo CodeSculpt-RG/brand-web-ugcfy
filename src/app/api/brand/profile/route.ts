@@ -83,7 +83,6 @@ export async function PATCH(req: NextRequest) {
             id: user.id,
             user_id: user.id,
             contact_email: user.email ?? null,
-            approval_status: "profile_incomplete",
             ...profilePayload,
           });
 

@@ -7,7 +7,6 @@ import PremiumHero from "@/components/ui/PremiumHero";
 import PremiumStats from "@/components/ui/PremiumStats";
 import PremiumAlternatingFeatures from "@/components/ui/PremiumAlternatingFeatures";
 import PremiumCtaSection from "@/components/ui/PremiumCtaSection";
-import { Sparkles } from "lucide-react";
 
 export default function Page() {
   return (
@@ -19,7 +18,7 @@ export default function Page() {
           title="Join the UGC FY"
           highlight="Team"
           description="We are building the infrastructure for the creator economy. Come help us empower millions of independent creators."
-          icon={<Sparkles className="w-8 h-8 text-[var(--color-primary)]" />}
+          icon={null}
         />
         
         <PremiumAlternatingFeatures 

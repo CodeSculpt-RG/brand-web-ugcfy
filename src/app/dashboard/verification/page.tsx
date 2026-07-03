@@ -92,7 +92,7 @@ export default async function VerificationPage() {
 
   const accessStatus = getBrandAccessStatus({
     ...profile,
-    approval_status: brandSession.brand.approval_status,
+    kyc_status: brandSession.brand.kyc_status,
   });
 
   return (

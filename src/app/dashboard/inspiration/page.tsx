@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { BookOpen, Film, Sparkles } from "lucide-react";
+import { BookOpen, Film } from "lucide-react";
 import { verifyBrand } from "@/lib/auth/verifyBrand";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
@@ -257,7 +257,7 @@ export default async function InspirationFeedPage({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-brand-red-100 bg-brand-red-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-brand-red-600">
-              <Sparkles className="h-3.5 w-3.5" />
+              
               Approved creator videos
             </div>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">

@@ -7,7 +7,6 @@ import PremiumHero from "@/components/ui/PremiumHero";
 import PremiumStats from "@/components/ui/PremiumStats";
 import PremiumAlternatingFeatures from "@/components/ui/PremiumAlternatingFeatures";
 import PremiumCtaSection from "@/components/ui/PremiumCtaSection";
-import { Sparkles } from "lucide-react";
 
 export default function Page() {
   return (
@@ -19,7 +18,7 @@ export default function Page() {
           title="Proven"
           highlight="Results"
           description="See exactly how top brands use UGC FY to drop their CPAs by 40% and scale their ad spend."
-          icon={<Sparkles className="w-8 h-8 text-[var(--color-primary)]" />}
+          icon={null}
         />
         
         <PremiumAlternatingFeatures 

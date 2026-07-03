@@ -14,7 +14,6 @@ import {
   Clock,
   UserCheck,
   ShieldAlert,
-  Sparkles,
   Mail,
   User,
   Briefcase,
@@ -365,7 +364,7 @@ export function PocClient({ initialPocs, initialSubscription }: Props) {
                 <div className="flex items-center justify-between pb-6 border-b border-gray-100">
                   <h3 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
                     Add Team/POC
-                    <Sparkles className="h-4 w-4 text-red-500" />
+                    
                   </h3>
                   <button
                     onClick={() => setIsAddOpen(false)}

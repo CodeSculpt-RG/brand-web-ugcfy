@@ -13,7 +13,6 @@ import {
   Plus,
   ShieldCheck,
   Building,
-  Sparkles,
   Key,
   ShieldAlert,
   Loader2
@@ -469,7 +468,7 @@ export function SettingsClient({ initialProfile, initialTeamMembers }: Props) {
                           </h3>
                         </div>
 
-                        <Sparkles className="h-8 w-8 text-white/40" />
+                        
                       </div>
 
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 border-t border-white/20 pt-4.5 mt-6 text-left">

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sparkles, ShieldCheck } from "lucide-react";
+import { X, ShieldCheck } from "lucide-react";
 
 interface RequestAccessModalProps {
   isOpen: boolean;
@@ -53,7 +53,7 @@ export default function RequestAccessModal({ isOpen, onClose }: RequestAccessMod
             {/* Icon Badge */}
             <div className="flex justify-center mb-5 mt-2">
               <div className="h-14 w-14 bg-gradient-to-tr from-brand-red-500/10 to-rose-500/10 border border-brand-red-500/20 rounded-2xl flex items-center justify-center shadow-inner">
-                <Sparkles className="h-6 w-6 text-brand-red-500 animate-pulse" />
+                
               </div>
             </div>
 

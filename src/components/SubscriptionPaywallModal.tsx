@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, CheckCircle2, Zap, X } from "lucide-react";
+import { CheckCircle2, Zap, X } from "lucide-react";
 
 interface SubscriptionPaywallModalProps {
   isOpen: boolean;
@@ -57,7 +57,7 @@ export default function SubscriptionPaywallModal({
         {/* Header Content */}
         <div className="space-y-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-red-950/50 border border-brand-red-500/30 text-brand-red-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
-            <Sparkles className="h-3 w-3 animate-pulse" />
+            
             <span>Premium Tier</span>
           </div>
 

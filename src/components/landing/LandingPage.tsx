@@ -9,13 +9,14 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
-  Sparkles, ArrowRight, CheckCircle2, MessageCircle, Users,
-  Brain, LayoutDashboard, TrendingUp, Check, Globe2, Cpu, Layers, Activity, ShieldCheck,
-  Headset, BadgeDollarSign, Bot, Quote, ChevronLeft, ChevronRight, ChevronDown, X
+  Sparkles, MessageCircle,
+  LayoutDashboard, Check, Globe2, Cpu, Layers, Activity, ShieldCheck,
+  BadgeDollarSign, Bot, Quote, ChevronLeft, ChevronRight, ChevronDown, X
 } from "lucide-react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import RequestAccessModal from "@/components/RequestAccessModal";
+import { RedLanding } from "@/components/ui/redlanding";
 
 const whyChooseData = [
   { title: "200M+ Influencers Database", desc: "Access a global network of over 200 million influencers. Find your perfect match across platforms and boost visibility.", icon: Globe2 },
@@ -281,7 +282,7 @@ const uspData = [
   {
     id: 3,
     title: "Automated Campaign Management",
-    description: "AI-powered automation from discovery to tracking. Includes content ideation, validation, and real-time updates. Saves time, ensures accuracy, and streamlines workflows for brands and agencies.",
+    description: "AI-powered automation from discovery to tracking. Includes content ideation, validation, and real-time updates. Saves time, ensures accuracy, and streamlines workflows for brands and creator teams.",
     icon: Bot,
   },
   {
@@ -310,7 +311,6 @@ export default function LandingPage() {
   const [activeAiIndex, setActiveAiIndex] = useState(0);
   const [selectedAiFeature, setSelectedAiFeature] = useState<AiFeature | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showCookieBanner, setShowCookieBanner] = useState(true);
 
   const logoPages = [
     [1, 2, 3, 4, 5, 6, 7, 8],
@@ -328,14 +328,14 @@ export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const faqData = [
-    { question: "What is an Influencer marketing platform?", answer: "An influencer marketing platform is a tool that helps brands, agencies, and companies find influencers, contact them, run campaigns, and track results. It also helps with handling payments and agreements between the brand and the influencer." },
+    { question: "What is an Influencer marketing platform?", answer: "An influencer marketing platform is a tool that helps brands, businesses, and companies find influencers, contact them, run campaigns, and track results. It also helps with handling payments and agreements between the brand and the influencer." },
     { question: "What features does your influencer marketing tool offer?", answer: "Our platform offers AI-driven creator discovery, automated campaign workflows, real-time ROI analytics, escrow-protected payments, and an omnichannel dashboard to manage everything in one place." },
     { question: "How UGCFY is an AI powered Self Serve Influencer marketing platform?", answer: "UGCFY leverages advanced AI to automate the entire influencer workflow. From discovering the perfect creators based on your target audience to generating campaign briefs and predicting performance, our self-serve tools do the heavy lifting." },
     { question: "Do you Provide Training and Support for your influencer discovery tool?", answer: "Absolutely. We offer comprehensive onboarding, dedicated account managers for enterprise clients, and a rich library of resources and tutorials to ensure you get the most out of our tools." },
     { question: "How can users get started with UGCFY's influencer management platform?", answer: "Simply click 'Get Started' or 'Request Access', fill out your details, and our team will set up your workspace. You can begin discovering and reaching out to creators on day one." },
     { question: "What are the USP's of UGCFY Influencer Marketing Tool?", answer: "Our main USPs include our proprietary Discovery AI, escrow-based secure payments, a focus on high-converting 9:16 UGC formats, and our deep integration with major social platform APIs for real-time analytics." },
-    { question: "Who can use UGCFY's influencer marketing dashboard?", answer: "Our dashboard is built for scaling brands, marketing agencies managing multiple clients, and enterprise companies looking for a highly efficient, automated way to run influencer campaigns." },
-    { question: "Do you provide support from influencer marketing experts if required?", answer: "Yes, we offer fully managed agency services alongside our self-serve platform. If you need hands-on expertise, our in-house strategy and production teams are ready to run your campaigns end-to-end." },
+    { question: "Who can use UGCFY's influencer marketing dashboard?", answer: "Our dashboard is built for scaling brands, marketing teams and creator managers, and enterprise companies looking for a highly efficient, automated way to run influencer campaigns." },
+    { question: "Do you provide support from influencer marketing experts if required?", answer: "Yes, we offer fully managed campaign services alongside our self-serve platform. If you need hands-on expertise, our in-house strategy and production teams are ready to run your campaigns end-to-end." },
   ];
 
   return (
@@ -344,36 +344,8 @@ export default function LandingPage() {
       {/* NAVBAR */}
       <Navbar theme="transparent-to-dark" />
 
-      {/* 1. HERO SECTION */}
-      <section className="relative w-full min-h-screen flex items-center pt-16 pb-24 overflow-hidden bg-[#000000]">
-        <video
-          autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          src="/hero-bg.mp4"
-        />
-        <div className="absolute inset-0 bg-black/60 z-0"></div>
-
-        <div className="max-w-4xl mx-auto px-6 flex flex-col items-center text-center gap-8 relative z-10 w-full pt-12">
-          <div className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-[#D90429]" />
-            THE FUTURE OF INFLUENCER MARKETING
-          </div>
-          <h1 className="text-5xl lg:text-[72px] font-extrabold text-white leading-[1.1] tracking-tight drop-shadow-2xl">
-            Best AI-Powered UGC & Influencer Marketing Platform
-          </h1>
-          <p className="text-xl text-gray-300 max-w-2xl font-medium leading-relaxed drop-shadow-md">
-            UGCFY is an AI-powered platform offering comprehensive, end-to-end features from creator discovery and outreach to campaign management, tracking, and reporting—all integrated within a single dashboard.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto">
-            <Link href="/get-started" className="btn-primary px-10 py-5 text-lg flex items-center justify-center gap-2 shadow-xl shadow-[var(--shadow-cta)]">
-              Get Started <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link href="/request-demo" className="btn-ghost px-10 py-5 text-lg flex items-center justify-center gap-2 border border-white/30 hover:border-white transition-all bg-white/5 backdrop-blur-md hover:bg-white hover:text-black inline-flex">
-              Book a Demo
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* 1. HERO SECTION (Red Landing) */}
+      <RedLanding />
 
       {/* 2. AUTO-PLAYING BRAND CAROUSEL */}
       <section className="py-20 bg-[#FCF6F6] border-b border-[#FCF6F6] overflow-hidden">
@@ -427,7 +399,32 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 3. CORE FEATURES SECTION (ZIG-ZAG) */}
+      {/* 3. VIDEO SHOWCASE SECTION */}
+      <section className="relative w-full py-32 overflow-hidden bg-[#000000]">
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          src="/hero-bg.mp4"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/80 z-0"></div>
+
+        <div className="max-w-5xl mx-auto px-6 flex flex-col items-center text-center gap-8 relative z-10 w-full">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
+            See UGCFY in Action
+          </h2>
+          <p className="text-xl text-gray-300 max-w-2xl font-medium leading-relaxed drop-shadow-md">
+            Watch how leading brands are automating their entire influencer marketing workflow and scaling UGC content effortlessly.
+          </p>
+          <div className="mt-8">
+            <Link href="/request-demo" className="btn-primary px-10 py-5 text-lg flex items-center justify-center gap-3 shadow-xl shadow-[var(--shadow-cta)] hover:scale-105 transition-transform duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3" /></svg>
+              Watch Full Demo
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. CORE FEATURES SECTION (ZIG-ZAG) */}
       <section className="py-24 bg-[var(--color-bg-light)]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
@@ -620,7 +617,7 @@ export default function LandingPage() {
       <section className="py-24 bg-white relative overflow-hidden">
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-        
+
         <div className="max-w-[1200px] mx-auto px-6 relative z-10">
           <div className="text-center mb-16 max-w-2xl mx-auto relative z-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm mb-6">
@@ -653,7 +650,7 @@ export default function LandingPage() {
                 "md:col-span-2",
                 "md:col-span-2",
               ];
-              
+
               const isLarge = idx === 0;
 
               return (
@@ -664,11 +661,11 @@ export default function LandingPage() {
                 >
                   {/* Hover Flare */}
                   <div className="absolute top-0 right-0 w-40 h-40 bg-brand-red-500/5 rounded-full translate-x-20 -translate-y-20 group-hover:scale-150 transition-transform duration-700 ease-out blur-xl" />
-                  
+
                   <div className={`w-16 h-16 rounded-2xl bg-gradient-to-tr from-white to-brand-red-50/50 flex items-center justify-center shadow-sm border border-gray-100/60 relative z-10 shrink-0 group-hover:border-brand-red-100 transition-colors duration-300 ${isLarge ? 'mb-6 sm:mb-0 sm:mr-8 w-20 h-20' : 'mb-6'}`}>
                     <usp.icon className={`${isLarge ? 'w-8 h-8' : 'w-7 h-7'} text-brand-red-500`} strokeWidth={1.5} />
                   </div>
-                  
+
                   <div className="relative z-10 flex-1 flex flex-col justify-center h-full">
                     <h3 className={`font-bold text-gray-900 tracking-tight mb-3 ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl'}`}>{usp.title}</h3>
                     <p className={`text-gray-500 leading-relaxed ${isLarge ? 'text-base md:text-lg max-w-lg' : 'text-sm'}`}>{usp.desc}</p>
@@ -684,7 +681,7 @@ export default function LandingPage() {
       <section className="relative overflow-hidden bg-[#FDFBFB] py-16 sm:py-20 lg:py-24">
         <div className="max-w-[1240px] mx-auto px-6">
           <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-20 items-center">
-            
+
             {/* Left Editorial Content */}
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-6">
@@ -694,11 +691,11 @@ export default function LandingPage() {
                     AI Powered
                   </span>
                 </div>
-                
+
                 <h2 className="max-w-[520px] text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[0.98] text-[#0A0A0A]">
                   AI Integration By UGCFY
                 </h2>
-                
+
                 <div className="flex flex-col gap-4">
                   <p className="text-gray-600 text-lg leading-relaxed max-w-[480px]">
                     When AI is all the rage in the digital sphere, let us bring you on the same page with our bespoke AI integrations.
@@ -736,24 +733,21 @@ export default function LandingPage() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
-                      className={`relative w-full flex flex-col justify-between p-7 sm:p-10 lg:p-12 rounded-[36px] border transition-all duration-500 min-h-[430px] ${
-                        currentAi.theme === 'dark' 
-                          ? 'bg-[#0A0A0A] text-white border-white/10 shadow-2xl shadow-black/20' 
-                          : 'bg-white text-[#0A0A0A] border-black/5 shadow-2xl shadow-black/5'
-                      }`}
+                      className={`relative w-full flex flex-col justify-between p-7 sm:p-10 lg:p-12 rounded-[36px] border transition-all duration-500 min-h-[430px] ${currentAi.theme === 'dark'
+                        ? 'bg-[#0A0A0A] text-white border-white/10 shadow-2xl shadow-black/20'
+                        : 'bg-white text-[#0A0A0A] border-black/5 shadow-2xl shadow-black/5'
+                        }`}
                     >
                       <div className="flex flex-col gap-6">
-                        
+
                         {/* Top row */}
                         <div className="flex flex-wrap items-center gap-3 mb-2">
-                          <div className={`inline-flex px-3.5 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-[0.15em] ${
-                            currentAi.theme === 'dark' ? 'bg-white/10 text-white' : 'bg-[#E11D48]/10 text-[#E11D48]'
-                          }`}>
+                          <div className={`inline-flex px-3.5 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-[0.15em] ${currentAi.theme === 'dark' ? 'bg-white/10 text-white' : 'bg-[#E11D48]/10 text-[#E11D48]'
+                            }`}>
                             {currentAi.eyebrow}
                           </div>
-                          <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider ${
-                            currentAi.theme === 'dark' ? 'border-white/10 text-gray-300 bg-white/5' : 'border-gray-100 text-gray-500 bg-gray-50'
-                          }`}>
+                          <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider ${currentAi.theme === 'dark' ? 'border-white/10 text-gray-300 bg-white/5' : 'border-gray-100 text-gray-500 bg-gray-50'
+                            }`}>
                             <Sparkles className="w-3 h-3" />
                             AI Module
                           </div>
@@ -786,22 +780,21 @@ export default function LandingPage() {
 
                       {/* Footer: Read More & Controls */}
                       <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-                        <button 
+                        <button
                           type="button"
                           onClick={() => setSelectedAiFeature(currentAi)}
                           aria-label={`Read more about ${currentAi.title}`}
-                          className={`group flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-4 rounded-xl font-extrabold text-sm border transition-all duration-300 ${
-                            currentAi.theme === 'dark' 
-                              ? 'border-white/15 text-white bg-white/5 hover:bg-white/10' 
-                              : 'border-gray-200 text-[#0A0A0A] bg-gray-50/50 hover:bg-gray-100'
-                          }`}
+                          className={`group flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-4 rounded-xl font-extrabold text-sm border transition-all duration-300 ${currentAi.theme === 'dark'
+                            ? 'border-white/15 text-white bg-white/5 hover:bg-white/10'
+                            : 'border-gray-200 text-[#0A0A0A] bg-gray-50/50 hover:bg-gray-100'
+                            }`}
                         >
                           Read More
                           <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                         </button>
 
                         <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
-                          
+
                           {/* Progress Dots */}
                           <div className="flex items-center gap-2">
                             {aiFeatures.map((feature, i) => (
@@ -810,11 +803,10 @@ export default function LandingPage() {
                                 type="button"
                                 onClick={() => setActiveAiIndex(i)}
                                 aria-label={`Show ${feature.title}`}
-                                className={`h-2 rounded-full transition-all duration-300 ${
-                                  activeAiIndex === i 
-                                    ? 'w-6 bg-[#E11D48]' 
-                                    : `w-2 hover:w-3 ${currentAi.theme === 'dark' ? 'bg-white/20' : 'bg-gray-300'}`
-                                }`}
+                                className={`h-2 rounded-full transition-all duration-300 ${activeAiIndex === i
+                                  ? 'w-6 bg-[#E11D48]'
+                                  : `w-2 hover:w-3 ${currentAi.theme === 'dark' ? 'bg-white/20' : 'bg-gray-300'}`
+                                  }`}
                               />
                             ))}
                           </div>
@@ -825,21 +817,19 @@ export default function LandingPage() {
                               type="button"
                               aria-label="Show previous AI service"
                               onClick={() => setActiveAiIndex(prev => prev === 0 ? aiFeatures.length - 1 : prev - 1)}
-                              className={`p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${
-                                currentAi.theme === 'dark' 
-                                  ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white' 
-                                  : 'border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]'
-                              }`}
+                              className={`p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${currentAi.theme === 'dark'
+                                ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
+                                : 'border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]'
+                                }`}
                             ><ChevronLeft className="w-5 h-5" /></button>
                             <button
                               type="button"
                               aria-label="Show next AI service"
                               onClick={() => setActiveAiIndex(prev => (prev + 1) % aiFeatures.length)}
-                              className={`p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${
-                                currentAi.theme === 'dark' 
-                                  ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white' 
-                                  : 'border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]'
-                              }`}
+                              className={`p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${currentAi.theme === 'dark'
+                                ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
+                                : 'border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]'
+                                }`}
                             ><ChevronRight className="w-5 h-5" /></button>
                           </div>
                         </div>
@@ -850,7 +840,7 @@ export default function LandingPage() {
                 })()}
               </AnimatePresence>
             </div>
-            
+
           </div>
         </div>
       </section>      {/* 10. FAQ ACCORDION */}
@@ -956,24 +946,7 @@ export default function LandingPage() {
       {/* 12. FOOTER */}
       <Footer />
 
-      {/* 11. COOKIE CONSENT BANNER */}
-      {showCookieBanner && (
-        <div className="fixed bottom-0 left-0 right-0 z-[100] p-4 md:p-6 pointer-events-none flex justify-center">
-          <div className="bg-white shadow-[var(--shadow-hover)] border border-gray-200 rounded-2xl p-6 max-w-4xl w-full pointer-events-auto flex flex-col md:flex-row items-center justify-between gap-6 animate-[var(--animate-float)]" style={{ animationDuration: '10s' }}>
-            <div>
-              <h3 className="text-lg font-bold text-[#0A0A0A] mb-2">Cookies & Privacy</h3>
-              <p className="text-[#A1A1AA] text-sm leading-relaxed max-w-xl">
-                We use cookies to enhance your ultra-premium browsing experience. By clicking &quot;Accept All&quot;, you consent to our use of Necessary, Analytical, and Marketing cookies.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3 shrink-0">
-              <button onClick={() => setShowCookieBanner(false)} className="px-5 py-2.5 rounded-lg border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition">Accept Necessary</button>
-              <button onClick={() => setShowCookieBanner(false)} className="px-5 py-2.5 rounded-lg border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition">Reject All</button>
-              <button onClick={() => setShowCookieBanner(false)} className="btn-primary py-2.5 px-6">Accept All</button>
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Request Access Intercept Modal */}
       <RequestAccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
@@ -981,21 +954,21 @@ export default function LandingPage() {
       {/* AI Feature Modal */}
       <AnimatePresence>
         {selectedAiFeature && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }} 
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
             onClick={() => setSelectedAiFeature(null)}
           >
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }} 
-              animate={{ scale: 1, opacity: 1 }} 
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
               className="bg-white rounded-[32px] w-full max-w-[720px] p-8 sm:p-10 relative shadow-2xl flex flex-col gap-6 max-h-[90vh] overflow-y-auto hide-scrollbar"
             >
-              <button 
+              <button
                 type="button"
                 aria-label="Close AI service details"
                 onClick={() => setSelectedAiFeature(null)}
@@ -1070,7 +1043,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <button 
+              <button
                 type="button"
                 onClick={() => setSelectedAiFeature(null)}
                 className="mt-2 w-full sm:w-auto sm:self-end bg-[#0A0A0A] hover:bg-black text-white font-bold py-4 px-8 rounded-xl transition-all shadow-md active:scale-[0.98]"

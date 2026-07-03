@@ -1,6 +1,5 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
 
 interface PricingButtonProps {
   label?: string;
@@ -17,7 +16,7 @@ export function PricingButton({
       onClick={() => window.dispatchEvent(new CustomEvent("open-pricing-modal"))}
       className={className}
     >
-      <Sparkles className="h-4 w-4" />
+      
       {label}
     </button>
   );

@@ -48,11 +48,11 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 2. Update brand_profiles approval_status
+    // 2. Update brand_profiles kyc_status
     const { error: updateError } = await supabase
       .from("brand_profiles")
       .update({
-        approval_status: "pending_verification",
+        kyc_status: "pending_verification",
         verification_submitted_at: new Date().toISOString()
       })
       .eq("id", brandSession.brand.id);
@@ -68,6 +68,22 @@ export async function POST(req: NextRequest) {
         code: updateError.code,
         details: updateError.details,
         hint: updateError.hint,
+      });
+    }
+
+    // 3. Update profiles (mobile source of truth)
+    const { error: baseProfileUpdateError } = await supabase
+      .from("profiles")
+      .update({
+        kyc_status: "submitted",
+        approval_status: "under_review",
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", brandSession.user.id);
+
+    if (baseProfileUpdateError) {
+      console.error("[supabase-base-profile-error]", {
+        message: baseProfileUpdateError.message,
       });
     }
 

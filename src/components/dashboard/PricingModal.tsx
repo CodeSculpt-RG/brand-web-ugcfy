@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, Sparkles, X } from "lucide-react";
+import { CheckCircle2, X } from "lucide-react";
 
 interface PricingModalProps {
   isOpen: boolean;
@@ -53,7 +53,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
 
             <div className="pr-10">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-red-100 bg-brand-red-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-brand-red-600">
-                <Sparkles className="h-3.5 w-3.5" />
+                
                 Go Plus
               </div>
               <h2 id="pricing-modal-title" className="text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">

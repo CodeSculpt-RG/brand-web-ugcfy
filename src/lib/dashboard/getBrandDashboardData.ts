@@ -19,7 +19,7 @@ export type BrandDashboardData = {
     name: string | null;
     email: string | null;
     companyName: string | null;
-    approvalStatus: string | null;
+    kycStatus: string | null;
     onboardingCompletedAt: string | null;
   };
   availability: DashboardDataAvailability;
@@ -334,7 +334,7 @@ export async function getBrandDashboardData(): Promise<BrandDashboardData> {
       name: brandSession.user?.email || brandSession.brand.company_name || null,
       email: brandSession.user?.email || null,
       companyName: brandSession.brand.company_name || null,
-      approvalStatus: brandSession.brand.approval_status || null,
+      kycStatus: brandSession.brand.kyc_status || null,
       onboardingCompletedAt: null, // to be populated if tracked
     },
     availability,

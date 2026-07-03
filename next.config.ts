@@ -38,6 +38,26 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/solutions/brands",
+        destination: "/ecosystem/brands",
+        permanent: true,
+      },
+      {
+        source: "/solutions/agencies",
+        destination: "/ecosystem/brands",
+        permanent: true,
+      },
+      {
+        source: "/solutions/social-commerce",
+        destination: "/ecosystem/brands",
+        permanent: true,
+      },
+      {
+        source: "/solutions/content-seeding",
+        destination: "/ecosystem/brands",
+        permanent: true,
+      },
+      {
         source: "/privacy",
         destination: "/legal/privacy-policy",
         permanent: true,

@@ -7,7 +7,6 @@ import PremiumHero from "@/components/ui/PremiumHero";
 import PremiumStats from "@/components/ui/PremiumStats";
 import PremiumAlternatingFeatures from "@/components/ui/PremiumAlternatingFeatures";
 import PremiumCtaSection from "@/components/ui/PremiumCtaSection";
-import { Sparkles } from "lucide-react";
 
 export default function Page() {
   return (
@@ -19,7 +18,7 @@ export default function Page() {
           title="Discover Authentic Creators"
           highlight="At Scale"
           description="Tap into our proprietary AI-driven engine to find, filter, and connect with high-performing UGC creators perfectly aligned with your brand demographics."
-          icon={<Sparkles className="w-8 h-8 text-[var(--color-primary)]" />}
+          icon={null}
         />
         
         <PremiumAlternatingFeatures 
@@ -43,7 +42,7 @@ export default function Page() {
         
         <PremiumCtaSection 
           title="Ready to find your next star?"
-          description="Join 10,000+ brands scaling their social commerce."
+          description="Join 10,000+ brands scaling their UGC production."
         />
       </main>
 

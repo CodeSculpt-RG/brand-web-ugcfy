@@ -12,7 +12,7 @@ export default function GetStartedPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    userType: "Agency",
+    userType: "Brand",
     firstName: "",
     lastName: "",
     email: "",
@@ -172,9 +172,9 @@ export default function GetStartedPage() {
                     <label className="text-[11px] font-bold text-gray-500 tracking-widest uppercase">What best describes you?*</label>
                     <div className="grid grid-cols-2 gap-3">
                       <label className="relative flex flex-col gap-2 p-3.5 rounded-xl border border-gray-200 cursor-pointer transition-all hover:border-[#E11D48]/40 hover:bg-red-50/20 group has-[:checked]:border-[#E11D48] has-[:checked]:bg-red-50/10">
-                        <input type="radio" name="userType" value="Agency" checked={formData.userType === "Agency"} onChange={(e) => setFormData({...formData, userType: e.target.value})} className="sr-only" />
+                        <input type="radio" name="userType" value="Marketer" checked={formData.userType === "Marketer"} onChange={(e) => setFormData({...formData, userType: e.target.value})} className="sr-only" />
                         <div className="flex items-center justify-between w-full">
-                          <span className="text-[14px] font-bold text-gray-700 group-has-[:checked]:text-[#E11D48] transition-colors">Agency</span>
+                          <span className="text-[14px] font-bold text-gray-700 group-has-[:checked]:text-[#E11D48] transition-colors">Marketer / Partner</span>
                           <div className="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center group-has-[:checked]:border-[#E11D48] transition-colors">
                             <div className="w-2 h-2 rounded-full bg-[#E11D48] scale-0 group-has-[:checked]:scale-100 transition-transform duration-200"></div>
                           </div>
