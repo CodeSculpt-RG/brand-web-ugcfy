@@ -3,7 +3,7 @@ import { verifyBrand } from "@/lib/auth/verifyBrand";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { jsonError, jsonSuccess } from "@/lib/api-response";
-import { isRazorpayConfigured, createRazorpayOrder } from "@/lib/payments/razorpay";
+import { isRazorpayConfigured } from "@/lib/payments/razorpay";
 import { isMockPaymentEnabled } from "@/lib/payments/paymentProvider";
 
 function hasPaymentProvider() {
@@ -159,7 +159,20 @@ export async function POST(req: NextRequest) {
       const amountInPaise = Math.round(amount * 100);
       const receiptId = payment ? `payment_${payment.id}` : `campaign_${campaign.id}`;
       
-      const razorpayOrder = await createRazorpayOrder(amountInPaise, receiptId);
+      const { data: orderData, error: invokeError } = await supabase.functions.invoke('create-razorpay-order', {
+        body: {
+          amount: amountInPaise,
+          currency: campaign.currency || "INR",
+          receipt: receiptId
+        }
+      });
+
+      if (invokeError || !orderData || orderData.error) {
+        console.error("[payment-intent] Edge Function invoke failed:", invokeError || orderData?.error);
+        return jsonError("PAYMENT_PROVIDER_ERROR", "Failed to create payment order with provider.", 500);
+      }
+
+      const razorpayOrder = orderData;
 
       // Save the provider details to the payment record
       if (payment) {

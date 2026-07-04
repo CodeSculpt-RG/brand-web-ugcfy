@@ -31,10 +31,11 @@ const websiteJsonLd = {
 };
 
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default function Page({ searchParams }: Props) {
+export default async function Page(props: Props) {
+  const searchParams = await props.searchParams;
   // Production Google OAuth rescue: if Supabase redirects to homepage with a code,
   // push it to the correct callback route immediately.
   if (searchParams?.code) {

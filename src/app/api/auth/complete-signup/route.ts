@@ -72,49 +72,9 @@ export async function POST(req: NextRequest) {
       console.error("[complete-signup] user metadata update failed", serializeError(metadataError));
     }
 
-    const { error: baseProfileError } = await supabase
-      .from("profiles")
-      .upsert({
-        id: user.id,
-        email: normalizedEmail,
-        role: "brand",
-        full_name: fullName,
-        kyc_status: "not_started",
-        approval_status: "pending",
-        profile_completed: false,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: "id" });
-
-    if (baseProfileError) {
-      console.error("[complete-signup] base profile upsert failed", serializeError(baseProfileError));
-      return jsonError("PROFILE_UPSERT_FAILED", "Unable to prepare your profile. Please try again.", 500);
-    }
-
-    const { error: profileError } = await supabase
-      .from("brand_profiles")
-      .upsert({
-        id: user.id,
-        user_id: user.id,
-        profile_id: user.id,
-        contact_email: normalizedEmail,
-        brand_name: fullName,
-        company_name: fullName,
-        kyc_status: "draft",
-        onboarding_completed: false,
-      }, { onConflict: "id" });
-
-    if (profileError) {
-      console.error("[complete-signup] profile upsert failed", serializeError(profileError));
-      
-      if (profileError.code === "23505") {
-        return jsonError("PROFILE_DUPLICATE", "Your brand profile already exists. Redirecting you to verification.", 409);
-      }
-      
-      if (profileError.code?.startsWith("PGRST") || profileError.message?.includes("schema") || profileError.code === "42703") {
-        return jsonError("PROFILE_SCHEMA_MISMATCH", "Unable to prepare your brand profile. Please contact support.", 500);
-      }
-
-      return jsonError("PROFILE_UPSERT_FAILED", "Unable to prepare your brand profile. Please try again.", 500);
+    const { error: repairError } = await supabase.rpc("repair_missing_role_profile");
+    if (repairError) {
+      console.warn("[complete-signup] repair_missing_role_profile failed", serializeError(repairError));
     }
 
     return jsonSuccess({ redirectTo: "/dashboard/verification" });

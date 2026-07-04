@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import CreatorDiscoveryMockup from './visuals/CreatorDiscoveryMockup';
 import CampaignWorkflowMockup from './visuals/CampaignWorkflowMockup';
@@ -9,14 +9,15 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
-  Sparkles, MessageCircle,
-  LayoutDashboard, Check, Globe2, Cpu, Layers, Activity, ShieldCheck,
-  BadgeDollarSign, Bot, Quote, ChevronLeft, ChevronRight, ChevronDown, X
+  Sparkles, Check, Globe2, Cpu, Layers, Activity, ShieldCheck,
+  Quote, ChevronLeft, ChevronRight, ChevronDown, X,
+  User, Briefcase, Download, MessageCircle
 } from "lucide-react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import RequestAccessModal from "@/components/RequestAccessModal";
 import { RedLanding } from "@/components/ui/redlanding";
+import LoginPromptModal from "@/components/auth/LoginPromptModal";
 
 const whyChooseData = [
   { title: "200M+ Influencers Database", desc: "Access a global network of over 200 million influencers. Find your perfect match across platforms and boost visibility.", icon: Globe2 },
@@ -266,64 +267,121 @@ const platformFeatures = [
   }
 ];
 
-const uspData = [
-  {
-    id: 1,
-    title: "WhatsApp Chat Integration",
-    description: "Receive real-time updates on WhatsApp for campaigns, queries, and workflows. Seamless, personal-level communication between influencers and brands, keeping everyone informed instantly.",
-    icon: MessageCircle,
-  },
-  {
-    id: 2,
-    title: "Affiliate Marketing Feature",
-    description: "Maximize earnings with our built-in affiliate tool. Brands post campaigns to 250M+ influencers, influencers apply directly. Performance-based promotions benefit both parties with broader reach.",
-    icon: BadgeDollarSign,
-  },
-  {
-    id: 3,
-    title: "Automated Campaign Management",
-    description: "AI-powered automation from discovery to tracking. Includes content ideation, validation, and real-time updates. Saves time, ensures accuracy, and streamlines workflows for brands and creator teams.",
-    icon: Bot,
-  },
-  {
-    id: 4,
-    title: "Omnichannel Marketing Dashboard",
-    description: "Manage campaigns across Instagram, YouTube, Twitter, and more from one dashboard. Track performance, handle conversations, and eliminate tool-switching for a seamless workflow.",
-    icon: LayoutDashboard,
-  }
-];
-// Framer Motion Variants for Staggered Animation
-const gridContainerVariants: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-};
 
 const cardVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 };
 
+const successCreators = [
+  {
+    name: "Simran Bakhtiyar",
+    handle: "@staycurious_withsimran",
+    instagramUrl: "https://www.instagram.com/staycurious_withsimran/",
+    niche: "Lifestyle • Travel • Storytelling",
+    image: "/images/creators/simran-bakhtiyar.jpg",
+    stats: [
+      { label: "Audience", value: "120K+" },
+      { label: "Brand Reach", value: "8.5M+" },
+      { label: "Growth", value: "+42%" }
+    ],
+    quote: "“Turning authentic storytelling into structured brand opportunities.”"
+  },
+  {
+    name: "Ankit Arora",
+    handle: "@ai_ankitarora",
+    instagramUrl: "https://www.instagram.com/ai_ankitarora/",
+    niche: "AI • Tech • Education",
+    image: "/images/creators/ankit-arora.jpg",
+    stats: [
+      { label: "Audience", value: "95K+" },
+      { label: "Brand Reach", value: "6.2M+" },
+      { label: "Growth", value: "+38%" }
+    ],
+    quote: "“Helping education and tech content convert into trusted brand collaborations.”"
+  },
+  {
+    name: "Niharika Singh",
+    handle: "@coach.niharika",
+    instagramUrl: "https://www.instagram.com/coach.niharika/",
+    niche: "Coaching • Growth • Personal Brand",
+    image: "/images/creators/niharika-singh.jpg",
+    stats: [
+      { label: "Audience", value: "80K+" },
+      { label: "Brand Reach", value: "4.8M+" },
+      { label: "Growth", value: "+31%" }
+    ],
+    quote: "“Building a stronger personal brand through clearer creator-brand workflows.”"
+  }
+];
+
+const ctaCards = [
+  {
+    label: "For Creators",
+    title: ["Build.", "Apply.", "Earn."],
+    description: "Create your profile, discover paid campaigns, and manage brand collaborations with clarity.",
+    buttonText: "Join as a Creator",
+    icon: User,
+    colorTheme: "rose",
+  },
+  {
+    label: "For Brands",
+    title: ["Find.", "Launch.", "Track."],
+    description: "Discover verified creators, launch structured UGC campaigns, and review applications from one dashboard.",
+    buttonText: "Join as a Brand",
+    icon: Briefcase,
+    colorTheme: "purple",
+  },
+  {
+    label: "Campaign Workflow",
+    title: ["Brief.", "Collaborate.", "Deliver."],
+    description: "Move from campaign brief to creator selection, content delivery, and review without scattered follow-ups.",
+    buttonText: "Explore Campaigns",
+    icon: Layers,
+    colorTheme: "orange",
+  }
+];
+
+interface BrandItem {
+  name: string;
+}
+
+const marqueeBrandsRow1: BrandItem[] = [
+  { name: "Oziva" },
+  { name: "Frido" },
+  { name: "Juicy Chemistry" },
+  { name: "Travalate" },
+  { name: "SleepyCat" },
+  { name: "ICON" },
+  { name: "Sonic Lamb" },
+  { name: "Welme" },
+  { name: "Brown Living" },
+  { name: "Hammer" },
+  { name: "Homestrap" },
+  { name: "Sukham" },
+  { name: "Plum Stories" }
+];
+
+const marqueeBrandsRow2: BrandItem[] = [
+  { name: "TABBSZ" },
+  { name: "A Big Indian Story" },
+  { name: "Seekho" },
+  { name: "Master" },
+  { name: "Beardo" },
+  { name: "Samco" },
+  { name: "Skin Wise" },
+  { name: "Just Dial" },
+  { name: "PAN INDIA VENTURES" },
+  { name: "CANNIS LUPUS" },
+  { name: "INS COMMUNICATION" },
+  { name: "MY MONEY MATTERS" }
+];
+
 export default function LandingPage() {
-  const [activeLogoPage, setActiveLogoPage] = useState(0);
   const [activeAiIndex, setActiveAiIndex] = useState(0);
   const [selectedAiFeature, setSelectedAiFeature] = useState<AiFeature | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const logoPages = [
-    [1, 2, 3, 4, 5, 6, 7, 8],
-    [9, 10, 11, 12, 13, 14, 15, 16],
-    [17, 18, 19, 20, 21, 22, 23, 24]
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveLogoPage((prev) => (prev + 1) % logoPages.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [logoPages.length]);
+  const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
 
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
@@ -347,60 +405,88 @@ export default function LandingPage() {
       {/* 1. HERO SECTION (Red Landing) */}
       <RedLanding />
 
-      {/* 2. AUTO-PLAYING BRAND CAROUSEL */}
-      <section className="py-20 bg-[#FCF6F6] border-b border-[#FCF6F6] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 mb-12 text-center relative z-10">
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">500+ brand collaborations with UGCFY</p>
+      {/* 2. INFINITE BRAND MARQUEE */}
+      <section className="py-14 sm:py-16 md:py-20 lg:py-24 bg-[#FCF6F6] border-b border-[#FCF6F6]/80 overflow-hidden relative">
+        {/* Soft Background Accent Glows */}
+        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[30%] h-[50%] rounded-full bg-[var(--color-primary)]/3 blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[25%] h-[40%] rounded-full bg-purple-500/3 blur-[100px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <div className="mb-10 sm:mb-12 max-w-3xl mx-auto">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 border border-rose-100/60 text-[10px] font-extrabold uppercase tracking-widest text-[var(--color-primary)] mb-4 shadow-sm">
+              TRUSTED BY GROWING BRANDS
+            </span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-4">
+              500+ Brand Collaborations with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-purple-600">UGCFY</span>
+            </h2>
+            <p className="text-base sm:text-lg text-gray-500 font-semibold leading-relaxed max-w-2xl mx-auto">
+              From creator-led product launches to scalable UGC campaigns, UGCFY helps brands collaborate with the right creators faster.
+            </p>
+          </div>
         </div>
 
-        {/* Carousel Container */}
-        <div className="relative w-full max-w-5xl mx-auto overflow-hidden">
-          <div
-            className="flex transition-transform duration-1000 ease-in-out"
-            style={{ transform: `translateX(-${activeLogoPage * 100}%)` }}
-          >
-            {logoPages.map((page, pageIndex) => (
-              <div key={pageIndex} className="w-full flex-shrink-0">
+        {/* Marquee Viewport Container */}
+        <div className="relative w-full overflow-hidden flex flex-col gap-5 sm:gap-6 z-10 py-2">
+          {/* Subtle gradient edges masks */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-[#FCF6F6] via-[#FCF6F6]/80 to-transparent pointer-events-none z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#FCF6F6] via-[#FCF6F6]/80 to-transparent pointer-events-none z-10" />
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-8 md:gap-x-16 items-center justify-items-center px-4 md:px-12">
-                  {page.map((item) => (
-                    <div
-                      key={item}
-                      className="h-12 w-28 md:w-36 flex items-center justify-center grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300 cursor-pointer"
-                    >
-                      {/* DEVELOPER NOTE: 
-                        Currently using inline SVGs to prevent terminal 404 spam.
-                        When you have real logos, change the src back to: src={`/logos/brand-${item}.png`} 
-                      */}
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={`data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="144" height="48" viewBox="0 0 144 48"><rect width="144" height="48" fill="%23f3f4f6" rx="8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="bold" font-size="14" fill="%239ca3af">BRAND ${item}</text></svg>`}
-                        alt={`Brand Partner ${item}`}
-                        className="object-contain w-full h-full drop-shadow-none"
-                      />
-                    </div>
-                  ))}
+          {/* Row 1: Left scrolling */}
+          <div className="flex overflow-hidden w-full">
+            <div 
+              className="flex w-max gap-4 sm:gap-6 animate-marquee hover:[animation-play-state:paused] brand-marquee-track"
+              style={{ animationDuration: '40s' }}
+            >
+              {marqueeBrandsRow1.map((brand, idx) => (
+                <div 
+                  key={`r1-${idx}`} 
+                  className="h-14 sm:h-16 px-6 sm:px-8 rounded-2xl bg-white border border-gray-100/80 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:border-[var(--color-primary)]/20 hover:-translate-y-0.5 transition-all duration-300 group"
+                >
+                  <span className="text-gray-800 text-sm sm:text-base font-bold tracking-tight whitespace-nowrap group-hover:text-gray-950 transition-colors">{brand.name}</span>
                 </div>
-              </div>
-            ))}
+              ))}
+              {/* Duplicate for infinite loop */}
+              {marqueeBrandsRow1.map((brand, idx) => (
+                <div 
+                  key={`r1-dup-${idx}`} 
+                  className="h-14 sm:h-16 px-6 sm:px-8 rounded-2xl bg-white border border-gray-100/80 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:border-[var(--color-primary)]/20 hover:-translate-y-0.5 transition-all duration-300 group"
+                >
+                  <span className="text-gray-800 text-sm sm:text-base font-bold tracking-tight whitespace-nowrap group-hover:text-gray-950 transition-colors">{brand.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Pagination Dots */}
-          <div className="flex justify-center gap-3 mt-12">
-            {logoPages.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveLogoPage(idx)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${activeLogoPage === idx ? 'bg-[var(--color-primary)] w-8' : 'bg-gray-200 hover:bg-gray-300'}`}
-                aria-label={`Go to slide ${idx + 1}`}
-              />
-            ))}
+          {/* Row 2: Right scrolling */}
+          <div className="flex overflow-hidden w-full">
+            <div 
+              className="flex w-max gap-4 sm:gap-6 animate-marquee hover:[animation-play-state:paused] brand-marquee-track"
+              style={{ animationDuration: '45s', animationDirection: 'reverse' }}
+            >
+              {marqueeBrandsRow2.map((brand, idx) => (
+                <div 
+                  key={`r2-${idx}`} 
+                  className="h-14 sm:h-16 px-6 sm:px-8 rounded-2xl bg-white border border-gray-100/80 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:border-purple-500/10 hover:-translate-y-0.5 transition-all duration-300 group"
+                >
+                  <span className="text-gray-800 text-sm sm:text-base font-bold tracking-tight whitespace-nowrap group-hover:text-gray-950 transition-colors">{brand.name}</span>
+                </div>
+              ))}
+              {/* Duplicate for infinite loop */}
+              {marqueeBrandsRow2.map((brand, idx) => (
+                <div 
+                  key={`r2-dup-${idx}`} 
+                  className="h-14 sm:h-16 px-6 sm:px-8 rounded-2xl bg-white border border-gray-100/80 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:border-purple-500/10 hover:-translate-y-0.5 transition-all duration-300 group"
+                >
+                  <span className="text-gray-800 text-sm sm:text-base font-bold tracking-tight whitespace-nowrap group-hover:text-gray-950 transition-colors">{brand.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* 3. VIDEO SHOWCASE SECTION */}
-      <section className="relative w-full py-32 overflow-hidden bg-[#000000]">
+      <section className="relative w-full py-14 sm:py-16 md:py-20 lg:py-24 overflow-hidden bg-[#000000]">
         <video
           autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-60"
@@ -408,16 +494,16 @@ export default function LandingPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/80 z-0"></div>
 
-        <div className="max-w-5xl mx-auto px-6 flex flex-col items-center text-center gap-8 relative z-10 w-full">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center relative z-10 w-full">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg mb-4">
             See UGCFY in Action
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl font-medium leading-relaxed drop-shadow-md">
+          <p className="text-lg sm:text-xl text-gray-300 max-w-2xl font-medium leading-relaxed drop-shadow-md mb-8">
             Watch how leading brands are automating their entire influencer marketing workflow and scaling UGC content effortlessly.
           </p>
-          <div className="mt-8">
-            <Link href="/request-demo" className="btn-primary px-10 py-5 text-lg flex items-center justify-center gap-3 shadow-xl shadow-[var(--shadow-cta)] hover:scale-105 transition-transform duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3" /></svg>
+          <div className="mt-6">
+            <Link href="/request-demo" className="btn-primary px-10 py-4 text-base flex items-center justify-center gap-3 shadow-xl shadow-[var(--shadow-cta)] hover:scale-105 transition-transform duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3" /></svg>
               Watch Full Demo
             </Link>
           </div>
@@ -425,14 +511,17 @@ export default function LandingPage() {
       </section>
 
       {/* 4. CORE FEATURES SECTION (ZIG-ZAG) */}
-      <section className="py-24 bg-[var(--color-bg-light)]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <span className="eyebrow">Platform Capabilities</span>
+      <section className="py-14 sm:py-16 md:py-20 lg:py-24 bg-[var(--color-bg-light)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12">
+            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-rose-50 border border-rose-100/60 text-[11px] font-bold uppercase tracking-widest text-[var(--color-primary)] mb-4 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5" />
+              Platform Capabilities
+            </span>
             <h2 className="text-[36px] md:text-[44px] font-bold text-[#0A0A0A]">Core Features of UGCFY</h2>
           </div>
 
-          <div className="flex flex-col gap-24 md:gap-32 overflow-hidden py-10">
+          <div className="flex flex-col gap-16 sm:gap-20 md:gap-24 overflow-hidden py-4">
             {platformFeatures.map((feature, index) => {
               // Determine visual position based on index to trigger correct left/right slide
               const isVisuallyReversed = index % 2 !== 0;
@@ -452,7 +541,7 @@ export default function LandingPage() {
                     transition={{ duration: 0.7, ease: "easeOut" }}
                     className="w-full md:w-1/2 relative"
                   >
-                    <div className="relative rounded-2xl overflow-hidden bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] transform transition-transform duration-700 ease-out group-hover:-translate-y-3 group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.08)] min-h-[400px]">
+                    <div className="relative rounded-2xl overflow-hidden bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] transform transition-transform duration-700 ease-out group-hover:-translate-y-2 group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.08)] min-h-[400px]">
                       {feature.visual}
                       <div className="absolute inset-0 border border-black/5 rounded-2xl pointer-events-none"></div>
                     </div>
@@ -467,13 +556,13 @@ export default function LandingPage() {
                     transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
                     className="w-full md:w-1/2 flex flex-col items-start text-left"
                   >
-                    <h3 className="text-4xl md:text-5xl font-extrabold text-[#0A0A0A] mb-6 tracking-tight">
+                    <h3 className="text-4xl md:text-5xl font-extrabold text-[#0A0A0A] mb-4 tracking-tight">
                       {feature.title} <span className="text-[var(--color-primary)]">{feature.highlight}</span>
                     </h3>
-                    <p className="text-gray-500 text-lg leading-relaxed mb-8 max-w-lg">
+                    <p className="text-gray-500 text-lg leading-relaxed mb-6 max-w-lg">
                       {feature.description}
                     </p>
-                    <Link href={feature.buttonLink} className="inline-flex items-center justify-center bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-bold py-3.5 px-8 rounded-lg shadow-lg shadow-[var(--shadow-cta)] hover:shadow-[var(--shadow-cta)] transform hover:-translate-y-1 transition-all duration-300">
+                    <Link href={feature.buttonLink} className="inline-flex items-center justify-center bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-bold py-3 px-6 text-sm rounded-lg shadow-lg shadow-[var(--shadow-cta)] hover:shadow-[var(--shadow-cta)] transform hover:-translate-y-1 transition-all duration-300">
                       {feature.buttonText}
                     </Link>
                   </motion.div>
@@ -485,146 +574,278 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* SECTION 4: EXACT REFERENCE USPS */}
-      <section className="py-32 bg-[#FAFAFA] relative overflow-hidden">
-        <div className="max-w-[1280px] mx-auto px-6 relative z-10">
+      {/* NEW SECTION 4: CREATOR SUCCESS STORIES */}
+      <section className="py-14 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-[#FFFDFD] via-[#FDFBFB] to-[#FDF8F6] relative overflow-hidden">
+        {/* Subtle Background Grid Pattern with Radial Mask */}
+        <div
+          className="absolute inset-0 bg-[linear-gradient(to_right,#80808005_1px,transparent_1px),linear-gradient(to_bottom,#80808005_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"
+          style={{
+            maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)',
+            WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)'
+          }}
+        />
 
-          {/* Centered Section Header */}
-          <div className="text-center mb-16">
-            <motion.h2
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ duration: 0.5 }}
-              className="text-4xl md:text-5xl font-bold text-[#0A0A0A] tracking-tight"
-            >
-              Our USPs
-            </motion.h2>
+        {/* Soft radial glows native to UGCFY visual identity */}
+        {/* Top-left glow: red/orange */}
+        <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-gradient-to-br from-[var(--color-primary)]/10 to-orange-500/8 blur-[130px] pointer-events-none" />
+
+        {/* Top-right glow: purple/violet */}
+        <div className="absolute top-[5%] right-[-5%] w-[40%] h-[40%] rounded-full bg-gradient-to-bl from-purple-500/8 to-indigo-500/5 blur-[120px] pointer-events-none" />
+
+        {/* Bottom glow: soft orange/rose */}
+        <div className="absolute bottom-[-10%] left-[25%] w-[50%] h-[45%] rounded-full bg-gradient-to-tr from-orange-400/8 via-rose-400/6 to-purple-500/5 blur-[140px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+          {/* Centered Header */}
+          <div className="text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto">
+            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-rose-50 border border-rose-100/60 text-[11px] font-bold uppercase tracking-widest text-[var(--color-primary)] mb-6 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5" />
+              CREATOR GROWTH STORIES
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-4">
+              Creators Building Momentum With <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-purple-600">UGCFY</span>
+            </h2>
+            <p className="text-lg text-gray-500 font-semibold leading-relaxed">
+              UGCFY helps creators turn authentic content, audience trust, and brand fit into structured collaboration opportunities.
+            </p>
           </div>
 
-          {/* The Structured Block Grid */}
-          <motion.div
-            variants={gridContainerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: false, amount: 0.1 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12"
-          >
-            {uspData.map((usp) => (
-              <motion.div
-                key={usp.id}
-                variants={cardVariants}
-                // Pure white card, subtle border, rounded corners
-                className="relative bg-white rounded-3xl p-8 md:p-10 border border-gray-100 shadow-sm overflow-hidden group hover:shadow-md hover:border-[var(--color-primary)] transition-all duration-300"
+          {/* Creators Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+            {successCreators.map((creator, i) => (
+              <div
+                key={i}
+                role="button"
+                tabIndex={0}
+                onClick={() => setIsLoginPromptOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setIsLoginPromptOpen(true);
+                  }
+                }}
+                className="flex flex-col text-left bg-white/70 backdrop-blur-xl rounded-[32px] overflow-hidden border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(225,29,72,0.06)] hover:border-rose-200/60 hover:-translate-y-1 transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 w-full cursor-pointer"
+                aria-label={`View success story of ${creator.name}`}
               >
-                {/* Top Left Dark Icon Box (Exact match to reference) */}
-                <div className="w-12 h-12 rounded-xl bg-[#1A1A1A] group-hover:bg-[var(--color-primary)] flex items-center justify-center text-white mb-6 relative z-10 transition-colors duration-300">
-                  <usp.icon strokeWidth={2} className="w-6 h-6" />
+                {/* Image Container */}
+                <div className="p-4 sm:p-5 pb-0 w-full">
+                  <div className="relative w-full h-56 sm:h-64 rounded-2xl overflow-hidden bg-gradient-to-tr from-rose-50 to-orange-50/50">
+                    <Image
+                      src={creator.image}
+                      alt={creator.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    {/* Instagram Badge */}
+                    <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md py-1.5 px-3.5 rounded-full flex items-center gap-1.5 border border-white/10 shadow-sm text-[10px] font-extrabold text-white tracking-wide">
+                      <svg className="w-3 h-3 text-rose-500 fill-rose-500" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                      </svg>
+                      <span>{creator.handle}</span>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Block Text Content */}
-                <div className="relative z-10">
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-tight">
-                    {usp.title}
-                  </h3>
-                  <p className="text-gray-600 text-[15px] md:text-base leading-relaxed max-w-[95%]">
-                    {usp.description}
-                  </p>
-                </div>
+                {/* Content */}
+                <div className="p-5 sm:p-6 pt-4 sm:pt-5 flex flex-col flex-grow w-full">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="font-extrabold text-xl text-gray-900 leading-none">{creator.name}</span>
+                    <svg className="w-5 h-5 text-blue-500 fill-blue-500 shrink-0" viewBox="0 0 24 24">
+                      <path fill="white" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15.59l-1.42 1.41-5-5 1.41-1.41 3.59 3.59 7.59-7.59 1.42 1.42-9 9z" />
+                    </svg>
+                  </div>
+                  <span className="text-xs font-bold text-rose-600/80 mb-4 tracking-wider uppercase">{creator.niche}</span>
 
-                {/* The Distinct Bottom-Right Watermark */}
-                <div className="absolute -bottom-10 -right-10 z-0 pointer-events-none transform transition-transform duration-700 ease-out group-hover:scale-110 group-hover:-translate-y-2">
-                  <usp.icon
-                    strokeWidth={1.5}
-                    className="w-44 h-44 text-gray-200 opacity-5"
-                  />
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-3 gap-2 p-2.5 sm:p-3 bg-gray-50/30 group-hover:bg-rose-50/20 rounded-2xl border border-gray-100/60 group-hover:border-rose-100/40 mb-5 transition-all duration-300">
+                    {creator.stats.map((stat, sIdx) => (
+                      <div key={sIdx} className="text-center relative after:absolute after:right-0 after:top-1/4 after:h-1/2 after:w-px after:bg-gray-200/60 last:after:hidden">
+                        <div className="text-base font-black text-gray-900 leading-none mb-1 group-hover:text-[var(--color-primary)] transition-colors duration-300">{stat.value}</div>
+                        <div className="text-[9px] font-bold text-gray-400 uppercase tracking-wider group-hover:text-gray-500 transition-colors duration-300">{stat.label}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Quote */}
+                  <div className="relative mt-auto pt-3 sm:pt-4 border-t border-gray-100/50 w-full">
+                    <Quote className="w-8 h-8 text-[var(--color-primary)]/10 absolute -top-3.5 -left-2 rotate-180 pointer-events-none" />
+                    <p className="text-sm text-gray-600 font-medium italic leading-relaxed text-left relative z-10 pl-6">
+                      {creator.quote}
+                    </p>
+                  </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-8 sm:mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-20">
+            <Link
+              href="/ecosystem/download-app"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[var(--color-primary)] via-orange-500 to-purple-600 hover:opacity-95 hover:shadow-lg hover:shadow-rose-500/10 active:scale-[0.98] transition-all duration-300 text-white font-bold text-sm tracking-wide focus:outline-none focus:ring-2 focus:ring-purple-500/40 cursor-pointer"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              <span>Download App</span>
+            </Link>
+            <Link
+              href="/contact"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-2xl bg-white/40 backdrop-blur-md border border-gray-200/80 hover:border-rose-200/80 hover:bg-white/60 text-gray-800 hover:text-gray-900 font-bold text-sm tracking-wide shadow-sm hover:shadow-md active:scale-[0.98] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 cursor-pointer"
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              <span>Contact Us</span>
+            </Link>
+          </div>
 
         </div>
       </section>
 
-      {/* SECTION 6: ORBITAL SOCIAL PROOF */}
-      <section className="py-32 bg-[#FCF6F6] overflow-hidden">
-        <div className="max-w-[1280px] mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
+      {/* NEW SECTION 6: EVERYTHING YOU NEED / CTA + FOUNDER QUOTE */}
+      <section className="py-14 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-[#FFFFFF] via-[#FFFDFD] to-[#FCF9F8] relative overflow-hidden">
+        {/* Soft warm radial glow matching red/orange/purple */}
+        <div className="absolute top-1/3 right-1/4 w-[40%] h-[40%] rounded-full bg-orange-500/5 blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[35%] h-[35%] rounded-full bg-[var(--color-primary)]/5 blur-[150px] pointer-events-none" />
 
-          {/* Left Side: The Orbit */}
-          <div className="relative flex justify-center items-center h-[500px]">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              className="relative w-[300px] h-[300px] rounded-full border border-dashed border-[var(--color-primary)]/20"
-            >
-              {/* Orbiting Logo Placeholder */}
-              {[0, 90, 180, 270].map((deg, i) => (
-                <div
-                  key={i}
-                  className="absolute w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center border border-gray-100"
-                  style={{
-                    top: '50%', left: '50%',
-                    transform: `rotate(${deg}deg) translate(150px) rotate(-${deg}deg)`
-                  }}
-                >
-                  <div className="w-6 h-6 bg-gray-200 rounded-full" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+          {/* Centered Heading */}
+          <div className="text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto">
+            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-rose-50 border border-rose-100/60 text-[11px] font-bold uppercase tracking-widest text-[var(--color-primary)] mb-6 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5" />
+              BUILT FOR FOCUSED GROWTH
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight mb-4">
+              Everything You Need.<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-purple-600">Nothing You Don’t.</span>
+            </h2>
+            <p className="text-base sm:text-lg text-gray-500 font-semibold leading-relaxed">
+              A focused workspace for creators and brands to move from discovery to collaboration without operational chaos.
+            </p>
+          </div>
+
+          {/* CTA Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+            {ctaCards.map((card, i) => (
+              <div
+                key={i}
+                role="button"
+                tabIndex={0}
+                onClick={() => setIsLoginPromptOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setIsLoginPromptOpen(true);
+                  }
+                }}
+                className="relative flex flex-col text-left rounded-[32px] p-6 sm:p-8 bg-white border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] hover:border-gray-200 hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 w-full h-full"
+                aria-label={`Join as ${card.label}`}
+              >
+                {/* Badge Label & Icon Row */}
+                <div className="flex items-center justify-between w-full mb-6">
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest border ${
+                    card.colorTheme === 'rose'
+                      ? 'bg-rose-50 border-rose-100/60 text-rose-600'
+                      : card.colorTheme === 'purple'
+                      ? 'bg-purple-50 border-purple-100/60 text-purple-600'
+                      : 'bg-orange-50 border-orange-100/60 text-orange-600'
+                  }`}>
+                    {card.label}
+                  </span>
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${
+                    card.colorTheme === 'rose'
+                      ? 'bg-rose-50/50 border-rose-100/40 text-rose-500'
+                      : card.colorTheme === 'purple'
+                      ? 'bg-purple-50/50 border-purple-100/40 text-purple-500'
+                      : 'bg-orange-50/50 border-orange-100/40 text-orange-500'
+                  }`}>
+                    <card.icon className="w-4 h-4" />
+                  </div>
                 </div>
-              ))}
-            </motion.div>
 
-            {/* Central Avatar */}
-            <div className="absolute w-48 h-48 rounded-full overflow-hidden shadow-2xl border-4 border-white bg-gray-300">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80" alt="Testimonial User" className="w-full h-full object-cover" />
+                {/* Multiline Heading */}
+                <h3 className="text-3xl sm:text-[34px] font-black tracking-tight leading-none mb-4 flex flex-col">
+                  {card.title.map((line, lIdx) => {
+                    const isLast = lIdx === card.title.length - 1;
+                    if (isLast) {
+                      const gradientClass =
+                        card.colorTheme === 'rose'
+                          ? 'from-[var(--color-primary)] to-pink-500'
+                          : card.colorTheme === 'purple'
+                          ? 'from-purple-600 to-indigo-600'
+                          : 'from-orange-500 to-rose-500';
+                      return (
+                        <span key={lIdx} className={`text-transparent bg-clip-text bg-gradient-to-r ${gradientClass}`}>
+                          {line}
+                        </span>
+                      );
+                    }
+                    return <span key={lIdx}>{line}</span>;
+                  })}
+                </h3>
+
+                {/* Description */}
+                <p className="text-gray-500 text-sm leading-relaxed mb-8 font-medium">
+                  {card.description}
+                </p>
+
+                {/* Pinned Button */}
+                <div className={`mt-auto w-full py-3 px-6 rounded-2xl text-center font-bold text-sm tracking-wide transition-all shadow-sm group-hover:shadow group-hover:scale-[1.01] active:scale-[0.98] duration-300 ${
+                  card.colorTheme === 'rose'
+                    ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white'
+                    : card.colorTheme === 'purple'
+                    ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                    : 'bg-gray-950 hover:bg-gray-900 text-white'
+                }`}>
+                  {card.buttonText}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Founder Quote Row */}
+          <div className="mt-12 sm:mt-14 max-w-4xl mx-auto">
+            <div className="bg-white/70 backdrop-blur-xl border border-gray-100/80 shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6 sm:p-8 md:p-10 rounded-[32px] flex flex-col md:flex-row items-start gap-6 md:gap-8">
+              {/* Founder Image */}
+              <div className="relative w-24 h-24 rounded-2xl overflow-hidden border border-gray-100 bg-rose-50 shrink-0 shadow-sm">
+                <Image
+                  src="/images/team/shubham-mishra.jpg"
+                  alt="Shubham Mishra"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              {/* Quote Block */}
+              <div className="flex flex-col gap-4 text-left">
+                <Quote className="w-8 h-8 text-[var(--color-primary)] fill-[var(--color-primary)]/10" />
+                <blockquote className="text-lg md:text-xl font-bold text-gray-800 leading-relaxed">
+                  UGCFY is built to remove the friction from <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-orange-500">creator-led marketing</span>. Our focus is simple: help brands discover the right creators, help creators access structured opportunities, and make every collaboration easier to manage, measure, and scale.
+                </blockquote>
+                <div className="flex flex-col">
+                  <span className="font-extrabold text-gray-900 text-base leading-tight">Shubham Mishra</span>
+                  <span className="text-xs font-bold text-gray-400 tracking-wider uppercase mt-1">CEO, UGCFY</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Right Side: The Quote & Stats */}
-          <div className="flex flex-col gap-8">
-            <Quote className="w-16 h-16 text-[var(--color-primary)] fill-[var(--color-primary)]/10" />
-            <blockquote className="text-2xl md:text-3xl font-medium text-gray-900 leading-snug">
-              &quot;When you want a campaign to succeed, your partners should share your vision. UGCFY embraced our dream with enthusiasm and dedication.&quot;
-            </blockquote>
-
-            {/* Brand Attribution */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold">P</div>
-              <span className="font-bold text-gray-900">Popeyes India</span>
-            </div>
-
-            <Link href="/get-started" className="bg-black text-white px-8 py-4 rounded-xl font-bold w-fit hover:bg-gray-800 transition-colors inline-block text-center">
-              Get Started
-            </Link>
-
-            {/* Stats Row */}
-            <div className="grid grid-cols-3 gap-8 pt-8 border-t border-gray-200">
-              {[
-                { label: "Brand Collaborations", value: "200+" },
-                { label: "Content Generated", value: "450K" },
-                { label: "Quality Creators", value: "180+" },
-              ].map((stat, i) => (
-                <div key={i}>
-                  <div className="text-3xl font-black text-gray-900 mb-1">{stat.value}</div>
-                  <div className="text-sm text-gray-500">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
       {/* SECTION 8: PROFESSIONAL USP GRID */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-14 sm:py-16 md:py-20 lg:py-24 bg-white relative overflow-hidden">
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
-        <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-          <div className="text-center mb-16 max-w-2xl mx-auto relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto relative z-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm mb-6">
               <div className="w-2 h-2 rounded-full bg-brand-red-500 animate-pulse" />
               <span className="text-[11px] font-bold uppercase tracking-widest text-gray-900">The UGCFY Advantage</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-6">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
               Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red-500 to-rose-400">UGCFY?</span>
             </h2>
             <p className="text-lg text-gray-500 font-medium leading-relaxed">
@@ -678,8 +899,8 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 9: AI INTEGRATION CAROUSEL */}
-      <section className="relative overflow-hidden bg-[#FDFBFB] py-16 sm:py-20 lg:py-24">
-        <div className="max-w-[1240px] mx-auto px-6">
+      <section className="relative overflow-hidden bg-[#FDFBFB] py-14 sm:py-16 md:py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-20 items-center">
 
             {/* Left Editorial Content */}
@@ -712,12 +933,19 @@ export default function LandingPage() {
               </Link>
 
               {/* Small understated feature row */}
-              <div className="flex flex-wrap items-center gap-4 mt-2">
-                <span className="text-sm font-bold text-gray-800">5 AI modules</span>
-                <span className="text-sm font-bold text-gray-300">•</span>
-                <span className="text-sm font-bold text-gray-800">Campaign precision</span>
-                <span className="text-sm font-bold text-gray-300">•</span>
-                <span className="text-sm font-bold text-gray-800">Real-time optimization</span>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-2">
+                <span className="flex items-center gap-1.5 text-sm font-bold text-gray-800">
+                  <Check className="w-4 h-4 text-[#E11D48] shrink-0" />
+                  <span>5 AI modules</span>
+                </span>
+                <span className="flex items-center gap-1.5 text-sm font-bold text-gray-800">
+                  <Check className="w-4 h-4 text-[#E11D48] shrink-0" />
+                  <span>Campaign precision</span>
+                </span>
+                <span className="flex items-center gap-1.5 text-sm font-bold text-gray-800">
+                  <Check className="w-4 h-4 text-[#E11D48] shrink-0" />
+                  <span>Real-time optimization</span>
+                </span>
               </div>
             </div>
 
@@ -733,7 +961,7 @@ export default function LandingPage() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
-                      className={`relative w-full flex flex-col justify-between p-7 sm:p-10 lg:p-12 rounded-[36px] border transition-all duration-500 min-h-[430px] ${currentAi.theme === 'dark'
+                      className={`relative w-full flex flex-col justify-between p-6 sm:p-8 md:p-10 rounded-[36px] border transition-all duration-500 min-h-[430px] ${currentAi.theme === 'dark'
                         ? 'bg-[#0A0A0A] text-white border-white/10 shadow-2xl shadow-black/20'
                         : 'bg-white text-[#0A0A0A] border-black/5 shadow-2xl shadow-black/5'
                         }`}
@@ -844,10 +1072,10 @@ export default function LandingPage() {
           </div>
         </div>
       </section>      {/* 10. FAQ ACCORDION */}
-      <section className="py-32 bg-white">
-        <div className="max-w-[1000px] mx-auto px-6">
+      <section className="py-14 sm:py-16 md:py-20 lg:py-24 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
 
-          <div className="flex items-center gap-6 mb-16 justify-center">
+          <div className="flex items-center gap-6 mb-8 sm:mb-10 md:mb-12 justify-center">
             <div className="hidden md:block flex-1 h-[1px] bg-gray-300"></div>
             <h2 className="text-3xl md:text-4xl font-extrabold text-[#0A0A0A] leading-none px-4">
               FAQs
@@ -903,9 +1131,9 @@ export default function LandingPage() {
 
       {/* 11. CTA BANNER */}
       <section id="cta-section" className="bg-[#000000] overflow-hidden relative">
-        <div className="max-w-[1280px] mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row items-center justify-between">
 
-          <div className="py-12 lg:py-16 flex-1 z-20 w-full">
+          <div className="py-14 sm:py-16 md:py-20 lg:py-24 flex-1 z-20 w-full">
             <h3 className="text-white font-bold text-lg md:text-xl mb-3 tracking-wide">
               Let&apos;s make something cool
             </h3>
@@ -950,6 +1178,9 @@ export default function LandingPage() {
 
       {/* Request Access Intercept Modal */}
       <RequestAccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Login Prompt Modal */}
+      <LoginPromptModal isOpen={isLoginPromptOpen} onClose={() => setIsLoginPromptOpen(false)} />
 
       {/* AI Feature Modal */}
       <AnimatePresence>

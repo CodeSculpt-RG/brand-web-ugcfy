@@ -279,3 +279,11 @@ body {
 .scrollbar-none::-webkit-scrollbar {
   display: none !important;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-marquee-track {
+    animation: none !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+}

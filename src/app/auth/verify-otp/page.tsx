@@ -3,7 +3,7 @@
 import React, { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Mail, RotateCcw } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -57,6 +57,31 @@ function OtpForm() {
   const [isResending, setIsResending] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [errorMsg, setErrorMsg] = React.useState("");
+  const [cooldown, setCooldown] = React.useState(0);
+
+  const getCooldownKey = (emailStr: string) => `ugcfy_brand_otp_sent:${emailStr.trim().toLowerCase()}`;
+
+  React.useEffect(() => {
+    if (pendingSignup.email) {
+      const lastSentStr = localStorage.getItem(getCooldownKey(pendingSignup.email));
+      if (lastSentStr) {
+        const lastSent = parseInt(lastSentStr, 10);
+        const remaining = Math.max(0, 60 - Math.floor((Date.now() - lastSent) / 1000));
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setCooldown(remaining);
+      }
+    }
+  }, [pendingSignup.email]);
+
+  React.useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (cooldown > 0) {
+      interval = setInterval(() => {
+        setCooldown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [cooldown]);
 
   const handleVerify = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -82,11 +107,7 @@ function OtpForm() {
       });
 
       if (error) {
-        const lowerMessage = error.message.toLowerCase();
-        if (lowerMessage.includes("expired")) {
-          throw new Error("This code has expired. Please request a new one.");
-        }
-        throw new Error("We could not verify this code. Please check the OTP and try again.");
+        throw new Error("Invalid or expired verification code. Please request a new code.");
       }
 
       router.replace(`/auth/set-password?email=${encodeURIComponent(pendingSignup.email)}`);
@@ -105,20 +126,34 @@ function OtpForm() {
       setErrorMsg("Please start signup again with your work email.");
       return;
     }
+    if (isResending || cooldown > 0) return;
 
     setIsResending(true);
     try {
+      const cleanEmail = pendingSignup.email.trim().toLowerCase();
       const { error } = await supabase.auth.signInWithOtp({
-        email: pendingSignup.email,
+        email: cleanEmail,
         options: {
           shouldCreateUser: true,
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        const match = error.message.match(/wait\s+(\d+)s/i) || error.message.match(/after\s+(\d+)\s+seconds?/i);
+        if (error.status === 429 || match) {
+          const secs = match ? parseInt(match[1] || "60", 10) : 60;
+          setCooldown(secs);
+          localStorage.setItem(getCooldownKey(cleanEmail), (Date.now() - (60 - secs) * 1000).toString());
+          throw new Error(`Please wait ${secs}s before requesting another OTP.`);
+        }
+        throw error;
+      }
+      
+      setCooldown(60);
+      localStorage.setItem(getCooldownKey(cleanEmail), Date.now().toString());
       setMessage("A new OTP has been sent to your work email.");
-    } catch {
-      setErrorMsg("Unable to resend OTP. Please try again.");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "Unable to resend OTP. Please try again.");
     } finally {
       setIsResending(false);
     }
@@ -145,8 +180,10 @@ function OtpForm() {
               <label className="text-sm font-semibold text-slate-700">Email OTP</label>
               <input
                 value={otp}
-                onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 8))}
+                onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
                 inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
                 autoComplete="one-time-code"
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50"
                 placeholder="Enter OTP"
@@ -158,23 +195,24 @@ function OtpForm() {
 
             <button
               type="submit"
-              disabled={isVerifying}
-              className="w-full bg-[#0A0A0A] hover:bg-black text-white flex items-center justify-center gap-2 group text-lg px-8 py-4 rounded-[14px] shadow-xl transition-all disabled:opacity-75"
+              disabled={isVerifying || otp.length !== 6}
+              className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-[#E11D48] hover:bg-[#BE123C] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isVerifying ? "Verifying..." : "Verify OTP"}
               {!isVerifying && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </button>
+            <div className="pt-6 text-center border-t border-slate-100">
+              <p className="text-slate-500 mb-4">Didn&apos;t receive the code?</p>
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={isResending || cooldown > 0}
+                className="text-sm font-bold text-[#E11D48] hover:text-[#BE123C] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {isResending ? "Sending..." : cooldown > 0 ? `Resend in ${cooldown}s` : "Click to resend OTP"}
+              </button>
+            </div>
           </form>
-
-          <button
-            type="button"
-            onClick={handleResend}
-            disabled={isResending}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
-          >
-            <RotateCcw className="h-4 w-4" />
-            {isResending ? "Sending..." : "Resend OTP"}
-          </button>
         </div>
       </div>
 

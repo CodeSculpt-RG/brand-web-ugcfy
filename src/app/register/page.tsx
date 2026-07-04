@@ -12,6 +12,19 @@ export default function RegisterPage() {
   const [loadingProvider, setLoadingProvider] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState("");
+  const [cooldown, setCooldown] = React.useState(0);
+
+  const getCooldownKey = (emailStr: string) => `ugcfy_brand_otp_sent:${emailStr.trim().toLowerCase()}`;
+
+  React.useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (cooldown > 0) {
+      interval = setInterval(() => {
+        setCooldown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [cooldown]);
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -40,7 +53,15 @@ export default function RegisterPage() {
       return;
     }
 
-    
+    const lastSentStr = localStorage.getItem(getCooldownKey(normalizedEmail));
+    if (lastSentStr) {
+      const lastSent = parseInt(lastSentStr, 10);
+      const remaining = Math.max(0, 60 - Math.floor((Date.now() - lastSent) / 1000));
+      if (remaining > 0) {
+        setErrorMsg(`Please wait ${remaining}s before requesting another OTP.`);
+        return;
+      }
+    }
 
     setLoading(true);
 
@@ -73,12 +94,19 @@ export default function RegisterPage() {
         })
       );
 
-      
+      localStorage.setItem(getCooldownKey(normalizedEmail), Date.now().toString());
+      setCooldown(60);
 
       router.push(`/auth/verify-otp?email=${encodeURIComponent(normalizedEmail)}`);
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : "We could not send the verification code. Please try again.";
-      if (errMsg.toLowerCase().includes("rate limit") || errMsg.toLowerCase().includes("too many requests")) {
+      const match = errMsg.match(/wait\s+(\d+)s/i) || errMsg.match(/after\s+(\d+)\s+seconds?/i);
+      if (match) {
+        const secs = parseInt(match[1] || "60", 10);
+        setCooldown(secs);
+        localStorage.setItem(getCooldownKey(normalizedEmail), (Date.now() - (60 - secs) * 1000).toString());
+        setErrorMsg(`Please wait ${secs}s before requesting another OTP.`);
+      } else if (errMsg.toLowerCase().includes("rate limit") || errMsg.toLowerCase().includes("too many requests")) {
         setErrorMsg("Too many requests. Please wait before requesting another code.");
       } else {
         setErrorMsg(errMsg);
@@ -160,11 +188,13 @@ export default function RegisterPage() {
               <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all bg-slate-50" placeholder="john@company.com" />
             </div>
 
-            
-
-            <button type="submit" disabled={loading} className="w-full btn-primary flex items-center justify-center gap-2 group text-lg px-8 py-4 mt-8 shadow-xl shadow-red-500/20 disabled:cursor-not-allowed disabled:opacity-70">
-              {loading ? "Sending Code..." : "Send Verification Code"}
-              {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+            <button 
+              type="submit" 
+              disabled={loading || cooldown > 0} 
+              className="w-full btn-primary flex items-center justify-center gap-2 group text-lg px-8 py-4 mt-8 shadow-xl shadow-red-500/20 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {loading ? "Sending Code..." : cooldown > 0 ? `Wait ${cooldown}s` : "Send Verification Code"}
+              {!loading && cooldown === 0 && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 

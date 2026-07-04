@@ -1,8 +1,9 @@
 import { NextRequest } from "next/server";
 import { verifyBrand } from "@/lib/auth/verifyBrand";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { jsonError, jsonSuccess } from "@/lib/api-response";
-import { isRazorpayConfigured, verifyRazorpaySignature } from "@/lib/payments/razorpay";
+import { isRazorpayConfigured } from "@/lib/payments/razorpay";
 import { isMockPaymentEnabled } from "@/lib/payments/paymentProvider";
 
 function hasPaymentProvider() {
@@ -119,9 +120,20 @@ export async function POST(req: NextRequest) {
       return jsonError("INVALID_PAYMENT", "Order ID mismatch.", 400);
     }
 
-    const isValidSignature = verifyRazorpaySignature(razorpayOrderId, razorpayPaymentId, razorpaySignature);
+    const supabase = await createClient();
+    const { data: verifyData, error: invokeError } = await supabase.functions.invoke('verify-razorpay-payment', {
+      body: {
+        orderId: razorpayOrderId,
+        paymentId: razorpayPaymentId,
+        signature: razorpaySignature,
+        campaignId: payment.campaign_id,
+        paymentIdRecord: payment.id
+      }
+    });
 
-    if (!isValidSignature) {
+    if (invokeError || !verifyData || !verifyData.verified) {
+      console.error("[payments/verify] Edge Function verification failed:", invokeError || verifyData?.error);
+      
       // Mark payment failed
       await supabaseAdmin
         .from("payments")
@@ -129,50 +141,6 @@ export async function POST(req: NextRequest) {
         .eq("id", payment.id);
         
       return jsonError("INVALID_SIGNATURE", "Payment signature verification failed.", 400);
-    }
-
-    // Mark payment as paid
-    const { error: razorpayUpdateError } = await supabaseAdmin
-      .from("payments")
-      .update({
-        status: "paid",
-        provider_payment_id: razorpayPaymentId,
-        provider_signature: razorpaySignature,
-        paid_at: new Date().toISOString(),
-        funds_state: "held_for_campaign"
-      })
-      .eq("id", payment.id);
-
-    if (razorpayUpdateError && razorpayUpdateError.code === 'PGRST204') {
-       await supabaseAdmin
-        .from("payments")
-        .update({
-          status: "paid",
-          transaction_id: razorpayPaymentId
-        })
-        .eq("id", payment.id);
-    }
-
-    // Mark campaign as active and paid
-    if (payment.campaign_id) {
-      const { error: finalCampaignUpdateError } = await supabaseAdmin
-        .from("campaigns")
-        .update({
-          status: "active",
-          payment_status: "paid",
-          payment_id: payment.id
-        })
-        .eq("id", payment.campaign_id);
-        
-      if (finalCampaignUpdateError && finalCampaignUpdateError.code === 'PGRST204') {
-         await supabaseAdmin
-          .from("campaigns")
-          .update({
-            status: "active",
-            payment_status: "paid"
-          })
-          .eq("id", payment.campaign_id);
-      }
     }
 
     return jsonSuccess({
